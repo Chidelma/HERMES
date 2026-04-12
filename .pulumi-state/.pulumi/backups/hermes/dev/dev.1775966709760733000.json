@@ -1,10 +1,10 @@
 {
     "version": 3,
     "checkpoint": {
-        "Stack": "organization/hermes/dev",
-        "Latest": {
+        "stack": "organization/hermes/dev",
+        "latest": {
             "manifest": {
-                "time": "2026-04-12T00:05:17.000969-04:00",
+                "time": "2026-04-12T00:05:09.743201-04:00",
                 "magic": "d67539568b83836a29ebec33b94681fb04189ea530b5be5631513efd23f2bbbd",
                 "version": "v3.127.0"
             },
@@ -461,6 +461,7 @@
                         "visibilityTimeoutSeconds": 30
                     },
                     "parent": "urn:pulumi:dev::hermes::pulumi:pulumi:Stack::hermes-dev",
+                    "protect": true,
                     "provider": "urn:pulumi:dev::hermes::pulumi:providers:aws::default_6_83_2::9caafcd9-2b0f-49f8-bdc5-19605bdb4809",
                     "created": "2026-04-12T04:05:02.284127Z",
                     "modified": "2026-04-12T04:05:02.284127Z"
@@ -554,78 +555,10 @@
                         "vpcId": "vpc-ea975897"
                     },
                     "parent": "urn:pulumi:dev::hermes::pulumi:pulumi:Stack::hermes-dev",
+                    "protect": true,
                     "provider": "urn:pulumi:dev::hermes::pulumi:providers:aws::default_6_83_2::9caafcd9-2b0f-49f8-bdc5-19605bdb4809",
                     "created": "2026-04-12T04:05:09.741322Z",
                     "modified": "2026-04-12T04:05:09.741322Z"
-                },
-                {
-                    "urn": "urn:pulumi:dev::hermes::aws:ec2/securityGroup:SecurityGroup::hermes-lambda-sg",
-                    "custom": true,
-                    "id": "sg-0ccd391efa94125b0",
-                    "type": "aws:ec2/securityGroup:SecurityGroup",
-                    "inputs": {
-                        "__defaults": [],
-                        "egress": [
-                            {
-                                "__defaults": [],
-                                "cidrBlocks": [
-                                    "0.0.0.0/0"
-                                ],
-                                "fromPort": 0,
-                                "protocol": "-1",
-                                "toPort": 0
-                            }
-                        ],
-                        "name": "hermes-lambda-sg-dd33805",
-                        "revokeRulesOnDelete": null,
-                        "tags": {
-                            "Name": "hermes-lambda-sg",
-                            "__defaults": []
-                        },
-                        "tagsAll": {
-                            "Name": "hermes-lambda-sg",
-                            "__defaults": []
-                        },
-                        "vpcId": "vpc-ea975897"
-                    },
-                    "outputs": {
-                        "__meta": "{\"e2bfb730-ecaa-11e6-8f88-34363bc7c4c0\":{\"create\":600000000000,\"delete\":900000000000},\"schema_version\":\"1\"}",
-                        "arn": "arn:aws:ec2:us-east-1:117469679339:security-group/sg-0ccd391efa94125b0",
-                        "description": "Managed by Pulumi",
-                        "egress": [
-                            {
-                                "cidrBlocks": [
-                                    "0.0.0.0/0"
-                                ],
-                                "description": "",
-                                "fromPort": 0,
-                                "ipv6CidrBlocks": [],
-                                "prefixListIds": [],
-                                "protocol": "-1",
-                                "securityGroups": [],
-                                "self": false,
-                                "toPort": 0
-                            }
-                        ],
-                        "id": "sg-0ccd391efa94125b0",
-                        "ingress": [],
-                        "name": "hermes-lambda-sg-dd33805",
-                        "namePrefix": "",
-                        "ownerId": "117469679339",
-                        "revokeRulesOnDelete": null,
-                        "tags": {
-                            "Name": "hermes-lambda-sg"
-                        },
-                        "tagsAll": {
-                            "Name": "hermes-lambda-sg"
-                        },
-                        "vpcId": "vpc-ea975897"
-                    },
-                    "parent": "urn:pulumi:dev::hermes::pulumi:pulumi:Stack::hermes-dev",
-                    "protect": true,
-                    "provider": "urn:pulumi:dev::hermes::pulumi:providers:aws::default_6_83_2::9caafcd9-2b0f-49f8-bdc5-19605bdb4809",
-                    "created": "2026-04-12T04:05:16.999997Z",
-                    "modified": "2026-04-12T04:05:16.999997Z"
                 }
             ]
         }
