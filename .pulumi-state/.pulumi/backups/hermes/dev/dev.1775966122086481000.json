@@ -1,10 +1,10 @@
 {
     "version": 3,
     "checkpoint": {
-        "Stack": "organization/hermes/dev",
-        "Latest": {
+        "stack": "organization/hermes/dev",
+        "latest": {
             "manifest": {
-                "time": "2026-04-11T23:55:33.579906-04:00",
+                "time": "2026-04-11T23:55:22.060303-04:00",
                 "magic": "d67539568b83836a29ebec33b94681fb04189ea530b5be5631513efd23f2bbbd",
                 "version": "v3.127.0"
             },
@@ -63,38 +63,10 @@
                         "replicas": []
                     },
                     "parent": "urn:pulumi:dev::hermes::pulumi:pulumi:Stack::hermes-dev",
+                    "protect": true,
                     "provider": "urn:pulumi:dev::hermes::pulumi:providers:aws::default_6_83_2::9caafcd9-2b0f-49f8-bdc5-19605bdb4809",
                     "created": "2026-04-12T03:55:22.059355Z",
                     "modified": "2026-04-12T03:55:22.059355Z"
-                },
-                {
-                    "urn": "urn:pulumi:dev::hermes::aws:secretsmanager/secret:Secret::hermes-encryption-key",
-                    "custom": true,
-                    "id": "arn:aws:secretsmanager:us-east-1:117469679339:secret:hermes/fylo-encryption-key-9498Yr",
-                    "type": "aws:secretsmanager/secret:Secret",
-                    "inputs": {
-                        "__defaults": [],
-                        "description": "FYLO field-level encryption key",
-                        "forceOverwriteReplicaSecret": null,
-                        "name": "hermes/fylo-encryption-key",
-                        "recoveryWindowInDays": null
-                    },
-                    "outputs": {
-                        "arn": "arn:aws:secretsmanager:us-east-1:117469679339:secret:hermes/fylo-encryption-key-9498Yr",
-                        "description": "FYLO field-level encryption key",
-                        "forceOverwriteReplicaSecret": null,
-                        "id": "arn:aws:secretsmanager:us-east-1:117469679339:secret:hermes/fylo-encryption-key-9498Yr",
-                        "kmsKeyId": "",
-                        "name": "hermes/fylo-encryption-key",
-                        "namePrefix": "",
-                        "policy": "",
-                        "recoveryWindowInDays": null,
-                        "replicas": []
-                    },
-                    "parent": "urn:pulumi:dev::hermes::pulumi:pulumi:Stack::hermes-dev",
-                    "provider": "urn:pulumi:dev::hermes::pulumi:providers:aws::default_6_83_2::9caafcd9-2b0f-49f8-bdc5-19605bdb4809",
-                    "created": "2026-04-12T03:55:33.578785Z",
-                    "modified": "2026-04-12T03:55:33.578785Z"
                 }
             ]
         }

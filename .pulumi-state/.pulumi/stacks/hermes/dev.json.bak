@@ -92,6 +92,7 @@
                         "replicas": []
                     },
                     "parent": "urn:pulumi:dev::hermes::pulumi:pulumi:Stack::hermes-dev",
+                    "protect": true,
                     "provider": "urn:pulumi:dev::hermes::pulumi:providers:aws::default_6_83_2::9caafcd9-2b0f-49f8-bdc5-19605bdb4809",
                     "created": "2026-04-12T03:55:33.578785Z",
                     "modified": "2026-04-12T03:55:33.578785Z"
