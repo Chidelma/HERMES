@@ -1,0 +1,3 @@
+name: hermes
+runtime: nodejs
+description: Serverless multi-domain mail server on AWS

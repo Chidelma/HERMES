@@ -1,0 +1,6 @@
+config:
+  aws:region: us-east-1
+  hermes:domains:
+    - example.com
+  hermes:vpcId: ""
+  hermes:subnetIds: []
