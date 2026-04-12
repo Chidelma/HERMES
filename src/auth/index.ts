@@ -89,18 +89,18 @@ export async function handler(event: APIGatewayProxyEvent): Promise<APIGatewayPr
     if (!sessionId || !code) return err(400, 'sessionId and code required')
 
     const fylo = await getFylo()
-    const session = await findSession(fylo, sessionId)
-    if (!session) return err(401, 'Invalid or expired code')
+    const [docId, session] = await findSession(fylo, sessionId)
+    if (!session || !docId) return err(401, 'Invalid or expired code')
 
     if (new Date(session.expiresAt) < new Date()) {
-      await fylo.delDoc(Collections.OTP_SESSIONS, sessionId)
+      await fylo.delDoc(Collections.OTP_SESSIONS, docId)
       return err(401, 'Code has expired')
     }
 
     const codeHash = createHash('sha256').update(code).digest('hex')
     if (codeHash !== session.codeHash) return err(401, 'Invalid code')
 
-    await fylo.delDoc(Collections.OTP_SESSIONS, sessionId)
+    await fylo.delDoc(Collections.OTP_SESSIONS, docId)
 
     const user = await findUserByEmail(fylo, session.email)
     if (!user) return err(401, 'Account not found')
@@ -144,14 +144,16 @@ async function findUserByEmail(
 async function findSession(
   fylo: Awaited<ReturnType<typeof getFylo>>,
   sessionId: string
-): Promise<OtpSession | null> {
+): Promise<[string | null, OtpSession | null]> {
   const results: Record<string, OtpSession> = {}
   for await (const doc of fylo.findDocs(Collections.OTP_SESSIONS, {
     $ops: [{ id: { $eq: sessionId } }],
   }).collect()) {
     Object.assign(results, doc)
   }
-  return Object.values(results)[0] ?? null
+  const entry = Object.entries(results)[0]
+  if (!entry) return [null, null]
+  return entry
 }
 
 async function purgeExpiredSessions(
