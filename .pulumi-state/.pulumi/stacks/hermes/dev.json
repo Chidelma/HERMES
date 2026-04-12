@@ -1,12 +1,12 @@
 {
     "version": 3,
     "checkpoint": {
-        "stack": "organization/hermes/dev",
-        "latest": {
+        "Stack": "organization/hermes/dev",
+        "Latest": {
             "manifest": {
-                "time": "2026-04-12T04:44:19.0977857Z",
-                "magic": "88d0da18f668d21177091127bf6af43a4706b834600c4edf2e942a3f566ca00e",
-                "version": "v3.229.0"
+                "time": "2026-04-12T12:58:36.919486-04:00",
+                "magic": "d67539568b83836a29ebec33b94681fb04189ea530b5be5631513efd23f2bbbd",
+                "version": "v3.127.0"
             },
             "secrets_providers": {
                 "type": "passphrase",
@@ -24,15 +24,7 @@
                     },
                     "created": "2026-04-12T03:55:20.965718Z",
                     "modified": "2026-04-12T03:55:20.965718Z",
-                    "sourcePosition": "project:///node_modules/@pulumi/runtime/stack.ts#37,19",
-                    "stackTrace": [
-                        {
-                            "sourcePosition": "project:///node_modules/@pulumi/runtime/stack.ts#37,19"
-                        },
-                        {
-                            "sourcePosition": "project:///node_modules/@pulumi/cmd/run/run.ts#605,38"
-                        }
-                    ]
+                    "sourcePosition": "project:///node_modules/@pulumi/runtime/stack.ts#37,19"
                 },
                 {
                     "urn": "urn:pulumi:dev::hermes::pulumi:providers:aws::default_6_83_2",
@@ -76,48 +68,7 @@
                     },
                     "created": "2026-04-12T04:04:16.559157Z",
                     "modified": "2026-04-12T04:04:16.559157Z",
-                    "sourcePosition": "project:///infra/ses.ts#25,31",
-                    "stackTrace": [
-                        {
-                            "sourcePosition": "project:///infra/ses.ts#25,31"
-                        },
-                        {},
-                        {
-                            "sourcePosition": "project:///node_modules/@pulumi/pulumi/vendor/ts-node@7.0.1/index.js#3009,23"
-                        },
-                        {},
-                        {
-                            "sourcePosition": "project:///node_modules/@pulumi/pulumi/vendor/ts-node@7.0.1/index.js#3011,12"
-                        },
-                        {},
-                        {},
-                        {},
-                        {},
-                        {
-                            "sourcePosition": "project:///index.ts#5,1"
-                        },
-                        {},
-                        {
-                            "sourcePosition": "project:///node_modules/@pulumi/pulumi/vendor/ts-node@7.0.1/index.js#3009,23"
-                        },
-                        {},
-                        {
-                            "sourcePosition": "project:///node_modules/@pulumi/pulumi/vendor/ts-node@7.0.1/index.js#3011,12"
-                        },
-                        {},
-                        {},
-                        {},
-                        {},
-                        {
-                            "sourcePosition": "project:///node_modules/@pulumi/cmd/run/run.ts#545,33"
-                        },
-                        {
-                            "sourcePosition": "project:///node_modules/@pulumi/runtime/stack.ts#78,28"
-                        },
-                        {
-                            "sourcePosition": "project:///node_modules/@pulumi/resource.ts#1579,22"
-                        }
-                    ]
+                    "sourcePosition": "project:///infra/ses.ts#25,31"
                 },
                 {
                     "urn": "urn:pulumi:dev::hermes::aws:ec2/securityGroup:SecurityGroup::hermes-efs-sg",
@@ -226,48 +177,7 @@
                     },
                     "created": "2026-04-12T04:05:09.741322Z",
                     "modified": "2026-04-12T04:05:09.741322Z",
-                    "sourcePosition": "project:///infra/storage.ts#16,33",
-                    "stackTrace": [
-                        {
-                            "sourcePosition": "project:///infra/storage.ts#16,33"
-                        },
-                        {},
-                        {
-                            "sourcePosition": "project:///node_modules/@pulumi/pulumi/vendor/ts-node@7.0.1/index.js#3009,23"
-                        },
-                        {},
-                        {
-                            "sourcePosition": "project:///node_modules/@pulumi/pulumi/vendor/ts-node@7.0.1/index.js#3011,12"
-                        },
-                        {},
-                        {},
-                        {},
-                        {},
-                        {
-                            "sourcePosition": "project:///index.ts#1,1"
-                        },
-                        {},
-                        {
-                            "sourcePosition": "project:///node_modules/@pulumi/pulumi/vendor/ts-node@7.0.1/index.js#3009,23"
-                        },
-                        {},
-                        {
-                            "sourcePosition": "project:///node_modules/@pulumi/pulumi/vendor/ts-node@7.0.1/index.js#3011,12"
-                        },
-                        {},
-                        {},
-                        {},
-                        {},
-                        {
-                            "sourcePosition": "project:///node_modules/@pulumi/cmd/run/run.ts#545,33"
-                        },
-                        {
-                            "sourcePosition": "project:///node_modules/@pulumi/runtime/stack.ts#78,28"
-                        },
-                        {
-                            "sourcePosition": "project:///node_modules/@pulumi/resource.ts#1579,22"
-                        }
-                    ]
+                    "sourcePosition": "project:///infra/storage.ts#16,33"
                 },
                 {
                     "urn": "urn:pulumi:dev::hermes::aws:sqs/queue:Queue::hermes-inbound-dlq",
@@ -336,48 +246,7 @@
                     },
                     "created": "2026-04-12T04:05:02.284127Z",
                     "modified": "2026-04-12T04:05:02.284127Z",
-                    "sourcePosition": "project:///infra/queues.ts#4,27",
-                    "stackTrace": [
-                        {
-                            "sourcePosition": "project:///infra/queues.ts#4,27"
-                        },
-                        {},
-                        {
-                            "sourcePosition": "project:///node_modules/@pulumi/pulumi/vendor/ts-node@7.0.1/index.js#3009,23"
-                        },
-                        {},
-                        {
-                            "sourcePosition": "project:///node_modules/@pulumi/pulumi/vendor/ts-node@7.0.1/index.js#3011,12"
-                        },
-                        {},
-                        {},
-                        {},
-                        {},
-                        {
-                            "sourcePosition": "project:///index.ts#3,1"
-                        },
-                        {},
-                        {
-                            "sourcePosition": "project:///node_modules/@pulumi/pulumi/vendor/ts-node@7.0.1/index.js#3009,23"
-                        },
-                        {},
-                        {
-                            "sourcePosition": "project:///node_modules/@pulumi/pulumi/vendor/ts-node@7.0.1/index.js#3011,12"
-                        },
-                        {},
-                        {},
-                        {},
-                        {},
-                        {
-                            "sourcePosition": "project:///node_modules/@pulumi/cmd/run/run.ts#545,33"
-                        },
-                        {
-                            "sourcePosition": "project:///node_modules/@pulumi/runtime/stack.ts#78,28"
-                        },
-                        {
-                            "sourcePosition": "project:///node_modules/@pulumi/resource.ts#1579,22"
-                        }
-                    ]
+                    "sourcePosition": "project:///infra/queues.ts#4,27"
                 },
                 {
                     "urn": "urn:pulumi:dev::hermes::aws:efs/fileSystem:FileSystem::hermes-efs",
@@ -442,48 +311,7 @@
                     },
                     "created": "2026-04-12T04:09:36.787709Z",
                     "modified": "2026-04-12T04:09:36.787709Z",
-                    "sourcePosition": "project:///infra/storage.ts#9,27",
-                    "stackTrace": [
-                        {
-                            "sourcePosition": "project:///infra/storage.ts#9,27"
-                        },
-                        {},
-                        {
-                            "sourcePosition": "project:///node_modules/@pulumi/pulumi/vendor/ts-node@7.0.1/index.js#3009,23"
-                        },
-                        {},
-                        {
-                            "sourcePosition": "project:///node_modules/@pulumi/pulumi/vendor/ts-node@7.0.1/index.js#3011,12"
-                        },
-                        {},
-                        {},
-                        {},
-                        {},
-                        {
-                            "sourcePosition": "project:///index.ts#1,1"
-                        },
-                        {},
-                        {
-                            "sourcePosition": "project:///node_modules/@pulumi/pulumi/vendor/ts-node@7.0.1/index.js#3009,23"
-                        },
-                        {},
-                        {
-                            "sourcePosition": "project:///node_modules/@pulumi/pulumi/vendor/ts-node@7.0.1/index.js#3011,12"
-                        },
-                        {},
-                        {},
-                        {},
-                        {},
-                        {
-                            "sourcePosition": "project:///node_modules/@pulumi/cmd/run/run.ts#545,33"
-                        },
-                        {
-                            "sourcePosition": "project:///node_modules/@pulumi/runtime/stack.ts#78,28"
-                        },
-                        {
-                            "sourcePosition": "project:///node_modules/@pulumi/resource.ts#1579,22"
-                        }
-                    ]
+                    "sourcePosition": "project:///infra/storage.ts#9,27"
                 },
                 {
                     "urn": "urn:pulumi:dev::hermes::aws:ec2/securityGroup:SecurityGroup::hermes-lambda-sg",
@@ -563,48 +391,7 @@
                     },
                     "created": "2026-04-12T04:05:16.999997Z",
                     "modified": "2026-04-12T04:05:16.999997Z",
-                    "sourcePosition": "project:///infra/lambdas.ts#14,18",
-                    "stackTrace": [
-                        {
-                            "sourcePosition": "project:///infra/lambdas.ts#14,18"
-                        },
-                        {},
-                        {
-                            "sourcePosition": "project:///node_modules/@pulumi/pulumi/vendor/ts-node@7.0.1/index.js#3009,23"
-                        },
-                        {},
-                        {
-                            "sourcePosition": "project:///node_modules/@pulumi/pulumi/vendor/ts-node@7.0.1/index.js#3011,12"
-                        },
-                        {},
-                        {},
-                        {},
-                        {},
-                        {
-                            "sourcePosition": "project:///index.ts#7,1"
-                        },
-                        {},
-                        {
-                            "sourcePosition": "project:///node_modules/@pulumi/pulumi/vendor/ts-node@7.0.1/index.js#3009,23"
-                        },
-                        {},
-                        {
-                            "sourcePosition": "project:///node_modules/@pulumi/pulumi/vendor/ts-node@7.0.1/index.js#3011,12"
-                        },
-                        {},
-                        {},
-                        {},
-                        {},
-                        {
-                            "sourcePosition": "project:///node_modules/@pulumi/cmd/run/run.ts#545,33"
-                        },
-                        {
-                            "sourcePosition": "project:///node_modules/@pulumi/runtime/stack.ts#78,28"
-                        },
-                        {
-                            "sourcePosition": "project:///node_modules/@pulumi/resource.ts#1579,22"
-                        }
-                    ]
+                    "sourcePosition": "project:///infra/lambdas.ts#14,18"
                 },
                 {
                     "urn": "urn:pulumi:dev::hermes::aws:sns/topic:Topic::hermes-inbound-delivery",
@@ -673,63 +460,7 @@
                     },
                     "created": "2026-04-12T04:04:23.739979Z",
                     "modified": "2026-04-12T04:04:23.739979Z",
-                    "sourcePosition": "project:///infra/notifications.ts#10,37",
-                    "stackTrace": [
-                        {
-                            "sourcePosition": "project:///infra/notifications.ts#10,37"
-                        },
-                        {},
-                        {
-                            "sourcePosition": "project:///node_modules/@pulumi/pulumi/vendor/ts-node@7.0.1/index.js#3009,23"
-                        },
-                        {},
-                        {
-                            "sourcePosition": "project:///node_modules/@pulumi/pulumi/vendor/ts-node@7.0.1/index.js#3011,12"
-                        },
-                        {},
-                        {},
-                        {},
-                        {},
-                        {
-                            "sourcePosition": "project:///infra/queues.ts#2,1"
-                        },
-                        {},
-                        {
-                            "sourcePosition": "project:///node_modules/@pulumi/pulumi/vendor/ts-node@7.0.1/index.js#3009,23"
-                        },
-                        {},
-                        {
-                            "sourcePosition": "project:///node_modules/@pulumi/pulumi/vendor/ts-node@7.0.1/index.js#3011,12"
-                        },
-                        {},
-                        {},
-                        {},
-                        {},
-                        {
-                            "sourcePosition": "project:///index.ts#3,1"
-                        },
-                        {},
-                        {
-                            "sourcePosition": "project:///node_modules/@pulumi/pulumi/vendor/ts-node@7.0.1/index.js#3009,23"
-                        },
-                        {},
-                        {
-                            "sourcePosition": "project:///node_modules/@pulumi/pulumi/vendor/ts-node@7.0.1/index.js#3011,12"
-                        },
-                        {},
-                        {},
-                        {},
-                        {},
-                        {
-                            "sourcePosition": "project:///node_modules/@pulumi/cmd/run/run.ts#545,33"
-                        },
-                        {
-                            "sourcePosition": "project:///node_modules/@pulumi/runtime/stack.ts#78,28"
-                        },
-                        {
-                            "sourcePosition": "project:///node_modules/@pulumi/resource.ts#1579,22"
-                        }
-                    ]
+                    "sourcePosition": "project:///infra/notifications.ts#10,37"
                 },
                 {
                     "urn": "urn:pulumi:dev::hermes::aws:sns/topic:Topic::hermes-notifications",
@@ -798,63 +529,7 @@
                     },
                     "created": "2026-04-12T04:04:30.951034Z",
                     "modified": "2026-04-12T04:04:30.951034Z",
-                    "sourcePosition": "project:///infra/notifications.ts#4,35",
-                    "stackTrace": [
-                        {
-                            "sourcePosition": "project:///infra/notifications.ts#4,35"
-                        },
-                        {},
-                        {
-                            "sourcePosition": "project:///node_modules/@pulumi/pulumi/vendor/ts-node@7.0.1/index.js#3009,23"
-                        },
-                        {},
-                        {
-                            "sourcePosition": "project:///node_modules/@pulumi/pulumi/vendor/ts-node@7.0.1/index.js#3011,12"
-                        },
-                        {},
-                        {},
-                        {},
-                        {},
-                        {
-                            "sourcePosition": "project:///infra/queues.ts#2,1"
-                        },
-                        {},
-                        {
-                            "sourcePosition": "project:///node_modules/@pulumi/pulumi/vendor/ts-node@7.0.1/index.js#3009,23"
-                        },
-                        {},
-                        {
-                            "sourcePosition": "project:///node_modules/@pulumi/pulumi/vendor/ts-node@7.0.1/index.js#3011,12"
-                        },
-                        {},
-                        {},
-                        {},
-                        {},
-                        {
-                            "sourcePosition": "project:///index.ts#3,1"
-                        },
-                        {},
-                        {
-                            "sourcePosition": "project:///node_modules/@pulumi/pulumi/vendor/ts-node@7.0.1/index.js#3009,23"
-                        },
-                        {},
-                        {
-                            "sourcePosition": "project:///node_modules/@pulumi/pulumi/vendor/ts-node@7.0.1/index.js#3011,12"
-                        },
-                        {},
-                        {},
-                        {},
-                        {},
-                        {
-                            "sourcePosition": "project:///node_modules/@pulumi/cmd/run/run.ts#545,33"
-                        },
-                        {
-                            "sourcePosition": "project:///node_modules/@pulumi/runtime/stack.ts#78,28"
-                        },
-                        {
-                            "sourcePosition": "project:///node_modules/@pulumi/resource.ts#1579,22"
-                        }
-                    ]
+                    "sourcePosition": "project:///infra/notifications.ts#4,35"
                 },
                 {
                     "urn": "urn:pulumi:dev::hermes::aws:ses/domainIdentity:DomainIdentity::hermes-ses-gokeinvestmentcorp.com",
@@ -877,50 +552,7 @@
                         "domain": []
                     },
                     "created": "2026-04-12T04:21:48.868644Z",
-                    "modified": "2026-04-12T04:21:48.868644Z",
-                    "stackTrace": [
-                        {},
-                        {},
-                        {
-                            "sourcePosition": "project:///infra/ses.ts#9,41"
-                        },
-                        {},
-                        {
-                            "sourcePosition": "project:///node_modules/@pulumi/pulumi/vendor/ts-node@7.0.1/index.js#3009,23"
-                        },
-                        {},
-                        {
-                            "sourcePosition": "project:///node_modules/@pulumi/pulumi/vendor/ts-node@7.0.1/index.js#3011,12"
-                        },
-                        {},
-                        {},
-                        {},
-                        {},
-                        {
-                            "sourcePosition": "project:///index.ts#5,1"
-                        },
-                        {},
-                        {
-                            "sourcePosition": "project:///node_modules/@pulumi/pulumi/vendor/ts-node@7.0.1/index.js#3009,23"
-                        },
-                        {},
-                        {
-                            "sourcePosition": "project:///node_modules/@pulumi/pulumi/vendor/ts-node@7.0.1/index.js#3011,12"
-                        },
-                        {},
-                        {},
-                        {},
-                        {},
-                        {
-                            "sourcePosition": "project:///node_modules/@pulumi/cmd/run/run.ts#545,33"
-                        },
-                        {
-                            "sourcePosition": "project:///node_modules/@pulumi/runtime/stack.ts#78,28"
-                        },
-                        {
-                            "sourcePosition": "project:///node_modules/@pulumi/resource.ts#1579,22"
-                        }
-                    ]
+                    "modified": "2026-04-12T04:21:48.868644Z"
                 },
                 {
                     "urn": "urn:pulumi:dev::hermes::aws:ses/activeReceiptRuleSet:ActiveReceiptRuleSet::hermes-active-rule-set",
@@ -948,48 +580,7 @@
                     },
                     "created": "2026-04-12T04:22:09.467105Z",
                     "modified": "2026-04-12T04:22:09.467105Z",
-                    "sourcePosition": "project:///infra/ses.ts#29,30",
-                    "stackTrace": [
-                        {
-                            "sourcePosition": "project:///infra/ses.ts#29,30"
-                        },
-                        {},
-                        {
-                            "sourcePosition": "project:///node_modules/@pulumi/pulumi/vendor/ts-node@7.0.1/index.js#3009,23"
-                        },
-                        {},
-                        {
-                            "sourcePosition": "project:///node_modules/@pulumi/pulumi/vendor/ts-node@7.0.1/index.js#3011,12"
-                        },
-                        {},
-                        {},
-                        {},
-                        {},
-                        {
-                            "sourcePosition": "project:///index.ts#5,1"
-                        },
-                        {},
-                        {
-                            "sourcePosition": "project:///node_modules/@pulumi/pulumi/vendor/ts-node@7.0.1/index.js#3009,23"
-                        },
-                        {},
-                        {
-                            "sourcePosition": "project:///node_modules/@pulumi/pulumi/vendor/ts-node@7.0.1/index.js#3011,12"
-                        },
-                        {},
-                        {},
-                        {},
-                        {},
-                        {
-                            "sourcePosition": "project:///node_modules/@pulumi/cmd/run/run.ts#545,33"
-                        },
-                        {
-                            "sourcePosition": "project:///node_modules/@pulumi/runtime/stack.ts#78,28"
-                        },
-                        {
-                            "sourcePosition": "project:///node_modules/@pulumi/resource.ts#1579,22"
-                        }
-                    ]
+                    "sourcePosition": "project:///infra/ses.ts#29,30"
                 },
                 {
                     "urn": "urn:pulumi:dev::hermes::aws:sqs/queue:Queue::hermes-inbound",
@@ -1065,48 +656,7 @@
                     },
                     "created": "2026-04-12T04:22:19.336274Z",
                     "modified": "2026-04-12T04:22:19.336274Z",
-                    "sourcePosition": "project:///infra/queues.ts#10,29",
-                    "stackTrace": [
-                        {
-                            "sourcePosition": "project:///infra/queues.ts#10,29"
-                        },
-                        {},
-                        {
-                            "sourcePosition": "project:///node_modules/@pulumi/pulumi/vendor/ts-node@7.0.1/index.js#3009,23"
-                        },
-                        {},
-                        {
-                            "sourcePosition": "project:///node_modules/@pulumi/pulumi/vendor/ts-node@7.0.1/index.js#3011,12"
-                        },
-                        {},
-                        {},
-                        {},
-                        {},
-                        {
-                            "sourcePosition": "project:///index.ts#3,1"
-                        },
-                        {},
-                        {
-                            "sourcePosition": "project:///node_modules/@pulumi/pulumi/vendor/ts-node@7.0.1/index.js#3009,23"
-                        },
-                        {},
-                        {
-                            "sourcePosition": "project:///node_modules/@pulumi/pulumi/vendor/ts-node@7.0.1/index.js#3011,12"
-                        },
-                        {},
-                        {},
-                        {},
-                        {},
-                        {
-                            "sourcePosition": "project:///node_modules/@pulumi/cmd/run/run.ts#545,33"
-                        },
-                        {
-                            "sourcePosition": "project:///node_modules/@pulumi/runtime/stack.ts#78,28"
-                        },
-                        {
-                            "sourcePosition": "project:///node_modules/@pulumi/resource.ts#1579,22"
-                        }
-                    ]
+                    "sourcePosition": "project:///infra/queues.ts#10,29"
                 },
                 {
                     "urn": "urn:pulumi:dev::hermes::aws:efs/mountTarget:MountTarget::hermes-efs-mt-4",
@@ -1154,50 +704,7 @@
                         "subnetId": []
                     },
                     "created": "2026-04-12T04:10:24.041503Z",
-                    "modified": "2026-04-12T04:10:24.041503Z",
-                    "stackTrace": [
-                        {},
-                        {},
-                        {
-                            "sourcePosition": "project:///infra/storage.ts#23,39"
-                        },
-                        {},
-                        {
-                            "sourcePosition": "project:///node_modules/@pulumi/pulumi/vendor/ts-node@7.0.1/index.js#3009,23"
-                        },
-                        {},
-                        {
-                            "sourcePosition": "project:///node_modules/@pulumi/pulumi/vendor/ts-node@7.0.1/index.js#3011,12"
-                        },
-                        {},
-                        {},
-                        {},
-                        {},
-                        {
-                            "sourcePosition": "project:///index.ts#1,1"
-                        },
-                        {},
-                        {
-                            "sourcePosition": "project:///node_modules/@pulumi/pulumi/vendor/ts-node@7.0.1/index.js#3009,23"
-                        },
-                        {},
-                        {
-                            "sourcePosition": "project:///node_modules/@pulumi/pulumi/vendor/ts-node@7.0.1/index.js#3011,12"
-                        },
-                        {},
-                        {},
-                        {},
-                        {},
-                        {
-                            "sourcePosition": "project:///node_modules/@pulumi/cmd/run/run.ts#545,33"
-                        },
-                        {
-                            "sourcePosition": "project:///node_modules/@pulumi/runtime/stack.ts#78,28"
-                        },
-                        {
-                            "sourcePosition": "project:///node_modules/@pulumi/resource.ts#1579,22"
-                        }
-                    ]
+                    "modified": "2026-04-12T04:10:24.041503Z"
                 },
                 {
                     "urn": "urn:pulumi:dev::hermes::aws:efs/mountTarget:MountTarget::hermes-efs-mt-5",
@@ -1245,50 +752,7 @@
                         "subnetId": []
                     },
                     "created": "2026-04-12T04:10:32.04337Z",
-                    "modified": "2026-04-12T04:10:32.04337Z",
-                    "stackTrace": [
-                        {},
-                        {},
-                        {
-                            "sourcePosition": "project:///infra/storage.ts#23,39"
-                        },
-                        {},
-                        {
-                            "sourcePosition": "project:///node_modules/@pulumi/pulumi/vendor/ts-node@7.0.1/index.js#3009,23"
-                        },
-                        {},
-                        {
-                            "sourcePosition": "project:///node_modules/@pulumi/pulumi/vendor/ts-node@7.0.1/index.js#3011,12"
-                        },
-                        {},
-                        {},
-                        {},
-                        {},
-                        {
-                            "sourcePosition": "project:///index.ts#1,1"
-                        },
-                        {},
-                        {
-                            "sourcePosition": "project:///node_modules/@pulumi/pulumi/vendor/ts-node@7.0.1/index.js#3009,23"
-                        },
-                        {},
-                        {
-                            "sourcePosition": "project:///node_modules/@pulumi/pulumi/vendor/ts-node@7.0.1/index.js#3011,12"
-                        },
-                        {},
-                        {},
-                        {},
-                        {},
-                        {
-                            "sourcePosition": "project:///node_modules/@pulumi/cmd/run/run.ts#545,33"
-                        },
-                        {
-                            "sourcePosition": "project:///node_modules/@pulumi/runtime/stack.ts#78,28"
-                        },
-                        {
-                            "sourcePosition": "project:///node_modules/@pulumi/resource.ts#1579,22"
-                        }
-                    ]
+                    "modified": "2026-04-12T04:10:32.04337Z"
                 },
                 {
                     "urn": "urn:pulumi:dev::hermes::aws:efs/accessPoint:AccessPoint::hermes-efs-ap",
@@ -1361,48 +825,7 @@
                     },
                     "created": "2026-04-12T04:09:43.852434Z",
                     "modified": "2026-04-12T04:09:43.852434Z",
-                    "sourcePosition": "project:///infra/storage.ts#32,28",
-                    "stackTrace": [
-                        {
-                            "sourcePosition": "project:///infra/storage.ts#32,28"
-                        },
-                        {},
-                        {
-                            "sourcePosition": "project:///node_modules/@pulumi/pulumi/vendor/ts-node@7.0.1/index.js#3009,23"
-                        },
-                        {},
-                        {
-                            "sourcePosition": "project:///node_modules/@pulumi/pulumi/vendor/ts-node@7.0.1/index.js#3011,12"
-                        },
-                        {},
-                        {},
-                        {},
-                        {},
-                        {
-                            "sourcePosition": "project:///index.ts#1,1"
-                        },
-                        {},
-                        {
-                            "sourcePosition": "project:///node_modules/@pulumi/pulumi/vendor/ts-node@7.0.1/index.js#3009,23"
-                        },
-                        {},
-                        {
-                            "sourcePosition": "project:///node_modules/@pulumi/pulumi/vendor/ts-node@7.0.1/index.js#3011,12"
-                        },
-                        {},
-                        {},
-                        {},
-                        {},
-                        {
-                            "sourcePosition": "project:///node_modules/@pulumi/cmd/run/run.ts#545,33"
-                        },
-                        {
-                            "sourcePosition": "project:///node_modules/@pulumi/runtime/stack.ts#78,28"
-                        },
-                        {
-                            "sourcePosition": "project:///node_modules/@pulumi/resource.ts#1579,22"
-                        }
-                    ]
+                    "sourcePosition": "project:///infra/storage.ts#32,28"
                 },
                 {
                     "urn": "urn:pulumi:dev::hermes::aws:efs/mountTarget:MountTarget::hermes-efs-mt-2",
@@ -1450,50 +873,7 @@
                         "subnetId": []
                     },
                     "created": "2026-04-12T04:10:07.98543Z",
-                    "modified": "2026-04-12T04:10:07.98543Z",
-                    "stackTrace": [
-                        {},
-                        {},
-                        {
-                            "sourcePosition": "project:///infra/storage.ts#23,39"
-                        },
-                        {},
-                        {
-                            "sourcePosition": "project:///node_modules/@pulumi/pulumi/vendor/ts-node@7.0.1/index.js#3009,23"
-                        },
-                        {},
-                        {
-                            "sourcePosition": "project:///node_modules/@pulumi/pulumi/vendor/ts-node@7.0.1/index.js#3011,12"
-                        },
-                        {},
-                        {},
-                        {},
-                        {},
-                        {
-                            "sourcePosition": "project:///index.ts#1,1"
-                        },
-                        {},
-                        {
-                            "sourcePosition": "project:///node_modules/@pulumi/pulumi/vendor/ts-node@7.0.1/index.js#3009,23"
-                        },
-                        {},
-                        {
-                            "sourcePosition": "project:///node_modules/@pulumi/pulumi/vendor/ts-node@7.0.1/index.js#3011,12"
-                        },
-                        {},
-                        {},
-                        {},
-                        {},
-                        {
-                            "sourcePosition": "project:///node_modules/@pulumi/cmd/run/run.ts#545,33"
-                        },
-                        {
-                            "sourcePosition": "project:///node_modules/@pulumi/runtime/stack.ts#78,28"
-                        },
-                        {
-                            "sourcePosition": "project:///node_modules/@pulumi/resource.ts#1579,22"
-                        }
-                    ]
+                    "modified": "2026-04-12T04:10:07.98543Z"
                 },
                 {
                     "urn": "urn:pulumi:dev::hermes::aws:efs/mountTarget:MountTarget::hermes-efs-mt-1",
@@ -1541,50 +921,7 @@
                         "subnetId": []
                     },
                     "created": "2026-04-12T04:09:59.991036Z",
-                    "modified": "2026-04-12T04:09:59.991036Z",
-                    "stackTrace": [
-                        {},
-                        {},
-                        {
-                            "sourcePosition": "project:///infra/storage.ts#23,39"
-                        },
-                        {},
-                        {
-                            "sourcePosition": "project:///node_modules/@pulumi/pulumi/vendor/ts-node@7.0.1/index.js#3009,23"
-                        },
-                        {},
-                        {
-                            "sourcePosition": "project:///node_modules/@pulumi/pulumi/vendor/ts-node@7.0.1/index.js#3011,12"
-                        },
-                        {},
-                        {},
-                        {},
-                        {},
-                        {
-                            "sourcePosition": "project:///index.ts#1,1"
-                        },
-                        {},
-                        {
-                            "sourcePosition": "project:///node_modules/@pulumi/pulumi/vendor/ts-node@7.0.1/index.js#3009,23"
-                        },
-                        {},
-                        {
-                            "sourcePosition": "project:///node_modules/@pulumi/pulumi/vendor/ts-node@7.0.1/index.js#3011,12"
-                        },
-                        {},
-                        {},
-                        {},
-                        {},
-                        {
-                            "sourcePosition": "project:///node_modules/@pulumi/cmd/run/run.ts#545,33"
-                        },
-                        {
-                            "sourcePosition": "project:///node_modules/@pulumi/runtime/stack.ts#78,28"
-                        },
-                        {
-                            "sourcePosition": "project:///node_modules/@pulumi/resource.ts#1579,22"
-                        }
-                    ]
+                    "modified": "2026-04-12T04:09:59.991036Z"
                 },
                 {
                     "urn": "urn:pulumi:dev::hermes::aws:efs/mountTarget:MountTarget::hermes-efs-mt-3",
@@ -1632,50 +969,7 @@
                         "subnetId": []
                     },
                     "created": "2026-04-12T04:10:15.997783Z",
-                    "modified": "2026-04-12T04:10:15.997783Z",
-                    "stackTrace": [
-                        {},
-                        {},
-                        {
-                            "sourcePosition": "project:///infra/storage.ts#23,39"
-                        },
-                        {},
-                        {
-                            "sourcePosition": "project:///node_modules/@pulumi/pulumi/vendor/ts-node@7.0.1/index.js#3009,23"
-                        },
-                        {},
-                        {
-                            "sourcePosition": "project:///node_modules/@pulumi/pulumi/vendor/ts-node@7.0.1/index.js#3011,12"
-                        },
-                        {},
-                        {},
-                        {},
-                        {},
-                        {
-                            "sourcePosition": "project:///index.ts#1,1"
-                        },
-                        {},
-                        {
-                            "sourcePosition": "project:///node_modules/@pulumi/pulumi/vendor/ts-node@7.0.1/index.js#3009,23"
-                        },
-                        {},
-                        {
-                            "sourcePosition": "project:///node_modules/@pulumi/pulumi/vendor/ts-node@7.0.1/index.js#3011,12"
-                        },
-                        {},
-                        {},
-                        {},
-                        {},
-                        {
-                            "sourcePosition": "project:///node_modules/@pulumi/cmd/run/run.ts#545,33"
-                        },
-                        {
-                            "sourcePosition": "project:///node_modules/@pulumi/runtime/stack.ts#78,28"
-                        },
-                        {
-                            "sourcePosition": "project:///node_modules/@pulumi/resource.ts#1579,22"
-                        }
-                    ]
+                    "modified": "2026-04-12T04:10:15.997783Z"
                 },
                 {
                     "urn": "urn:pulumi:dev::hermes::aws:efs/mountTarget:MountTarget::hermes-efs-mt-0",
@@ -1723,50 +1017,7 @@
                         "subnetId": []
                     },
                     "created": "2026-04-12T04:09:52.010225Z",
-                    "modified": "2026-04-12T04:09:52.010225Z",
-                    "stackTrace": [
-                        {},
-                        {},
-                        {
-                            "sourcePosition": "project:///infra/storage.ts#23,39"
-                        },
-                        {},
-                        {
-                            "sourcePosition": "project:///node_modules/@pulumi/pulumi/vendor/ts-node@7.0.1/index.js#3009,23"
-                        },
-                        {},
-                        {
-                            "sourcePosition": "project:///node_modules/@pulumi/pulumi/vendor/ts-node@7.0.1/index.js#3011,12"
-                        },
-                        {},
-                        {},
-                        {},
-                        {},
-                        {
-                            "sourcePosition": "project:///index.ts#1,1"
-                        },
-                        {},
-                        {
-                            "sourcePosition": "project:///node_modules/@pulumi/pulumi/vendor/ts-node@7.0.1/index.js#3009,23"
-                        },
-                        {},
-                        {
-                            "sourcePosition": "project:///node_modules/@pulumi/pulumi/vendor/ts-node@7.0.1/index.js#3011,12"
-                        },
-                        {},
-                        {},
-                        {},
-                        {},
-                        {
-                            "sourcePosition": "project:///node_modules/@pulumi/cmd/run/run.ts#545,33"
-                        },
-                        {
-                            "sourcePosition": "project:///node_modules/@pulumi/runtime/stack.ts#78,28"
-                        },
-                        {
-                            "sourcePosition": "project:///node_modules/@pulumi/resource.ts#1579,22"
-                        }
-                    ]
+                    "modified": "2026-04-12T04:09:52.010225Z"
                 },
                 {
                     "urn": "urn:pulumi:dev::hermes::aws:ses/domainDkim:DomainDkim::hermes-dkim-gokeinvestmentcorp.com",
@@ -1797,50 +1048,7 @@
                         ]
                     },
                     "created": "2026-04-12T04:21:59.888973Z",
-                    "modified": "2026-04-12T04:21:59.888973Z",
-                    "stackTrace": [
-                        {},
-                        {},
-                        {
-                            "sourcePosition": "project:///infra/ses.ts#17,45"
-                        },
-                        {},
-                        {
-                            "sourcePosition": "project:///node_modules/@pulumi/pulumi/vendor/ts-node@7.0.1/index.js#3009,23"
-                        },
-                        {},
-                        {
-                            "sourcePosition": "project:///node_modules/@pulumi/pulumi/vendor/ts-node@7.0.1/index.js#3011,12"
-                        },
-                        {},
-                        {},
-                        {},
-                        {},
-                        {
-                            "sourcePosition": "project:///index.ts#5,1"
-                        },
-                        {},
-                        {
-                            "sourcePosition": "project:///node_modules/@pulumi/pulumi/vendor/ts-node@7.0.1/index.js#3009,23"
-                        },
-                        {},
-                        {
-                            "sourcePosition": "project:///node_modules/@pulumi/pulumi/vendor/ts-node@7.0.1/index.js#3011,12"
-                        },
-                        {},
-                        {},
-                        {},
-                        {},
-                        {
-                            "sourcePosition": "project:///node_modules/@pulumi/cmd/run/run.ts#545,33"
-                        },
-                        {
-                            "sourcePosition": "project:///node_modules/@pulumi/runtime/stack.ts#78,28"
-                        },
-                        {
-                            "sourcePosition": "project:///node_modules/@pulumi/resource.ts#1579,22"
-                        }
-                    ]
+                    "modified": "2026-04-12T04:21:59.888973Z"
                 },
                 {
                     "urn": "urn:pulumi:dev::hermes::aws:secretsmanager/secret:Secret::hermes-api-key",
@@ -1877,48 +1085,7 @@
                     },
                     "created": "2026-04-12T03:55:22.059355Z",
                     "modified": "2026-04-12T04:39:59.527719522Z",
-                    "sourcePosition": "project:///infra/secrets.ts#3,29",
-                    "stackTrace": [
-                        {
-                            "sourcePosition": "project:///infra/secrets.ts#3,29"
-                        },
-                        {},
-                        {
-                            "sourcePosition": "project:///node_modules/@pulumi/pulumi/vendor/ts-node@7.0.1/index.js#3009,23"
-                        },
-                        {},
-                        {
-                            "sourcePosition": "project:///node_modules/@pulumi/pulumi/vendor/ts-node@7.0.1/index.js#3011,12"
-                        },
-                        {},
-                        {},
-                        {},
-                        {},
-                        {
-                            "sourcePosition": "project:///index.ts#2,1"
-                        },
-                        {},
-                        {
-                            "sourcePosition": "project:///node_modules/@pulumi/pulumi/vendor/ts-node@7.0.1/index.js#3009,23"
-                        },
-                        {},
-                        {
-                            "sourcePosition": "project:///node_modules/@pulumi/pulumi/vendor/ts-node@7.0.1/index.js#3011,12"
-                        },
-                        {},
-                        {},
-                        {},
-                        {},
-                        {
-                            "sourcePosition": "project:///node_modules/@pulumi/cmd/run/run.ts#545,33"
-                        },
-                        {
-                            "sourcePosition": "project:///node_modules/@pulumi/runtime/stack.ts#78,28"
-                        },
-                        {
-                            "sourcePosition": "project:///node_modules/@pulumi/resource.ts#1579,22"
-                        }
-                    ]
+                    "sourcePosition": "project:///infra/secrets.ts#3,29"
                 },
                 {
                     "urn": "urn:pulumi:dev::hermes::aws:ses/receiptRule:ReceiptRule::hermes-receipt-gokeinvestmentcorp.com",
@@ -1991,50 +1158,7 @@
                         ]
                     },
                     "created": "2026-04-12T04:12:27.278762Z",
-                    "modified": "2026-04-12T04:12:27.278762Z",
-                    "stackTrace": [
-                        {},
-                        {},
-                        {
-                            "sourcePosition": "project:///infra/ses.ts#34,37"
-                        },
-                        {},
-                        {
-                            "sourcePosition": "project:///node_modules/@pulumi/pulumi/vendor/ts-node@7.0.1/index.js#3009,23"
-                        },
-                        {},
-                        {
-                            "sourcePosition": "project:///node_modules/@pulumi/pulumi/vendor/ts-node@7.0.1/index.js#3011,12"
-                        },
-                        {},
-                        {},
-                        {},
-                        {},
-                        {
-                            "sourcePosition": "project:///index.ts#5,1"
-                        },
-                        {},
-                        {
-                            "sourcePosition": "project:///node_modules/@pulumi/pulumi/vendor/ts-node@7.0.1/index.js#3009,23"
-                        },
-                        {},
-                        {
-                            "sourcePosition": "project:///node_modules/@pulumi/pulumi/vendor/ts-node@7.0.1/index.js#3011,12"
-                        },
-                        {},
-                        {},
-                        {},
-                        {},
-                        {
-                            "sourcePosition": "project:///node_modules/@pulumi/cmd/run/run.ts#545,33"
-                        },
-                        {
-                            "sourcePosition": "project:///node_modules/@pulumi/runtime/stack.ts#78,28"
-                        },
-                        {
-                            "sourcePosition": "project:///node_modules/@pulumi/resource.ts#1579,22"
-                        }
-                    ]
+                    "modified": "2026-04-12T04:12:27.278762Z"
                 },
                 {
                     "urn": "urn:pulumi:dev::hermes::aws:secretsmanager/secret:Secret::hermes-encryption-key",
@@ -2071,48 +1195,7 @@
                     },
                     "created": "2026-04-12T03:55:33.578785Z",
                     "modified": "2026-04-12T04:39:59.546987072Z",
-                    "sourcePosition": "project:///infra/secrets.ts#8,36",
-                    "stackTrace": [
-                        {
-                            "sourcePosition": "project:///infra/secrets.ts#8,36"
-                        },
-                        {},
-                        {
-                            "sourcePosition": "project:///node_modules/@pulumi/pulumi/vendor/ts-node@7.0.1/index.js#3009,23"
-                        },
-                        {},
-                        {
-                            "sourcePosition": "project:///node_modules/@pulumi/pulumi/vendor/ts-node@7.0.1/index.js#3011,12"
-                        },
-                        {},
-                        {},
-                        {},
-                        {},
-                        {
-                            "sourcePosition": "project:///index.ts#2,1"
-                        },
-                        {},
-                        {
-                            "sourcePosition": "project:///node_modules/@pulumi/pulumi/vendor/ts-node@7.0.1/index.js#3009,23"
-                        },
-                        {},
-                        {
-                            "sourcePosition": "project:///node_modules/@pulumi/pulumi/vendor/ts-node@7.0.1/index.js#3011,12"
-                        },
-                        {},
-                        {},
-                        {},
-                        {},
-                        {
-                            "sourcePosition": "project:///node_modules/@pulumi/cmd/run/run.ts#545,33"
-                        },
-                        {
-                            "sourcePosition": "project:///node_modules/@pulumi/runtime/stack.ts#78,28"
-                        },
-                        {
-                            "sourcePosition": "project:///node_modules/@pulumi/resource.ts#1579,22"
-                        }
-                    ]
+                    "sourcePosition": "project:///infra/secrets.ts#8,36"
                 },
                 {
                     "urn": "urn:pulumi:dev::hermes::aws:iam/role:Role::hermes-lambda-role",
@@ -2155,48 +1238,7 @@
                     },
                     "created": "2026-04-12T04:39:59.782933148Z",
                     "modified": "2026-04-12T04:39:59.782933148Z",
-                    "sourcePosition": "project:///infra/lambdas.ts#20,20",
-                    "stackTrace": [
-                        {
-                            "sourcePosition": "project:///infra/lambdas.ts#20,20"
-                        },
-                        {},
-                        {
-                            "sourcePosition": "project:///node_modules/@pulumi/pulumi/vendor/ts-node@7.0.1/index.js#3009,23"
-                        },
-                        {},
-                        {
-                            "sourcePosition": "project:///node_modules/@pulumi/pulumi/vendor/ts-node@7.0.1/index.js#3011,12"
-                        },
-                        {},
-                        {},
-                        {},
-                        {},
-                        {
-                            "sourcePosition": "project:///index.ts#7,1"
-                        },
-                        {},
-                        {
-                            "sourcePosition": "project:///node_modules/@pulumi/pulumi/vendor/ts-node@7.0.1/index.js#3009,23"
-                        },
-                        {},
-                        {
-                            "sourcePosition": "project:///node_modules/@pulumi/pulumi/vendor/ts-node@7.0.1/index.js#3011,12"
-                        },
-                        {},
-                        {},
-                        {},
-                        {},
-                        {
-                            "sourcePosition": "project:///node_modules/@pulumi/cmd/run/run.ts#545,33"
-                        },
-                        {
-                            "sourcePosition": "project:///node_modules/@pulumi/runtime/stack.ts#78,28"
-                        },
-                        {
-                            "sourcePosition": "project:///node_modules/@pulumi/resource.ts#1579,22"
-                        }
-                    ]
+                    "sourcePosition": "project:///infra/lambdas.ts#20,20"
                 },
                 {
                     "urn": "urn:pulumi:dev::hermes::aws:route53/record:Record::hermes-dmarc-gokeinvestmentcorp.com",
@@ -2246,50 +1288,7 @@
                         "zoneId": []
                     },
                     "created": "2026-04-12T04:02:36.785913Z",
-                    "modified": "2026-04-12T04:02:36.785913Z",
-                    "stackTrace": [
-                        {},
-                        {},
-                        {
-                            "sourcePosition": "project:///infra/dns.ts#11,37"
-                        },
-                        {},
-                        {
-                            "sourcePosition": "project:///node_modules/@pulumi/pulumi/vendor/ts-node@7.0.1/index.js#3009,23"
-                        },
-                        {},
-                        {
-                            "sourcePosition": "project:///node_modules/@pulumi/pulumi/vendor/ts-node@7.0.1/index.js#3011,12"
-                        },
-                        {},
-                        {},
-                        {},
-                        {},
-                        {
-                            "sourcePosition": "project:///index.ts#6,1"
-                        },
-                        {},
-                        {
-                            "sourcePosition": "project:///node_modules/@pulumi/pulumi/vendor/ts-node@7.0.1/index.js#3009,23"
-                        },
-                        {},
-                        {
-                            "sourcePosition": "project:///node_modules/@pulumi/pulumi/vendor/ts-node@7.0.1/index.js#3011,12"
-                        },
-                        {},
-                        {},
-                        {},
-                        {},
-                        {
-                            "sourcePosition": "project:///node_modules/@pulumi/cmd/run/run.ts#545,33"
-                        },
-                        {
-                            "sourcePosition": "project:///node_modules/@pulumi/runtime/stack.ts#78,28"
-                        },
-                        {
-                            "sourcePosition": "project:///node_modules/@pulumi/resource.ts#1579,22"
-                        }
-                    ]
+                    "modified": "2026-04-12T04:02:36.785913Z"
                 },
                 {
                     "urn": "urn:pulumi:dev::hermes::aws:route53/record:Record::hermes-ses-verify-gokeinvestmentcorp.com",
@@ -2344,50 +1343,7 @@
                         "zoneId": []
                     },
                     "created": "2026-04-12T04:02:28.971844Z",
-                    "modified": "2026-04-12T04:02:28.971844Z",
-                    "stackTrace": [
-                        {},
-                        {},
-                        {
-                            "sourcePosition": "project:///infra/dns.ts#11,37"
-                        },
-                        {},
-                        {
-                            "sourcePosition": "project:///node_modules/@pulumi/pulumi/vendor/ts-node@7.0.1/index.js#3009,23"
-                        },
-                        {},
-                        {
-                            "sourcePosition": "project:///node_modules/@pulumi/pulumi/vendor/ts-node@7.0.1/index.js#3011,12"
-                        },
-                        {},
-                        {},
-                        {},
-                        {},
-                        {
-                            "sourcePosition": "project:///index.ts#6,1"
-                        },
-                        {},
-                        {
-                            "sourcePosition": "project:///node_modules/@pulumi/pulumi/vendor/ts-node@7.0.1/index.js#3009,23"
-                        },
-                        {},
-                        {
-                            "sourcePosition": "project:///node_modules/@pulumi/pulumi/vendor/ts-node@7.0.1/index.js#3011,12"
-                        },
-                        {},
-                        {},
-                        {},
-                        {},
-                        {
-                            "sourcePosition": "project:///node_modules/@pulumi/cmd/run/run.ts#545,33"
-                        },
-                        {
-                            "sourcePosition": "project:///node_modules/@pulumi/runtime/stack.ts#78,28"
-                        },
-                        {
-                            "sourcePosition": "project:///node_modules/@pulumi/resource.ts#1579,22"
-                        }
-                    ]
+                    "modified": "2026-04-12T04:02:28.971844Z"
                 },
                 {
                     "urn": "urn:pulumi:dev::hermes::aws:sns/topicPolicy:TopicPolicy::hermes-inbound-delivery-policy",
@@ -2420,63 +1376,7 @@
                     },
                     "created": "2026-04-12T04:39:59.838994331Z",
                     "modified": "2026-04-12T04:39:59.838994331Z",
-                    "sourcePosition": "project:///infra/notifications.ts#16,43",
-                    "stackTrace": [
-                        {
-                            "sourcePosition": "project:///infra/notifications.ts#16,43"
-                        },
-                        {},
-                        {
-                            "sourcePosition": "project:///node_modules/@pulumi/pulumi/vendor/ts-node@7.0.1/index.js#3009,23"
-                        },
-                        {},
-                        {
-                            "sourcePosition": "project:///node_modules/@pulumi/pulumi/vendor/ts-node@7.0.1/index.js#3011,12"
-                        },
-                        {},
-                        {},
-                        {},
-                        {},
-                        {
-                            "sourcePosition": "project:///infra/queues.ts#2,1"
-                        },
-                        {},
-                        {
-                            "sourcePosition": "project:///node_modules/@pulumi/pulumi/vendor/ts-node@7.0.1/index.js#3009,23"
-                        },
-                        {},
-                        {
-                            "sourcePosition": "project:///node_modules/@pulumi/pulumi/vendor/ts-node@7.0.1/index.js#3011,12"
-                        },
-                        {},
-                        {},
-                        {},
-                        {},
-                        {
-                            "sourcePosition": "project:///index.ts#3,1"
-                        },
-                        {},
-                        {
-                            "sourcePosition": "project:///node_modules/@pulumi/pulumi/vendor/ts-node@7.0.1/index.js#3009,23"
-                        },
-                        {},
-                        {
-                            "sourcePosition": "project:///node_modules/@pulumi/pulumi/vendor/ts-node@7.0.1/index.js#3011,12"
-                        },
-                        {},
-                        {},
-                        {},
-                        {},
-                        {
-                            "sourcePosition": "project:///node_modules/@pulumi/cmd/run/run.ts#545,33"
-                        },
-                        {
-                            "sourcePosition": "project:///node_modules/@pulumi/runtime/stack.ts#78,28"
-                        },
-                        {
-                            "sourcePosition": "project:///node_modules/@pulumi/resource.ts#1579,22"
-                        }
-                    ]
+                    "sourcePosition": "project:///infra/notifications.ts#16,43"
                 },
                 {
                     "urn": "urn:pulumi:dev::hermes::aws:apigateway/restApi:RestApi::hermes-api-gw",
@@ -2522,48 +1422,7 @@
                     },
                     "created": "2026-04-12T04:39:59.883893625Z",
                     "modified": "2026-04-12T04:39:59.883893625Z",
-                    "sourcePosition": "project:///infra/api.ts#6,17",
-                    "stackTrace": [
-                        {
-                            "sourcePosition": "project:///infra/api.ts#6,17"
-                        },
-                        {},
-                        {
-                            "sourcePosition": "project:///node_modules/@pulumi/pulumi/vendor/ts-node@7.0.1/index.js#3009,23"
-                        },
-                        {},
-                        {
-                            "sourcePosition": "project:///node_modules/@pulumi/pulumi/vendor/ts-node@7.0.1/index.js#3011,12"
-                        },
-                        {},
-                        {},
-                        {},
-                        {},
-                        {
-                            "sourcePosition": "project:///index.ts#9,1"
-                        },
-                        {},
-                        {
-                            "sourcePosition": "project:///node_modules/@pulumi/pulumi/vendor/ts-node@7.0.1/index.js#3009,23"
-                        },
-                        {},
-                        {
-                            "sourcePosition": "project:///node_modules/@pulumi/pulumi/vendor/ts-node@7.0.1/index.js#3011,12"
-                        },
-                        {},
-                        {},
-                        {},
-                        {},
-                        {
-                            "sourcePosition": "project:///node_modules/@pulumi/cmd/run/run.ts#545,33"
-                        },
-                        {
-                            "sourcePosition": "project:///node_modules/@pulumi/runtime/stack.ts#78,28"
-                        },
-                        {
-                            "sourcePosition": "project:///node_modules/@pulumi/resource.ts#1579,22"
-                        }
-                    ]
+                    "sourcePosition": "project:///infra/api.ts#6,17"
                 },
                 {
                     "urn": "urn:pulumi:dev::hermes::aws:route53/record:Record::hermes-dkim-gokeinvestmentcorp.com-0",
@@ -2620,52 +1479,7 @@
                         "zoneId": []
                     },
                     "created": "2026-04-12T04:22:31.271452Z",
-                    "modified": "2026-04-12T04:22:31.271452Z",
-                    "stackTrace": [
-                        {},
-                        {},
-                        {},
-                        {},
-                        {
-                            "sourcePosition": "project:///infra/dns.ts#11,37"
-                        },
-                        {},
-                        {
-                            "sourcePosition": "project:///node_modules/@pulumi/pulumi/vendor/ts-node@7.0.1/index.js#3009,23"
-                        },
-                        {},
-                        {
-                            "sourcePosition": "project:///node_modules/@pulumi/pulumi/vendor/ts-node@7.0.1/index.js#3011,12"
-                        },
-                        {},
-                        {},
-                        {},
-                        {},
-                        {
-                            "sourcePosition": "project:///index.ts#6,1"
-                        },
-                        {},
-                        {
-                            "sourcePosition": "project:///node_modules/@pulumi/pulumi/vendor/ts-node@7.0.1/index.js#3009,23"
-                        },
-                        {},
-                        {
-                            "sourcePosition": "project:///node_modules/@pulumi/pulumi/vendor/ts-node@7.0.1/index.js#3011,12"
-                        },
-                        {},
-                        {},
-                        {},
-                        {},
-                        {
-                            "sourcePosition": "project:///node_modules/@pulumi/cmd/run/run.ts#545,33"
-                        },
-                        {
-                            "sourcePosition": "project:///node_modules/@pulumi/runtime/stack.ts#78,28"
-                        },
-                        {
-                            "sourcePosition": "project:///node_modules/@pulumi/resource.ts#1579,22"
-                        }
-                    ]
+                    "modified": "2026-04-12T04:22:31.271452Z"
                 },
                 {
                     "urn": "urn:pulumi:dev::hermes::aws:route53/record:Record::hermes-dkim-gokeinvestmentcorp.com-2",
@@ -2722,52 +1536,7 @@
                         "zoneId": []
                     },
                     "created": "2026-04-12T04:22:50.99634Z",
-                    "modified": "2026-04-12T04:22:50.99634Z",
-                    "stackTrace": [
-                        {},
-                        {},
-                        {},
-                        {},
-                        {
-                            "sourcePosition": "project:///infra/dns.ts#11,37"
-                        },
-                        {},
-                        {
-                            "sourcePosition": "project:///node_modules/@pulumi/pulumi/vendor/ts-node@7.0.1/index.js#3009,23"
-                        },
-                        {},
-                        {
-                            "sourcePosition": "project:///node_modules/@pulumi/pulumi/vendor/ts-node@7.0.1/index.js#3011,12"
-                        },
-                        {},
-                        {},
-                        {},
-                        {},
-                        {
-                            "sourcePosition": "project:///index.ts#6,1"
-                        },
-                        {},
-                        {
-                            "sourcePosition": "project:///node_modules/@pulumi/pulumi/vendor/ts-node@7.0.1/index.js#3009,23"
-                        },
-                        {},
-                        {
-                            "sourcePosition": "project:///node_modules/@pulumi/pulumi/vendor/ts-node@7.0.1/index.js#3011,12"
-                        },
-                        {},
-                        {},
-                        {},
-                        {},
-                        {
-                            "sourcePosition": "project:///node_modules/@pulumi/cmd/run/run.ts#545,33"
-                        },
-                        {
-                            "sourcePosition": "project:///node_modules/@pulumi/runtime/stack.ts#78,28"
-                        },
-                        {
-                            "sourcePosition": "project:///node_modules/@pulumi/resource.ts#1579,22"
-                        }
-                    ]
+                    "modified": "2026-04-12T04:22:50.99634Z"
                 },
                 {
                     "urn": "urn:pulumi:dev::hermes::aws:route53/record:Record::hermes-dkim-gokeinvestmentcorp.com-1",
@@ -2824,52 +1593,7 @@
                         "zoneId": []
                     },
                     "created": "2026-04-12T04:22:43.615333Z",
-                    "modified": "2026-04-12T04:22:43.615333Z",
-                    "stackTrace": [
-                        {},
-                        {},
-                        {},
-                        {},
-                        {
-                            "sourcePosition": "project:///infra/dns.ts#11,37"
-                        },
-                        {},
-                        {
-                            "sourcePosition": "project:///node_modules/@pulumi/pulumi/vendor/ts-node@7.0.1/index.js#3009,23"
-                        },
-                        {},
-                        {
-                            "sourcePosition": "project:///node_modules/@pulumi/pulumi/vendor/ts-node@7.0.1/index.js#3011,12"
-                        },
-                        {},
-                        {},
-                        {},
-                        {},
-                        {
-                            "sourcePosition": "project:///index.ts#6,1"
-                        },
-                        {},
-                        {
-                            "sourcePosition": "project:///node_modules/@pulumi/pulumi/vendor/ts-node@7.0.1/index.js#3009,23"
-                        },
-                        {},
-                        {
-                            "sourcePosition": "project:///node_modules/@pulumi/pulumi/vendor/ts-node@7.0.1/index.js#3011,12"
-                        },
-                        {},
-                        {},
-                        {},
-                        {},
-                        {
-                            "sourcePosition": "project:///node_modules/@pulumi/cmd/run/run.ts#545,33"
-                        },
-                        {
-                            "sourcePosition": "project:///node_modules/@pulumi/runtime/stack.ts#78,28"
-                        },
-                        {
-                            "sourcePosition": "project:///node_modules/@pulumi/resource.ts#1579,22"
-                        }
-                    ]
+                    "modified": "2026-04-12T04:22:43.615333Z"
                 },
                 {
                     "urn": "urn:pulumi:dev::hermes::aws:ses/identityNotificationTopic:IdentityNotificationTopic::hermes-notif-gokeinvestmentcorp.com-Bounce",
@@ -2907,52 +1631,7 @@
                         ]
                     },
                     "created": "2026-04-12T04:39:59.956230128Z",
-                    "modified": "2026-04-12T04:39:59.956230128Z",
-                    "stackTrace": [
-                        {},
-                        {},
-                        {},
-                        {},
-                        {
-                            "sourcePosition": "project:///infra/ses.ts#52,53"
-                        },
-                        {},
-                        {
-                            "sourcePosition": "project:///node_modules/@pulumi/pulumi/vendor/ts-node@7.0.1/index.js#3009,23"
-                        },
-                        {},
-                        {
-                            "sourcePosition": "project:///node_modules/@pulumi/pulumi/vendor/ts-node@7.0.1/index.js#3011,12"
-                        },
-                        {},
-                        {},
-                        {},
-                        {},
-                        {
-                            "sourcePosition": "project:///index.ts#5,1"
-                        },
-                        {},
-                        {
-                            "sourcePosition": "project:///node_modules/@pulumi/pulumi/vendor/ts-node@7.0.1/index.js#3009,23"
-                        },
-                        {},
-                        {
-                            "sourcePosition": "project:///node_modules/@pulumi/pulumi/vendor/ts-node@7.0.1/index.js#3011,12"
-                        },
-                        {},
-                        {},
-                        {},
-                        {},
-                        {
-                            "sourcePosition": "project:///node_modules/@pulumi/cmd/run/run.ts#545,33"
-                        },
-                        {
-                            "sourcePosition": "project:///node_modules/@pulumi/runtime/stack.ts#78,28"
-                        },
-                        {
-                            "sourcePosition": "project:///node_modules/@pulumi/resource.ts#1579,22"
-                        }
-                    ]
+                    "modified": "2026-04-12T04:39:59.956230128Z"
                 },
                 {
                     "urn": "urn:pulumi:dev::hermes::aws:ses/identityNotificationTopic:IdentityNotificationTopic::hermes-notif-gokeinvestmentcorp.com-Delivery",
@@ -2990,52 +1669,7 @@
                         ]
                     },
                     "created": "2026-04-12T04:39:59.993228813Z",
-                    "modified": "2026-04-12T04:39:59.993228813Z",
-                    "stackTrace": [
-                        {},
-                        {},
-                        {},
-                        {},
-                        {
-                            "sourcePosition": "project:///infra/ses.ts#52,53"
-                        },
-                        {},
-                        {
-                            "sourcePosition": "project:///node_modules/@pulumi/pulumi/vendor/ts-node@7.0.1/index.js#3009,23"
-                        },
-                        {},
-                        {
-                            "sourcePosition": "project:///node_modules/@pulumi/pulumi/vendor/ts-node@7.0.1/index.js#3011,12"
-                        },
-                        {},
-                        {},
-                        {},
-                        {},
-                        {
-                            "sourcePosition": "project:///index.ts#5,1"
-                        },
-                        {},
-                        {
-                            "sourcePosition": "project:///node_modules/@pulumi/pulumi/vendor/ts-node@7.0.1/index.js#3009,23"
-                        },
-                        {},
-                        {
-                            "sourcePosition": "project:///node_modules/@pulumi/pulumi/vendor/ts-node@7.0.1/index.js#3011,12"
-                        },
-                        {},
-                        {},
-                        {},
-                        {},
-                        {
-                            "sourcePosition": "project:///node_modules/@pulumi/cmd/run/run.ts#545,33"
-                        },
-                        {
-                            "sourcePosition": "project:///node_modules/@pulumi/runtime/stack.ts#78,28"
-                        },
-                        {
-                            "sourcePosition": "project:///node_modules/@pulumi/resource.ts#1579,22"
-                        }
-                    ]
+                    "modified": "2026-04-12T04:39:59.993228813Z"
                 },
                 {
                     "urn": "urn:pulumi:dev::hermes::aws:sns/topicSubscription:TopicSubscription::hermes-inbound-sns-sub",
@@ -3091,48 +1725,7 @@
                     },
                     "created": "2026-04-12T04:40:00.085882329Z",
                     "modified": "2026-04-12T04:40:00.085882329Z",
-                    "sourcePosition": "project:///infra/queues.ts#39,39",
-                    "stackTrace": [
-                        {
-                            "sourcePosition": "project:///infra/queues.ts#39,39"
-                        },
-                        {},
-                        {
-                            "sourcePosition": "project:///node_modules/@pulumi/pulumi/vendor/ts-node@7.0.1/index.js#3009,23"
-                        },
-                        {},
-                        {
-                            "sourcePosition": "project:///node_modules/@pulumi/pulumi/vendor/ts-node@7.0.1/index.js#3011,12"
-                        },
-                        {},
-                        {},
-                        {},
-                        {},
-                        {
-                            "sourcePosition": "project:///index.ts#3,1"
-                        },
-                        {},
-                        {
-                            "sourcePosition": "project:///node_modules/@pulumi/pulumi/vendor/ts-node@7.0.1/index.js#3009,23"
-                        },
-                        {},
-                        {
-                            "sourcePosition": "project:///node_modules/@pulumi/pulumi/vendor/ts-node@7.0.1/index.js#3011,12"
-                        },
-                        {},
-                        {},
-                        {},
-                        {},
-                        {
-                            "sourcePosition": "project:///node_modules/@pulumi/cmd/run/run.ts#545,33"
-                        },
-                        {
-                            "sourcePosition": "project:///node_modules/@pulumi/runtime/stack.ts#78,28"
-                        },
-                        {
-                            "sourcePosition": "project:///node_modules/@pulumi/resource.ts#1579,22"
-                        }
-                    ]
+                    "sourcePosition": "project:///infra/queues.ts#39,39"
                 },
                 {
                     "urn": "urn:pulumi:dev::hermes::aws:iam/rolePolicyAttachment:RolePolicyAttachment::hermes-lambda-basic",
@@ -3162,48 +1755,7 @@
                     },
                     "created": "2026-04-12T04:40:00.328040397Z",
                     "modified": "2026-04-12T04:40:00.328040397Z",
-                    "sourcePosition": "project:///infra/lambdas.ts#27,1",
-                    "stackTrace": [
-                        {
-                            "sourcePosition": "project:///infra/lambdas.ts#27,1"
-                        },
-                        {},
-                        {
-                            "sourcePosition": "project:///node_modules/@pulumi/pulumi/vendor/ts-node@7.0.1/index.js#3009,23"
-                        },
-                        {},
-                        {
-                            "sourcePosition": "project:///node_modules/@pulumi/pulumi/vendor/ts-node@7.0.1/index.js#3011,12"
-                        },
-                        {},
-                        {},
-                        {},
-                        {},
-                        {
-                            "sourcePosition": "project:///index.ts#7,1"
-                        },
-                        {},
-                        {
-                            "sourcePosition": "project:///node_modules/@pulumi/pulumi/vendor/ts-node@7.0.1/index.js#3009,23"
-                        },
-                        {},
-                        {
-                            "sourcePosition": "project:///node_modules/@pulumi/pulumi/vendor/ts-node@7.0.1/index.js#3011,12"
-                        },
-                        {},
-                        {},
-                        {},
-                        {},
-                        {
-                            "sourcePosition": "project:///node_modules/@pulumi/cmd/run/run.ts#545,33"
-                        },
-                        {
-                            "sourcePosition": "project:///node_modules/@pulumi/runtime/stack.ts#78,28"
-                        },
-                        {
-                            "sourcePosition": "project:///node_modules/@pulumi/resource.ts#1579,22"
-                        }
-                    ]
+                    "sourcePosition": "project:///infra/lambdas.ts#27,1"
                 },
                 {
                     "urn": "urn:pulumi:dev::hermes::aws:iam/rolePolicyAttachment:RolePolicyAttachment::hermes-lambda-vpc",
@@ -3233,48 +1785,7 @@
                     },
                     "created": "2026-04-12T04:40:00.408664375Z",
                     "modified": "2026-04-12T04:40:00.408664375Z",
-                    "sourcePosition": "project:///infra/lambdas.ts#32,1",
-                    "stackTrace": [
-                        {
-                            "sourcePosition": "project:///infra/lambdas.ts#32,1"
-                        },
-                        {},
-                        {
-                            "sourcePosition": "project:///node_modules/@pulumi/pulumi/vendor/ts-node@7.0.1/index.js#3009,23"
-                        },
-                        {},
-                        {
-                            "sourcePosition": "project:///node_modules/@pulumi/pulumi/vendor/ts-node@7.0.1/index.js#3011,12"
-                        },
-                        {},
-                        {},
-                        {},
-                        {},
-                        {
-                            "sourcePosition": "project:///index.ts#7,1"
-                        },
-                        {},
-                        {
-                            "sourcePosition": "project:///node_modules/@pulumi/pulumi/vendor/ts-node@7.0.1/index.js#3009,23"
-                        },
-                        {},
-                        {
-                            "sourcePosition": "project:///node_modules/@pulumi/pulumi/vendor/ts-node@7.0.1/index.js#3011,12"
-                        },
-                        {},
-                        {},
-                        {},
-                        {},
-                        {
-                            "sourcePosition": "project:///node_modules/@pulumi/cmd/run/run.ts#545,33"
-                        },
-                        {
-                            "sourcePosition": "project:///node_modules/@pulumi/runtime/stack.ts#78,28"
-                        },
-                        {
-                            "sourcePosition": "project:///node_modules/@pulumi/resource.ts#1579,22"
-                        }
-                    ]
+                    "sourcePosition": "project:///infra/lambdas.ts#32,1"
                 },
                 {
                     "urn": "urn:pulumi:dev::hermes::aws:iam/rolePolicy:RolePolicy::hermes-lambda-policy",
@@ -3316,48 +1827,7 @@
                     },
                     "created": "2026-04-12T04:40:00.591746875Z",
                     "modified": "2026-04-12T04:40:00.591746875Z",
-                    "sourcePosition": "project:///infra/lambdas.ts#37,1",
-                    "stackTrace": [
-                        {
-                            "sourcePosition": "project:///infra/lambdas.ts#37,1"
-                        },
-                        {},
-                        {
-                            "sourcePosition": "project:///node_modules/@pulumi/pulumi/vendor/ts-node@7.0.1/index.js#3009,23"
-                        },
-                        {},
-                        {
-                            "sourcePosition": "project:///node_modules/@pulumi/pulumi/vendor/ts-node@7.0.1/index.js#3011,12"
-                        },
-                        {},
-                        {},
-                        {},
-                        {},
-                        {
-                            "sourcePosition": "project:///index.ts#7,1"
-                        },
-                        {},
-                        {
-                            "sourcePosition": "project:///node_modules/@pulumi/pulumi/vendor/ts-node@7.0.1/index.js#3009,23"
-                        },
-                        {},
-                        {
-                            "sourcePosition": "project:///node_modules/@pulumi/pulumi/vendor/ts-node@7.0.1/index.js#3011,12"
-                        },
-                        {},
-                        {},
-                        {},
-                        {},
-                        {
-                            "sourcePosition": "project:///node_modules/@pulumi/cmd/run/run.ts#545,33"
-                        },
-                        {
-                            "sourcePosition": "project:///node_modules/@pulumi/runtime/stack.ts#78,28"
-                        },
-                        {
-                            "sourcePosition": "project:///node_modules/@pulumi/resource.ts#1579,22"
-                        }
-                    ]
+                    "sourcePosition": "project:///infra/lambdas.ts#37,1"
                 },
                 {
                     "urn": "urn:pulumi:dev::hermes::aws:ses/identityNotificationTopic:IdentityNotificationTopic::hermes-notif-gokeinvestmentcorp.com-Complaint",
@@ -3395,52 +1865,7 @@
                         ]
                     },
                     "created": "2026-04-12T04:40:01.271870336Z",
-                    "modified": "2026-04-12T04:40:01.271870336Z",
-                    "stackTrace": [
-                        {},
-                        {},
-                        {},
-                        {},
-                        {
-                            "sourcePosition": "project:///infra/ses.ts#52,53"
-                        },
-                        {},
-                        {
-                            "sourcePosition": "project:///node_modules/@pulumi/pulumi/vendor/ts-node@7.0.1/index.js#3009,23"
-                        },
-                        {},
-                        {
-                            "sourcePosition": "project:///node_modules/@pulumi/pulumi/vendor/ts-node@7.0.1/index.js#3011,12"
-                        },
-                        {},
-                        {},
-                        {},
-                        {},
-                        {
-                            "sourcePosition": "project:///index.ts#5,1"
-                        },
-                        {},
-                        {
-                            "sourcePosition": "project:///node_modules/@pulumi/pulumi/vendor/ts-node@7.0.1/index.js#3009,23"
-                        },
-                        {},
-                        {
-                            "sourcePosition": "project:///node_modules/@pulumi/pulumi/vendor/ts-node@7.0.1/index.js#3011,12"
-                        },
-                        {},
-                        {},
-                        {},
-                        {},
-                        {
-                            "sourcePosition": "project:///node_modules/@pulumi/cmd/run/run.ts#545,33"
-                        },
-                        {
-                            "sourcePosition": "project:///node_modules/@pulumi/runtime/stack.ts#78,28"
-                        },
-                        {
-                            "sourcePosition": "project:///node_modules/@pulumi/resource.ts#1579,22"
-                        }
-                    ]
+                    "modified": "2026-04-12T04:40:01.271870336Z"
                 },
                 {
                     "urn": "urn:pulumi:dev::hermes::aws:apigateway/resource:Resource::hermes-send-resource",
@@ -3476,48 +1901,7 @@
                     },
                     "created": "2026-04-12T04:40:01.504657552Z",
                     "modified": "2026-04-12T04:40:01.504657552Z",
-                    "sourcePosition": "project:///infra/api.ts#36,22",
-                    "stackTrace": [
-                        {
-                            "sourcePosition": "project:///infra/api.ts#36,22"
-                        },
-                        {},
-                        {
-                            "sourcePosition": "project:///node_modules/@pulumi/pulumi/vendor/ts-node@7.0.1/index.js#3009,23"
-                        },
-                        {},
-                        {
-                            "sourcePosition": "project:///node_modules/@pulumi/pulumi/vendor/ts-node@7.0.1/index.js#3011,12"
-                        },
-                        {},
-                        {},
-                        {},
-                        {},
-                        {
-                            "sourcePosition": "project:///index.ts#9,1"
-                        },
-                        {},
-                        {
-                            "sourcePosition": "project:///node_modules/@pulumi/pulumi/vendor/ts-node@7.0.1/index.js#3009,23"
-                        },
-                        {},
-                        {
-                            "sourcePosition": "project:///node_modules/@pulumi/pulumi/vendor/ts-node@7.0.1/index.js#3011,12"
-                        },
-                        {},
-                        {},
-                        {},
-                        {},
-                        {
-                            "sourcePosition": "project:///node_modules/@pulumi/cmd/run/run.ts#545,33"
-                        },
-                        {
-                            "sourcePosition": "project:///node_modules/@pulumi/runtime/stack.ts#78,28"
-                        },
-                        {
-                            "sourcePosition": "project:///node_modules/@pulumi/resource.ts#1579,22"
-                        }
-                    ]
+                    "sourcePosition": "project:///infra/api.ts#36,22"
                 },
                 {
                     "urn": "urn:pulumi:dev::hermes::aws:apigateway/resource:Resource::hermes-proxy-resource",
@@ -3553,48 +1937,7 @@
                     },
                     "created": "2026-04-12T04:40:01.740562989Z",
                     "modified": "2026-04-12T04:40:01.740562989Z",
-                    "sourcePosition": "project:///infra/api.ts#12,23",
-                    "stackTrace": [
-                        {
-                            "sourcePosition": "project:///infra/api.ts#12,23"
-                        },
-                        {},
-                        {
-                            "sourcePosition": "project:///node_modules/@pulumi/pulumi/vendor/ts-node@7.0.1/index.js#3009,23"
-                        },
-                        {},
-                        {
-                            "sourcePosition": "project:///node_modules/@pulumi/pulumi/vendor/ts-node@7.0.1/index.js#3011,12"
-                        },
-                        {},
-                        {},
-                        {},
-                        {},
-                        {
-                            "sourcePosition": "project:///index.ts#9,1"
-                        },
-                        {},
-                        {
-                            "sourcePosition": "project:///node_modules/@pulumi/pulumi/vendor/ts-node@7.0.1/index.js#3009,23"
-                        },
-                        {},
-                        {
-                            "sourcePosition": "project:///node_modules/@pulumi/pulumi/vendor/ts-node@7.0.1/index.js#3011,12"
-                        },
-                        {},
-                        {},
-                        {},
-                        {},
-                        {
-                            "sourcePosition": "project:///node_modules/@pulumi/cmd/run/run.ts#545,33"
-                        },
-                        {
-                            "sourcePosition": "project:///node_modules/@pulumi/runtime/stack.ts#78,28"
-                        },
-                        {
-                            "sourcePosition": "project:///node_modules/@pulumi/resource.ts#1579,22"
-                        }
-                    ]
+                    "sourcePosition": "project:///infra/api.ts#12,23"
                 },
                 {
                     "urn": "urn:pulumi:dev::hermes::aws:apigateway/method:Method::hermes-send-method",
@@ -3643,48 +1986,7 @@
                     },
                     "created": "2026-04-12T04:40:01.881568895Z",
                     "modified": "2026-04-12T04:40:01.881568895Z",
-                    "sourcePosition": "project:///infra/api.ts#42,1",
-                    "stackTrace": [
-                        {
-                            "sourcePosition": "project:///infra/api.ts#42,1"
-                        },
-                        {},
-                        {
-                            "sourcePosition": "project:///node_modules/@pulumi/pulumi/vendor/ts-node@7.0.1/index.js#3009,23"
-                        },
-                        {},
-                        {
-                            "sourcePosition": "project:///node_modules/@pulumi/pulumi/vendor/ts-node@7.0.1/index.js#3011,12"
-                        },
-                        {},
-                        {},
-                        {},
-                        {},
-                        {
-                            "sourcePosition": "project:///index.ts#9,1"
-                        },
-                        {},
-                        {
-                            "sourcePosition": "project:///node_modules/@pulumi/pulumi/vendor/ts-node@7.0.1/index.js#3009,23"
-                        },
-                        {},
-                        {
-                            "sourcePosition": "project:///node_modules/@pulumi/pulumi/vendor/ts-node@7.0.1/index.js#3011,12"
-                        },
-                        {},
-                        {},
-                        {},
-                        {},
-                        {
-                            "sourcePosition": "project:///node_modules/@pulumi/cmd/run/run.ts#545,33"
-                        },
-                        {
-                            "sourcePosition": "project:///node_modules/@pulumi/runtime/stack.ts#78,28"
-                        },
-                        {
-                            "sourcePosition": "project:///node_modules/@pulumi/resource.ts#1579,22"
-                        }
-                    ]
+                    "sourcePosition": "project:///infra/api.ts#42,1"
                 },
                 {
                     "urn": "urn:pulumi:dev::hermes::aws:apigateway/method:Method::hermes-api-method",
@@ -3733,48 +2035,7 @@
                     },
                     "created": "2026-04-12T04:40:02.012432849Z",
                     "modified": "2026-04-12T04:40:02.012432849Z",
-                    "sourcePosition": "project:///infra/api.ts#28,1",
-                    "stackTrace": [
-                        {
-                            "sourcePosition": "project:///infra/api.ts#28,1"
-                        },
-                        {},
-                        {
-                            "sourcePosition": "project:///node_modules/@pulumi/pulumi/vendor/ts-node@7.0.1/index.js#3009,23"
-                        },
-                        {},
-                        {
-                            "sourcePosition": "project:///node_modules/@pulumi/pulumi/vendor/ts-node@7.0.1/index.js#3011,12"
-                        },
-                        {},
-                        {},
-                        {},
-                        {},
-                        {
-                            "sourcePosition": "project:///index.ts#9,1"
-                        },
-                        {},
-                        {
-                            "sourcePosition": "project:///node_modules/@pulumi/pulumi/vendor/ts-node@7.0.1/index.js#3009,23"
-                        },
-                        {},
-                        {
-                            "sourcePosition": "project:///node_modules/@pulumi/pulumi/vendor/ts-node@7.0.1/index.js#3011,12"
-                        },
-                        {},
-                        {},
-                        {},
-                        {},
-                        {
-                            "sourcePosition": "project:///node_modules/@pulumi/cmd/run/run.ts#545,33"
-                        },
-                        {
-                            "sourcePosition": "project:///node_modules/@pulumi/runtime/stack.ts#78,28"
-                        },
-                        {
-                            "sourcePosition": "project:///node_modules/@pulumi/resource.ts#1579,22"
-                        }
-                    ]
+                    "sourcePosition": "project:///infra/api.ts#28,1"
                 },
                 {
                     "urn": "urn:pulumi:dev::hermes::aws:sqs/queuePolicy:QueuePolicy::hermes-inbound-policy",
@@ -3807,48 +2068,7 @@
                     },
                     "created": "2026-04-12T04:40:25.223989764Z",
                     "modified": "2026-04-12T04:40:25.223989764Z",
-                    "sourcePosition": "project:///infra/queues.ts#21,35",
-                    "stackTrace": [
-                        {
-                            "sourcePosition": "project:///infra/queues.ts#21,35"
-                        },
-                        {},
-                        {
-                            "sourcePosition": "project:///node_modules/@pulumi/pulumi/vendor/ts-node@7.0.1/index.js#3009,23"
-                        },
-                        {},
-                        {
-                            "sourcePosition": "project:///node_modules/@pulumi/pulumi/vendor/ts-node@7.0.1/index.js#3011,12"
-                        },
-                        {},
-                        {},
-                        {},
-                        {},
-                        {
-                            "sourcePosition": "project:///index.ts#3,1"
-                        },
-                        {},
-                        {
-                            "sourcePosition": "project:///node_modules/@pulumi/pulumi/vendor/ts-node@7.0.1/index.js#3009,23"
-                        },
-                        {},
-                        {
-                            "sourcePosition": "project:///node_modules/@pulumi/pulumi/vendor/ts-node@7.0.1/index.js#3011,12"
-                        },
-                        {},
-                        {},
-                        {},
-                        {},
-                        {
-                            "sourcePosition": "project:///node_modules/@pulumi/cmd/run/run.ts#545,33"
-                        },
-                        {
-                            "sourcePosition": "project:///node_modules/@pulumi/runtime/stack.ts#78,28"
-                        },
-                        {
-                            "sourcePosition": "project:///node_modules/@pulumi/resource.ts#1579,22"
-                        }
-                    ]
+                    "sourcePosition": "project:///infra/queues.ts#21,35"
                 },
                 {
                     "urn": "urn:pulumi:dev::hermes::aws:route53/record:Record::hermes-mx-gokeinvestmentcorp.com",
@@ -3898,50 +2118,7 @@
                         "zoneId": []
                     },
                     "created": "2026-04-12T04:02:13.224822Z",
-                    "modified": "2026-04-12T04:40:30.491594815Z",
-                    "stackTrace": [
-                        {},
-                        {},
-                        {
-                            "sourcePosition": "project:///infra/dns.ts#11,37"
-                        },
-                        {},
-                        {
-                            "sourcePosition": "project:///node_modules/@pulumi/pulumi/vendor/ts-node@7.0.1/index.js#3009,23"
-                        },
-                        {},
-                        {
-                            "sourcePosition": "project:///node_modules/@pulumi/pulumi/vendor/ts-node@7.0.1/index.js#3011,12"
-                        },
-                        {},
-                        {},
-                        {},
-                        {},
-                        {
-                            "sourcePosition": "project:///index.ts#6,1"
-                        },
-                        {},
-                        {
-                            "sourcePosition": "project:///node_modules/@pulumi/pulumi/vendor/ts-node@7.0.1/index.js#3009,23"
-                        },
-                        {},
-                        {
-                            "sourcePosition": "project:///node_modules/@pulumi/pulumi/vendor/ts-node@7.0.1/index.js#3011,12"
-                        },
-                        {},
-                        {},
-                        {},
-                        {},
-                        {
-                            "sourcePosition": "project:///node_modules/@pulumi/cmd/run/run.ts#545,33"
-                        },
-                        {
-                            "sourcePosition": "project:///node_modules/@pulumi/runtime/stack.ts#78,28"
-                        },
-                        {
-                            "sourcePosition": "project:///node_modules/@pulumi/resource.ts#1579,22"
-                        }
-                    ]
+                    "modified": "2026-04-12T04:40:30.491594815Z"
                 },
                 {
                     "urn": "urn:pulumi:dev::hermes::aws:route53/record:Record::hermes-spf-gokeinvestmentcorp.com",
@@ -3991,50 +2168,7 @@
                         "zoneId": []
                     },
                     "created": "2026-04-12T04:02:21.111967Z",
-                    "modified": "2026-04-12T04:40:30.554210731Z",
-                    "stackTrace": [
-                        {},
-                        {},
-                        {
-                            "sourcePosition": "project:///infra/dns.ts#11,37"
-                        },
-                        {},
-                        {
-                            "sourcePosition": "project:///node_modules/@pulumi/pulumi/vendor/ts-node@7.0.1/index.js#3009,23"
-                        },
-                        {},
-                        {
-                            "sourcePosition": "project:///node_modules/@pulumi/pulumi/vendor/ts-node@7.0.1/index.js#3011,12"
-                        },
-                        {},
-                        {},
-                        {},
-                        {},
-                        {
-                            "sourcePosition": "project:///index.ts#6,1"
-                        },
-                        {},
-                        {
-                            "sourcePosition": "project:///node_modules/@pulumi/pulumi/vendor/ts-node@7.0.1/index.js#3009,23"
-                        },
-                        {},
-                        {
-                            "sourcePosition": "project:///node_modules/@pulumi/pulumi/vendor/ts-node@7.0.1/index.js#3011,12"
-                        },
-                        {},
-                        {},
-                        {},
-                        {},
-                        {
-                            "sourcePosition": "project:///node_modules/@pulumi/cmd/run/run.ts#545,33"
-                        },
-                        {
-                            "sourcePosition": "project:///node_modules/@pulumi/runtime/stack.ts#78,28"
-                        },
-                        {
-                            "sourcePosition": "project:///node_modules/@pulumi/resource.ts#1579,22"
-                        }
-                    ]
+                    "modified": "2026-04-12T04:40:30.554210731Z"
                 },
                 {
                     "urn": "urn:pulumi:dev::hermes::aws:lambda/function:Function::hermes-events",
@@ -4221,48 +2355,7 @@
                     },
                     "created": "2026-04-12T04:43:53.335181639Z",
                     "modified": "2026-04-12T04:43:53.335181639Z",
-                    "sourcePosition": "project:///infra/lambdas.ts#91,29",
-                    "stackTrace": [
-                        {
-                            "sourcePosition": "project:///infra/lambdas.ts#91,29"
-                        },
-                        {},
-                        {
-                            "sourcePosition": "project:///node_modules/@pulumi/pulumi/vendor/ts-node@7.0.1/index.js#3009,23"
-                        },
-                        {},
-                        {
-                            "sourcePosition": "project:///node_modules/@pulumi/pulumi/vendor/ts-node@7.0.1/index.js#3011,12"
-                        },
-                        {},
-                        {},
-                        {},
-                        {},
-                        {
-                            "sourcePosition": "project:///index.ts#7,1"
-                        },
-                        {},
-                        {
-                            "sourcePosition": "project:///node_modules/@pulumi/pulumi/vendor/ts-node@7.0.1/index.js#3009,23"
-                        },
-                        {},
-                        {
-                            "sourcePosition": "project:///node_modules/@pulumi/pulumi/vendor/ts-node@7.0.1/index.js#3011,12"
-                        },
-                        {},
-                        {},
-                        {},
-                        {},
-                        {
-                            "sourcePosition": "project:///node_modules/@pulumi/cmd/run/run.ts#545,33"
-                        },
-                        {
-                            "sourcePosition": "project:///node_modules/@pulumi/runtime/stack.ts#78,28"
-                        },
-                        {
-                            "sourcePosition": "project:///node_modules/@pulumi/resource.ts#1579,22"
-                        }
-                    ]
+                    "sourcePosition": "project:///infra/lambdas.ts#91,29"
                 },
                 {
                     "urn": "urn:pulumi:dev::hermes::aws:lambda/function:Function::hermes-api",
@@ -4449,48 +2542,7 @@
                     },
                     "created": "2026-04-12T04:43:53.513588033Z",
                     "modified": "2026-04-12T04:43:53.513588033Z",
-                    "sourcePosition": "project:///infra/lambdas.ts#120,26",
-                    "stackTrace": [
-                        {
-                            "sourcePosition": "project:///infra/lambdas.ts#120,26"
-                        },
-                        {},
-                        {
-                            "sourcePosition": "project:///node_modules/@pulumi/pulumi/vendor/ts-node@7.0.1/index.js#3009,23"
-                        },
-                        {},
-                        {
-                            "sourcePosition": "project:///node_modules/@pulumi/pulumi/vendor/ts-node@7.0.1/index.js#3011,12"
-                        },
-                        {},
-                        {},
-                        {},
-                        {},
-                        {
-                            "sourcePosition": "project:///index.ts#7,1"
-                        },
-                        {},
-                        {
-                            "sourcePosition": "project:///node_modules/@pulumi/pulumi/vendor/ts-node@7.0.1/index.js#3009,23"
-                        },
-                        {},
-                        {
-                            "sourcePosition": "project:///node_modules/@pulumi/pulumi/vendor/ts-node@7.0.1/index.js#3011,12"
-                        },
-                        {},
-                        {},
-                        {},
-                        {},
-                        {
-                            "sourcePosition": "project:///node_modules/@pulumi/cmd/run/run.ts#545,33"
-                        },
-                        {
-                            "sourcePosition": "project:///node_modules/@pulumi/runtime/stack.ts#78,28"
-                        },
-                        {
-                            "sourcePosition": "project:///node_modules/@pulumi/resource.ts#1579,22"
-                        }
-                    ]
+                    "sourcePosition": "project:///infra/lambdas.ts#120,26"
                 },
                 {
                     "urn": "urn:pulumi:dev::hermes::aws:lambda/permission:Permission::hermes-events-sns-permission",
@@ -4539,48 +2591,7 @@
                     },
                     "created": "2026-04-12T04:43:53.57351255Z",
                     "modified": "2026-04-12T04:43:53.57351255Z",
-                    "sourcePosition": "project:///infra/lambdas.ts#104,1",
-                    "stackTrace": [
-                        {
-                            "sourcePosition": "project:///infra/lambdas.ts#104,1"
-                        },
-                        {},
-                        {
-                            "sourcePosition": "project:///node_modules/@pulumi/pulumi/vendor/ts-node@7.0.1/index.js#3009,23"
-                        },
-                        {},
-                        {
-                            "sourcePosition": "project:///node_modules/@pulumi/pulumi/vendor/ts-node@7.0.1/index.js#3011,12"
-                        },
-                        {},
-                        {},
-                        {},
-                        {},
-                        {
-                            "sourcePosition": "project:///index.ts#7,1"
-                        },
-                        {},
-                        {
-                            "sourcePosition": "project:///node_modules/@pulumi/pulumi/vendor/ts-node@7.0.1/index.js#3009,23"
-                        },
-                        {},
-                        {
-                            "sourcePosition": "project:///node_modules/@pulumi/pulumi/vendor/ts-node@7.0.1/index.js#3011,12"
-                        },
-                        {},
-                        {},
-                        {},
-                        {},
-                        {
-                            "sourcePosition": "project:///node_modules/@pulumi/cmd/run/run.ts#545,33"
-                        },
-                        {
-                            "sourcePosition": "project:///node_modules/@pulumi/runtime/stack.ts#78,28"
-                        },
-                        {
-                            "sourcePosition": "project:///node_modules/@pulumi/resource.ts#1579,22"
-                        }
-                    ]
+                    "sourcePosition": "project:///infra/lambdas.ts#104,1"
                 },
                 {
                     "urn": "urn:pulumi:dev::hermes::aws:lambda/function:Function::hermes-send",
@@ -4767,48 +2778,7 @@
                     },
                     "created": "2026-04-12T04:43:53.585316102Z",
                     "modified": "2026-04-12T04:43:53.585316102Z",
-                    "sourcePosition": "project:///infra/lambdas.ts#112,27",
-                    "stackTrace": [
-                        {
-                            "sourcePosition": "project:///infra/lambdas.ts#112,27"
-                        },
-                        {},
-                        {
-                            "sourcePosition": "project:///node_modules/@pulumi/pulumi/vendor/ts-node@7.0.1/index.js#3009,23"
-                        },
-                        {},
-                        {
-                            "sourcePosition": "project:///node_modules/@pulumi/pulumi/vendor/ts-node@7.0.1/index.js#3011,12"
-                        },
-                        {},
-                        {},
-                        {},
-                        {},
-                        {
-                            "sourcePosition": "project:///index.ts#7,1"
-                        },
-                        {},
-                        {
-                            "sourcePosition": "project:///node_modules/@pulumi/pulumi/vendor/ts-node@7.0.1/index.js#3009,23"
-                        },
-                        {},
-                        {
-                            "sourcePosition": "project:///node_modules/@pulumi/pulumi/vendor/ts-node@7.0.1/index.js#3011,12"
-                        },
-                        {},
-                        {},
-                        {},
-                        {},
-                        {
-                            "sourcePosition": "project:///node_modules/@pulumi/cmd/run/run.ts#545,33"
-                        },
-                        {
-                            "sourcePosition": "project:///node_modules/@pulumi/runtime/stack.ts#78,28"
-                        },
-                        {
-                            "sourcePosition": "project:///node_modules/@pulumi/resource.ts#1579,22"
-                        }
-                    ]
+                    "sourcePosition": "project:///infra/lambdas.ts#112,27"
                 },
                 {
                     "urn": "urn:pulumi:dev::hermes::aws:lambda/permission:Permission::hermes-api-gw-api-permission",
@@ -4857,48 +2827,7 @@
                     },
                     "created": "2026-04-12T04:43:53.758586016Z",
                     "modified": "2026-04-12T04:43:53.758586016Z",
-                    "sourcePosition": "project:///infra/api.ts#69,1",
-                    "stackTrace": [
-                        {
-                            "sourcePosition": "project:///infra/api.ts#69,1"
-                        },
-                        {},
-                        {
-                            "sourcePosition": "project:///node_modules/@pulumi/pulumi/vendor/ts-node@7.0.1/index.js#3009,23"
-                        },
-                        {},
-                        {
-                            "sourcePosition": "project:///node_modules/@pulumi/pulumi/vendor/ts-node@7.0.1/index.js#3011,12"
-                        },
-                        {},
-                        {},
-                        {},
-                        {},
-                        {
-                            "sourcePosition": "project:///index.ts#9,1"
-                        },
-                        {},
-                        {
-                            "sourcePosition": "project:///node_modules/@pulumi/pulumi/vendor/ts-node@7.0.1/index.js#3009,23"
-                        },
-                        {},
-                        {
-                            "sourcePosition": "project:///node_modules/@pulumi/pulumi/vendor/ts-node@7.0.1/index.js#3011,12"
-                        },
-                        {},
-                        {},
-                        {},
-                        {},
-                        {
-                            "sourcePosition": "project:///node_modules/@pulumi/cmd/run/run.ts#545,33"
-                        },
-                        {
-                            "sourcePosition": "project:///node_modules/@pulumi/runtime/stack.ts#78,28"
-                        },
-                        {
-                            "sourcePosition": "project:///node_modules/@pulumi/resource.ts#1579,22"
-                        }
-                    ]
+                    "sourcePosition": "project:///infra/api.ts#69,1"
                 },
                 {
                     "urn": "urn:pulumi:dev::hermes::aws:lambda/permission:Permission::hermes-api-gw-send-permission",
@@ -4947,48 +2876,7 @@
                     },
                     "created": "2026-04-12T04:43:53.84651241Z",
                     "modified": "2026-04-12T04:43:53.84651241Z",
-                    "sourcePosition": "project:///infra/api.ts#76,1",
-                    "stackTrace": [
-                        {
-                            "sourcePosition": "project:///infra/api.ts#76,1"
-                        },
-                        {},
-                        {
-                            "sourcePosition": "project:///node_modules/@pulumi/pulumi/vendor/ts-node@7.0.1/index.js#3009,23"
-                        },
-                        {},
-                        {
-                            "sourcePosition": "project:///node_modules/@pulumi/pulumi/vendor/ts-node@7.0.1/index.js#3011,12"
-                        },
-                        {},
-                        {},
-                        {},
-                        {},
-                        {
-                            "sourcePosition": "project:///index.ts#9,1"
-                        },
-                        {},
-                        {
-                            "sourcePosition": "project:///node_modules/@pulumi/pulumi/vendor/ts-node@7.0.1/index.js#3009,23"
-                        },
-                        {},
-                        {
-                            "sourcePosition": "project:///node_modules/@pulumi/pulumi/vendor/ts-node@7.0.1/index.js#3011,12"
-                        },
-                        {},
-                        {},
-                        {},
-                        {},
-                        {
-                            "sourcePosition": "project:///node_modules/@pulumi/cmd/run/run.ts#545,33"
-                        },
-                        {
-                            "sourcePosition": "project:///node_modules/@pulumi/runtime/stack.ts#78,28"
-                        },
-                        {
-                            "sourcePosition": "project:///node_modules/@pulumi/resource.ts#1579,22"
-                        }
-                    ]
+                    "sourcePosition": "project:///infra/api.ts#76,1"
                 },
                 {
                     "urn": "urn:pulumi:dev::hermes::aws:lambda/function:Function::hermes-inbound",
@@ -5175,48 +3063,7 @@
                     },
                     "created": "2026-04-12T04:43:53.868191169Z",
                     "modified": "2026-04-12T04:43:53.868191169Z",
-                    "sourcePosition": "project:///infra/lambdas.ts#77,30",
-                    "stackTrace": [
-                        {
-                            "sourcePosition": "project:///infra/lambdas.ts#77,30"
-                        },
-                        {},
-                        {
-                            "sourcePosition": "project:///node_modules/@pulumi/pulumi/vendor/ts-node@7.0.1/index.js#3009,23"
-                        },
-                        {},
-                        {
-                            "sourcePosition": "project:///node_modules/@pulumi/pulumi/vendor/ts-node@7.0.1/index.js#3011,12"
-                        },
-                        {},
-                        {},
-                        {},
-                        {},
-                        {
-                            "sourcePosition": "project:///index.ts#7,1"
-                        },
-                        {},
-                        {
-                            "sourcePosition": "project:///node_modules/@pulumi/pulumi/vendor/ts-node@7.0.1/index.js#3009,23"
-                        },
-                        {},
-                        {
-                            "sourcePosition": "project:///node_modules/@pulumi/pulumi/vendor/ts-node@7.0.1/index.js#3011,12"
-                        },
-                        {},
-                        {},
-                        {},
-                        {},
-                        {
-                            "sourcePosition": "project:///node_modules/@pulumi/cmd/run/run.ts#545,33"
-                        },
-                        {
-                            "sourcePosition": "project:///node_modules/@pulumi/runtime/stack.ts#78,28"
-                        },
-                        {
-                            "sourcePosition": "project:///node_modules/@pulumi/resource.ts#1579,22"
-                        }
-                    ]
+                    "sourcePosition": "project:///infra/lambdas.ts#77,30"
                 },
                 {
                     "urn": "urn:pulumi:dev::hermes::aws:apigateway/integration:Integration::hermes-api-integration",
@@ -5280,48 +3127,7 @@
                     },
                     "created": "2026-04-12T04:43:53.926174753Z",
                     "modified": "2026-04-12T04:43:53.926174753Z",
-                    "sourcePosition": "project:///infra/api.ts#19,24",
-                    "stackTrace": [
-                        {
-                            "sourcePosition": "project:///infra/api.ts#19,24"
-                        },
-                        {},
-                        {
-                            "sourcePosition": "project:///node_modules/@pulumi/pulumi/vendor/ts-node@7.0.1/index.js#3009,23"
-                        },
-                        {},
-                        {
-                            "sourcePosition": "project:///node_modules/@pulumi/pulumi/vendor/ts-node@7.0.1/index.js#3011,12"
-                        },
-                        {},
-                        {},
-                        {},
-                        {},
-                        {
-                            "sourcePosition": "project:///index.ts#9,1"
-                        },
-                        {},
-                        {
-                            "sourcePosition": "project:///node_modules/@pulumi/pulumi/vendor/ts-node@7.0.1/index.js#3009,23"
-                        },
-                        {},
-                        {
-                            "sourcePosition": "project:///node_modules/@pulumi/pulumi/vendor/ts-node@7.0.1/index.js#3011,12"
-                        },
-                        {},
-                        {},
-                        {},
-                        {},
-                        {
-                            "sourcePosition": "project:///node_modules/@pulumi/cmd/run/run.ts#545,33"
-                        },
-                        {
-                            "sourcePosition": "project:///node_modules/@pulumi/runtime/stack.ts#78,28"
-                        },
-                        {
-                            "sourcePosition": "project:///node_modules/@pulumi/resource.ts#1579,22"
-                        }
-                    ]
+                    "sourcePosition": "project:///infra/api.ts#19,24"
                 },
                 {
                     "urn": "urn:pulumi:dev::hermes::aws:apigateway/integration:Integration::hermes-send-integration",
@@ -5385,48 +3191,7 @@
                     },
                     "created": "2026-04-12T04:43:53.934610249Z",
                     "modified": "2026-04-12T04:43:53.934610249Z",
-                    "sourcePosition": "project:///infra/api.ts#49,1",
-                    "stackTrace": [
-                        {
-                            "sourcePosition": "project:///infra/api.ts#49,1"
-                        },
-                        {},
-                        {
-                            "sourcePosition": "project:///node_modules/@pulumi/pulumi/vendor/ts-node@7.0.1/index.js#3009,23"
-                        },
-                        {},
-                        {
-                            "sourcePosition": "project:///node_modules/@pulumi/pulumi/vendor/ts-node@7.0.1/index.js#3011,12"
-                        },
-                        {},
-                        {},
-                        {},
-                        {},
-                        {
-                            "sourcePosition": "project:///index.ts#9,1"
-                        },
-                        {},
-                        {
-                            "sourcePosition": "project:///node_modules/@pulumi/pulumi/vendor/ts-node@7.0.1/index.js#3009,23"
-                        },
-                        {},
-                        {
-                            "sourcePosition": "project:///node_modules/@pulumi/pulumi/vendor/ts-node@7.0.1/index.js#3011,12"
-                        },
-                        {},
-                        {},
-                        {},
-                        {},
-                        {
-                            "sourcePosition": "project:///node_modules/@pulumi/cmd/run/run.ts#545,33"
-                        },
-                        {
-                            "sourcePosition": "project:///node_modules/@pulumi/runtime/stack.ts#78,28"
-                        },
-                        {
-                            "sourcePosition": "project:///node_modules/@pulumi/resource.ts#1579,22"
-                        }
-                    ]
+                    "sourcePosition": "project:///infra/api.ts#49,1"
                 },
                 {
                     "urn": "urn:pulumi:dev::hermes::aws:sns/topicSubscription:TopicSubscription::hermes-events-sub",
@@ -5482,48 +3247,7 @@
                     },
                     "created": "2026-04-12T04:43:54.038932673Z",
                     "modified": "2026-04-12T04:43:54.038932673Z",
-                    "sourcePosition": "project:///infra/lambdas.ts#98,35",
-                    "stackTrace": [
-                        {
-                            "sourcePosition": "project:///infra/lambdas.ts#98,35"
-                        },
-                        {},
-                        {
-                            "sourcePosition": "project:///node_modules/@pulumi/pulumi/vendor/ts-node@7.0.1/index.js#3009,23"
-                        },
-                        {},
-                        {
-                            "sourcePosition": "project:///node_modules/@pulumi/pulumi/vendor/ts-node@7.0.1/index.js#3011,12"
-                        },
-                        {},
-                        {},
-                        {},
-                        {},
-                        {
-                            "sourcePosition": "project:///index.ts#7,1"
-                        },
-                        {},
-                        {
-                            "sourcePosition": "project:///node_modules/@pulumi/pulumi/vendor/ts-node@7.0.1/index.js#3009,23"
-                        },
-                        {},
-                        {
-                            "sourcePosition": "project:///node_modules/@pulumi/pulumi/vendor/ts-node@7.0.1/index.js#3011,12"
-                        },
-                        {},
-                        {},
-                        {},
-                        {},
-                        {
-                            "sourcePosition": "project:///node_modules/@pulumi/cmd/run/run.ts#545,33"
-                        },
-                        {
-                            "sourcePosition": "project:///node_modules/@pulumi/runtime/stack.ts#78,28"
-                        },
-                        {
-                            "sourcePosition": "project:///node_modules/@pulumi/resource.ts#1579,22"
-                        }
-                    ]
+                    "sourcePosition": "project:///infra/lambdas.ts#98,35"
                 },
                 {
                     "urn": "urn:pulumi:dev::hermes::aws:apigateway/deployment:Deployment::hermes-deployment",
@@ -5560,48 +3284,7 @@
                     },
                     "created": "2026-04-12T04:43:54.411181519Z",
                     "modified": "2026-04-12T04:43:54.411181519Z",
-                    "sourcePosition": "project:///infra/api.ts#58,20",
-                    "stackTrace": [
-                        {
-                            "sourcePosition": "project:///infra/api.ts#58,20"
-                        },
-                        {},
-                        {
-                            "sourcePosition": "project:///node_modules/@pulumi/pulumi/vendor/ts-node@7.0.1/index.js#3009,23"
-                        },
-                        {},
-                        {
-                            "sourcePosition": "project:///node_modules/@pulumi/pulumi/vendor/ts-node@7.0.1/index.js#3011,12"
-                        },
-                        {},
-                        {},
-                        {},
-                        {},
-                        {
-                            "sourcePosition": "project:///index.ts#9,1"
-                        },
-                        {},
-                        {
-                            "sourcePosition": "project:///node_modules/@pulumi/pulumi/vendor/ts-node@7.0.1/index.js#3009,23"
-                        },
-                        {},
-                        {
-                            "sourcePosition": "project:///node_modules/@pulumi/pulumi/vendor/ts-node@7.0.1/index.js#3011,12"
-                        },
-                        {},
-                        {},
-                        {},
-                        {},
-                        {
-                            "sourcePosition": "project:///node_modules/@pulumi/cmd/run/run.ts#545,33"
-                        },
-                        {
-                            "sourcePosition": "project:///node_modules/@pulumi/runtime/stack.ts#78,28"
-                        },
-                        {
-                            "sourcePosition": "project:///node_modules/@pulumi/resource.ts#1579,22"
-                        }
-                    ]
+                    "sourcePosition": "project:///infra/api.ts#58,20"
                 },
                 {
                     "urn": "urn:pulumi:dev::hermes::aws:apigateway/stage:Stage::hermes-stage",
@@ -5650,48 +3333,7 @@
                     },
                     "created": "2026-04-12T04:43:54.732158887Z",
                     "modified": "2026-04-12T04:43:54.732158887Z",
-                    "sourcePosition": "project:///infra/api.ts#62,15",
-                    "stackTrace": [
-                        {
-                            "sourcePosition": "project:///infra/api.ts#62,15"
-                        },
-                        {},
-                        {
-                            "sourcePosition": "project:///node_modules/@pulumi/pulumi/vendor/ts-node@7.0.1/index.js#3009,23"
-                        },
-                        {},
-                        {
-                            "sourcePosition": "project:///node_modules/@pulumi/pulumi/vendor/ts-node@7.0.1/index.js#3011,12"
-                        },
-                        {},
-                        {},
-                        {},
-                        {},
-                        {
-                            "sourcePosition": "project:///index.ts#9,1"
-                        },
-                        {},
-                        {
-                            "sourcePosition": "project:///node_modules/@pulumi/pulumi/vendor/ts-node@7.0.1/index.js#3009,23"
-                        },
-                        {},
-                        {
-                            "sourcePosition": "project:///node_modules/@pulumi/pulumi/vendor/ts-node@7.0.1/index.js#3011,12"
-                        },
-                        {},
-                        {},
-                        {},
-                        {},
-                        {
-                            "sourcePosition": "project:///node_modules/@pulumi/cmd/run/run.ts#545,33"
-                        },
-                        {
-                            "sourcePosition": "project:///node_modules/@pulumi/runtime/stack.ts#78,28"
-                        },
-                        {
-                            "sourcePosition": "project:///node_modules/@pulumi/resource.ts#1579,22"
-                        }
-                    ]
+                    "sourcePosition": "project:///infra/api.ts#62,15"
                 },
                 {
                     "urn": "urn:pulumi:dev::hermes::aws:lambda/eventSourceMapping:EventSourceMapping::hermes-inbound-sqs",
@@ -5760,51 +3402,200 @@
                     },
                     "created": "2026-04-12T04:44:19.074364342Z",
                     "modified": "2026-04-12T04:44:19.074364342Z",
-                    "sourcePosition": "project:///infra/lambdas.ts#84,35",
-                    "stackTrace": [
-                        {
-                            "sourcePosition": "project:///infra/lambdas.ts#84,35"
+                    "sourcePosition": "project:///infra/lambdas.ts#84,35"
+                },
+                {
+                    "urn": "urn:pulumi:dev::hermes::aws:lambda/function:Function::hermes-auth",
+                    "custom": true,
+                    "id": "hermes-auth",
+                    "type": "aws:lambda/function:Function",
+                    "inputs": {
+                        "__defaults": [],
+                        "architectures": [
+                            "x86_64"
+                        ],
+                        "environment": {
+                            "__defaults": [],
+                            "variables": {
+                                "FYLO_ROOT": "/mnt/hermes",
+                                "JWT_SECRET_ARN": "arn:aws:secretsmanager:us-east-1:117469679339:secret:hermes/api-key-hMX9Fh",
+                                "NODE_OPTIONS": "--enable-source-maps",
+                                "__defaults": []
+                            }
                         },
-                        {},
-                        {
-                            "sourcePosition": "project:///node_modules/@pulumi/pulumi/vendor/ts-node@7.0.1/index.js#3009,23"
+                        "ephemeralStorage": {
+                            "__defaults": [],
+                            "size": 512
                         },
-                        {},
-                        {
-                            "sourcePosition": "project:///node_modules/@pulumi/pulumi/vendor/ts-node@7.0.1/index.js#3011,12"
+                        "fileSystemConfig": {
+                            "__defaults": [],
+                            "arn": "arn:aws:elasticfilesystem:us-east-1:117469679339:access-point/fsap-079afd62223f99d7b",
+                            "localMountPath": "/mnt/hermes"
                         },
-                        {},
-                        {},
-                        {},
-                        {},
-                        {
-                            "sourcePosition": "project:///index.ts#7,1"
+                        "handler": "index.handler",
+                        "loggingConfig": {
+                            "__defaults": [],
+                            "logFormat": "Text",
+                            "logGroup": "/aws/lambda/hermes-auth"
                         },
-                        {},
-                        {
-                            "sourcePosition": "project:///node_modules/@pulumi/pulumi/vendor/ts-node@7.0.1/index.js#3009,23"
+                        "memorySize": 512,
+                        "name": "hermes-auth",
+                        "packageType": "Zip",
+                        "publish": null,
+                        "role": "arn:aws:iam::117469679339:role/hermes-lambda-role-80ceef3",
+                        "runtime": "nodejs20.x",
+                        "timeout": 300,
+                        "tracingConfig": {
+                            "__defaults": [],
+                            "mode": "PassThrough"
                         },
-                        {},
-                        {
-                            "sourcePosition": "project:///node_modules/@pulumi/pulumi/vendor/ts-node@7.0.1/index.js#3011,12"
-                        },
-                        {},
-                        {},
-                        {},
-                        {},
-                        {
-                            "sourcePosition": "project:///node_modules/@pulumi/cmd/run/run.ts#545,33"
-                        },
-                        {
-                            "sourcePosition": "project:///node_modules/@pulumi/runtime/stack.ts#78,28"
-                        },
-                        {
-                            "sourcePosition": "project:///node_modules/@pulumi/resource.ts#1579,22"
+                        "vpcConfig": {
+                            "__defaults": [],
+                            "securityGroupIds": [
+                                "sg-0ccd391efa94125b0"
+                            ],
+                            "subnetIds": [
+                                "subnet-2747f906",
+                                "subnet-396d1837",
+                                "subnet-6208b804",
+                                "subnet-7312d542",
+                                "subnet-b179c5ee",
+                                "subnet-ed6c2fa0"
+                            ]
                         }
-                    ]
+                    },
+                    "outputs": {
+                        "__meta": "{\"e2bfb730-ecaa-11e6-8f88-34363bc7c4c0\":{\"create\":600000000000,\"delete\":600000000000,\"update\":600000000000},\"schema_version\":\"0\"}",
+                        "architectures": [
+                            "x86_64"
+                        ],
+                        "arn": "arn:aws:lambda:us-east-1:117469679339:function:hermes-auth",
+                        "code": null,
+                        "codeSha256": "UvwHtfxRiaSnwrc9p2B2kLLMILik6TqxBl8KpZaJHrA=",
+                        "codeSigningConfigArn": "",
+                        "deadLetterConfig": null,
+                        "description": "",
+                        "environment": {
+                            "variables": {
+                                "FYLO_ROOT": "/mnt/hermes",
+                                "JWT_SECRET_ARN": "arn:aws:secretsmanager:us-east-1:117469679339:secret:hermes/api-key-hMX9Fh",
+                                "NODE_OPTIONS": "--enable-source-maps"
+                            }
+                        },
+                        "ephemeralStorage": {
+                            "size": 512
+                        },
+                        "fileSystemConfig": {
+                            "arn": "arn:aws:elasticfilesystem:us-east-1:117469679339:access-point/fsap-079afd62223f99d7b",
+                            "localMountPath": "/mnt/hermes"
+                        },
+                        "handler": "index.handler",
+                        "id": "hermes-auth",
+                        "imageConfig": null,
+                        "imageUri": "",
+                        "invokeArn": "arn:aws:apigateway:us-east-1:lambda:path/2015-03-31/functions/arn:aws:lambda:us-east-1:117469679339:function:hermes-auth/invocations",
+                        "kmsKeyArn": "",
+                        "lastModified": "2026-04-12T16:06:34.844+0000",
+                        "layers": [],
+                        "loggingConfig": {
+                            "applicationLogLevel": "",
+                            "logFormat": "Text",
+                            "logGroup": "/aws/lambda/hermes-auth",
+                            "systemLogLevel": ""
+                        },
+                        "memorySize": 512,
+                        "name": "hermes-auth",
+                        "packageType": "Zip",
+                        "publish": null,
+                        "qualifiedArn": "arn:aws:lambda:us-east-1:117469679339:function:hermes-auth:$LATEST",
+                        "qualifiedInvokeArn": "arn:aws:apigateway:us-east-1:lambda:path/2015-03-31/functions/arn:aws:lambda:us-east-1:117469679339:function:hermes-auth:$LATEST/invocations",
+                        "replaceSecurityGroupsOnDestroy": null,
+                        "replacementSecurityGroupIds": null,
+                        "reservedConcurrentExecutions": -1,
+                        "role": "arn:aws:iam::117469679339:role/hermes-lambda-role-80ceef3",
+                        "runtime": "nodejs20.x",
+                        "s3Bucket": null,
+                        "s3Key": null,
+                        "s3ObjectVersion": null,
+                        "signingJobArn": "",
+                        "signingProfileVersionArn": "",
+                        "skipDestroy": false,
+                        "snapStart": null,
+                        "sourceCodeHash": "",
+                        "sourceCodeSize": 575445,
+                        "timeout": 300,
+                        "tracingConfig": {
+                            "mode": "PassThrough"
+                        },
+                        "version": "$LATEST",
+                        "vpcConfig": {
+                            "ipv6AllowedForDualStack": false,
+                            "securityGroupIds": [
+                                "sg-0ccd391efa94125b0"
+                            ],
+                            "subnetIds": [
+                                "subnet-2747f906",
+                                "subnet-396d1837",
+                                "subnet-6208b804",
+                                "subnet-7312d542",
+                                "subnet-b179c5ee",
+                                "subnet-ed6c2fa0"
+                            ],
+                            "vpcId": "vpc-ea975897"
+                        }
+                    },
+                    "parent": "urn:pulumi:dev::hermes::pulumi:pulumi:Stack::hermes-dev",
+                    "provider": "urn:pulumi:dev::hermes::pulumi:providers:aws::default_6_83_2::9caafcd9-2b0f-49f8-bdc5-19605bdb4809",
+                    "created": "2026-04-12T16:51:15.153458Z",
+                    "modified": "2026-04-12T16:51:15.153458Z"
+                },
+                {
+                    "urn": "urn:pulumi:dev::hermes::aws:apigateway/resource:Resource::hermes-auth-resource",
+                    "custom": true,
+                    "id": "vgfgpj",
+                    "type": "aws:apigateway/resource:Resource",
+                    "inputs": {
+                        "__defaults": [],
+                        "parentId": "nsuynu6z5k",
+                        "pathPart": "auth",
+                        "restApi": "v5qp86a33m"
+                    },
+                    "outputs": {
+                        "id": "vgfgpj",
+                        "parentId": "nsuynu6z5k",
+                        "path": "/auth",
+                        "pathPart": "auth",
+                        "restApi": "v5qp86a33m"
+                    },
+                    "parent": "urn:pulumi:dev::hermes::pulumi:pulumi:Stack::hermes-dev",
+                    "provider": "urn:pulumi:dev::hermes::pulumi:providers:aws::default_6_83_2::9caafcd9-2b0f-49f8-bdc5-19605bdb4809",
+                    "created": "2026-04-12T16:58:23.313793Z",
+                    "modified": "2026-04-12T16:58:23.313793Z"
+                },
+                {
+                    "urn": "urn:pulumi:dev::hermes::aws:apigateway/resource:Resource::hermes-auth-proxy-resource",
+                    "custom": true,
+                    "id": "odfci7",
+                    "type": "aws:apigateway/resource:Resource",
+                    "inputs": {
+                        "__defaults": [],
+                        "parentId": "vgfgpj",
+                        "pathPart": "{proxy+}",
+                        "restApi": "v5qp86a33m"
+                    },
+                    "outputs": {
+                        "id": "odfci7",
+                        "parentId": "vgfgpj",
+                        "path": "/auth/{proxy+}",
+                        "pathPart": "{proxy+}",
+                        "restApi": "v5qp86a33m"
+                    },
+                    "parent": "urn:pulumi:dev::hermes::pulumi:pulumi:Stack::hermes-dev",
+                    "provider": "urn:pulumi:dev::hermes::pulumi:providers:aws::default_6_83_2::9caafcd9-2b0f-49f8-bdc5-19605bdb4809",
+                    "created": "2026-04-12T16:58:36.918463Z",
+                    "modified": "2026-04-12T16:58:36.918463Z"
                 }
-            ],
-            "metadata": {}
+            ]
         }
     }
 }
