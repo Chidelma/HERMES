@@ -4,7 +4,7 @@
         "stack": "organization/hermes/dev",
         "latest": {
             "manifest": {
-                "time": "2026-04-12T17:08:28.317725911Z",
+                "time": "2026-04-12T17:08:28.336717176Z",
                 "magic": "88d0da18f668d21177091127bf6af43a4706b834600c4edf2e942a3f566ca00e",
                 "version": "v3.229.0"
             },
@@ -20,6 +20,7 @@
                     "custom": false,
                     "type": "pulumi:pulumi:Stack",
                     "outputs": {
+                        "amplifyUrl": "https://master.d36fe9qs3tg1mb.amplifyapp.com",
                         "apiEndpoint": "https://v5qp86a33m.execute-api.us-east-1.amazonaws.com/v1"
                     },
                     "created": "2026-04-12T03:55:20.965718Z",
