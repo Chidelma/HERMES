@@ -10,10 +10,9 @@ export const inboundQueue = new aws.sqs.Queue('hermes-inbound', {
   name: 'hermes-inbound',
   visibilityTimeoutSeconds: 300,
   messageRetentionSeconds: 86400,
-  redrivePolicy: {
-    deadLetterTargetArn: inboundDlq.arn,
-    maxReceiveCount: 3,
-  },
+  redrivePolicy: inboundDlq.arn.apply(arn =>
+    JSON.stringify({ deadLetterTargetArn: arn, maxReceiveCount: 3 })
+  ),
   tags: { Name: 'hermes-inbound' },
 })
 

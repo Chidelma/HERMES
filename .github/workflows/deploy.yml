@@ -32,7 +32,7 @@ jobs:
         uses: aws-actions/configure-aws-credentials@v4
         with:
           role-to-assume: ${{ secrets.AWS_ROLE_ARN }}
-          aws-region: ca-central-1
+          aws-region: us-east-1
 
       - name: Pulumi up
         uses: pulumi/actions@v5
