@@ -25,6 +25,7 @@ async function processRecord(fylo: Awaited<ReturnType<typeof getFylo>>, record: 
   const sender: string = mail.source ?? ''
   const subject: string = mail.commonHeaders?.subject ?? '(no subject)'
   const messageId: string = mail.messageId ?? record.messageId
+  const body: string = extractTextBody(sesNotification.content ?? '')
 
   for (const recipient of recipients) {
     const domain = recipient.split('@')[1]?.toLowerCase()
@@ -43,6 +44,7 @@ async function processRecord(fylo: Awaited<ReturnType<typeof getFylo>>, record: 
       sender,
       subject,
       rawKey: messageId,
+      body,
       receivedAt: new Date().toISOString(),
       processed: false,
     } satisfies StoredEmail)
@@ -110,4 +112,31 @@ async function applyRouteAction(
     }))
     await fylo.patchDoc(Collections.EMAILS, { [emailId]: { processed: true } })
   }
+}
+
+function extractTextBody(mime: string): string {
+  if (!mime) return ''
+
+  const boundaryMatch = mime.match(/boundary="?([^"\r\n;]+)"?/i)
+  if (boundaryMatch) {
+    const boundary = boundaryMatch[1]
+    const parts = mime.split(`--${boundary}`)
+    for (const part of parts) {
+      if (/content-type:\s*text\/plain/i.test(part)) {
+        const start = part.indexOf('\r\n\r\n')
+        if (start === -1) continue
+        let text = part.slice(start + 4).replace(/--$/, '').trim()
+        if (/content-transfer-encoding:\s*quoted-printable/i.test(part)) {
+          text = text.replace(/=\r\n/g, '').replace(/=([0-9A-F]{2})/gi, (_, h) => String.fromCharCode(parseInt(h, 16)))
+        } else if (/content-transfer-encoding:\s*base64/i.test(part)) {
+          text = Buffer.from(text.replace(/\s/g, ''), 'base64').toString('utf-8')
+        }
+        return text
+      }
+    }
+  }
+
+  // Non-multipart: body starts after the blank line separating headers
+  const sep = mime.indexOf('\r\n\r\n')
+  return sep !== -1 ? mime.slice(sep + 4).trim() : mime
 }

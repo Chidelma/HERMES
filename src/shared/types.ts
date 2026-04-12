@@ -28,8 +28,8 @@ export interface StoredEmail {
   recipient: string
   sender: string
   subject: string
-  /** Raw MIME message stored as base64 */
   rawKey: string
+  body: string
   receivedAt: string
   processed: boolean
 }

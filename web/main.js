@@ -264,7 +264,7 @@ function openEmail(id) {
   document.getElementById('detail-to').textContent = `To: ${email.recipient}`
   document.getElementById('detail-date').textContent = new Date(email.receivedAt).toLocaleString()
   document.getElementById('detail-avatar').textContent = initials(email.sender)
-  document.getElementById('detail-body').textContent = email.rawKey || '(No body)'
+  document.getElementById('detail-body').textContent = email.body || '(No body)'
 
   document.getElementById('btn-delete-email').dataset.id = id
   document.getElementById('btn-reply').dataset.to = email.sender
