@@ -1,5 +1,6 @@
 node_modules/
 bin/
+# .pulumi/ is the local CLI workspace dir — not the state store
 .pulumi/
 *.js.map
 Pulumi.*.yaml

@@ -7,7 +7,7 @@ on:
 
 permissions:
   id-token: write   # required for OIDC
-  contents: read
+  contents: write   # required to push state back to repo
 
 jobs:
   deploy:
@@ -16,6 +16,9 @@ jobs:
 
     steps:
       - uses: actions/checkout@v4
+        with:
+          # Fetch full history so the state commit can be pushed without conflict
+          fetch-depth: 0
 
       - uses: actions/setup-node@v4
         with:
@@ -38,4 +41,13 @@ jobs:
           stack-name: dev
           work-dir: .
         env:
-          PULUMI_ACCESS_TOKEN: ${{ secrets.PULUMI_ACCESS_TOKEN }}
+          PULUMI_BACKEND_URL: file://${{ github.workspace }}/.pulumi-state
+          PULUMI_CONFIG_PASSPHRASE: ${{ secrets.PULUMI_PASSPHRASE }}
+
+      - name: Commit updated state
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add .pulumi-state/
+          git diff --cached --quiet || git commit -m "chore: update pulumi state [skip ci]"
+          git push
