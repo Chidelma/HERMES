@@ -10,7 +10,7 @@
     "preview": "pulumi preview",
     "destroy": "pulumi destroy",
     "typecheck": "tsc --noEmit",
-    "test": "bun test tests/api.test.ts --timeout 30000"
+    "test": "bun test tests/api.test.ts --timeout 30000 && bun test web/tests/unit.test.js"
   },
   "dependencies": {
     "@aws-sdk/client-secrets-manager": "^3.1029.0",
