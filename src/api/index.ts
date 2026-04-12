@@ -4,7 +4,7 @@ import { getFylo, Collections } from '../shared/fylo'
 import { verifyJwt } from '../shared/jwt'
 import type { DomainConfig, RouteRule, StoredEmail, User } from '../shared/types'
 
-const sm = new SecretsManagerClient({})
+const sm = new SecretsManagerClient({ maxAttempts: 1 })
 
 let _secret: string | null = null
 async function getSecret(): Promise<string> {

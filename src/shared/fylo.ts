@@ -15,7 +15,7 @@ export async function getFylo(): Promise<Fylo> {
     _fylo.createCollection('emails'),
     _fylo.createCollection('suppressed'),
     _fylo.createCollection('users'),
-    _fylo.createCollection('otp_sessions'),
+    _fylo.createCollection('otp-sessions'),
   ])
 
   return _fylo
@@ -26,5 +26,5 @@ export const Collections = {
   EMAILS: 'emails',
   SUPPRESSED: 'suppressed',
   USERS: 'users',
-  OTP_SESSIONS: 'otp_sessions',
+  OTP_SESSIONS: 'otp-sessions',
 } as const

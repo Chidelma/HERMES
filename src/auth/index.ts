@@ -6,8 +6,8 @@ import { getFylo, Collections } from '../shared/fylo'
 import { signJwt } from '../shared/jwt'
 import type { User, OtpSession } from '../shared/types'
 
-const sns = new SNSClient({})
-const sm = new SecretsManagerClient({})
+const sns = new SNSClient({ maxAttempts: 1 })
+const sm = new SecretsManagerClient({ maxAttempts: 1 })
 
 let _secret: string | null = null
 async function getSecret(): Promise<string> {

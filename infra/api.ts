@@ -103,8 +103,15 @@ new aws.lambda.Permission('hermes-api-gw-send-permission', {
   sourceArn: pulumi.interpolate`${restApi.executionArn}/*/*`,
 })
 
+// triggers forces a new deployment whenever any method or integration changes
 const deployment = new aws.apigateway.Deployment('hermes-deployment', {
   restApi: restApi.id,
+  triggers: {
+    redeployment: pulumi.all([
+      authIntegration.id,
+      apiIntegration.id,
+    ]).apply(ids => ids.join(',')),
+  },
 }, { dependsOn: [authIntegration, apiIntegration] })
 
 const stage = new aws.apigateway.Stage('hermes-stage', {
