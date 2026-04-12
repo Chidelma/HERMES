@@ -1,7 +1,6 @@
 import * as aws from '@pulumi/aws'
 import * as pulumi from '@pulumi/pulumi'
-import { inboundQueueArn } from './queues'
-import { notificationsTopicArn } from './notifications'
+import { notificationsTopicArn, inboundDeliveryTopicArn } from './notifications'
 
 const cfg = new pulumi.Config()
 const domains = cfg.requireObject<string[]>('domains')
@@ -40,9 +39,9 @@ export const receiptRules = domains.map(
       recipients: [domain],
       enabled: true,
       scanEnabled: true,
-      sqsActions: [
+      snsActions: [
         {
-          queueArn: inboundQueueArn,
+          topicArn: inboundDeliveryTopicArn,
           position: 1,
         },
       ],

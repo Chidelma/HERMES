@@ -1,4 +1,5 @@
 import * as aws from '@pulumi/aws'
+import { inboundDeliveryTopicArn } from './notifications'
 
 export const inboundDlq = new aws.sqs.Queue('hermes-inbound-dlq', {
   name: 'hermes-inbound-dlq',
@@ -16,7 +17,7 @@ export const inboundQueue = new aws.sqs.Queue('hermes-inbound', {
   tags: { Name: 'hermes-inbound' },
 })
 
-/** Allow SES to send messages to the inbound queue. */
+/** Allow SNS inbound delivery topic to send messages to the inbound queue. */
 export const inboundQueuePolicy = new aws.sqs.QueuePolicy('hermes-inbound-policy', {
   queueUrl: inboundQueue.url,
   policy: inboundQueue.arn.apply(arn =>
@@ -25,13 +26,21 @@ export const inboundQueuePolicy = new aws.sqs.QueuePolicy('hermes-inbound-policy
       Statement: [
         {
           Effect: 'Allow',
-          Principal: { Service: 'ses.amazonaws.com' },
+          Principal: { Service: 'sns.amazonaws.com' },
           Action: 'sqs:SendMessage',
           Resource: arn,
         },
       ],
     })
   ),
+})
+
+/** Subscribe the inbound SQS queue to the inbound delivery SNS topic (SES → SNS → SQS). */
+export const inboundSnsSubscription = new aws.sns.TopicSubscription('hermes-inbound-sns-sub', {
+  topic: inboundDeliveryTopicArn,
+  protocol: 'sqs',
+  endpoint: inboundQueue.arn,
+  rawMessageDelivery: true,
 })
 
 export const inboundQueueArn = inboundQueue.arn
