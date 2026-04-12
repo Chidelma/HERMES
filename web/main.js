@@ -1,5 +1,5 @@
 // ── Config ────────────────────────────────────────────────────────────────
-const API_URL = (window.HERMES_CONFIG && window.HERMES_CONFIG.apiUrl) || ''
+const API_URL = document.querySelector('meta[name="hermes-api-url"]')?.content || ''
 
 // ── Auth state ────────────────────────────────────────────────────────────
 const auth = {

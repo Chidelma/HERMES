@@ -4,9 +4,8 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>HERMES</title>
-    <link rel="icon" type="image/svg+xml" href="/assets/favicon.svg" />
+    <meta name="hermes-api-url" content="__HERMES_API_URL__" />
     <link rel="stylesheet" href="/assets/styles.css" />
-    <script src="/assets/config.js"></script>
   </head>
   <body>
     <slot />

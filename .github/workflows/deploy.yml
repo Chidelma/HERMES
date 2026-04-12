@@ -100,9 +100,15 @@ jobs:
 
       - name: Build frontend
         run: |
-          mkdir -p assets
-          printf 'window.HERMES_CONFIG={apiUrl:"%s"};\n' "${{ needs.deploy-infra.outputs.api_endpoint }}" > assets/config.js
           bun run bundle
+          # Fix outer <head>: Tachyon uses its own title — correct it and add favicon
+          sed -i 's|<title>Tachyon</title>|<title>HERMES</title><link rel="icon" type="image/svg+xml" href="/assets/favicon.svg">|' dist/index.html
+          # Remove spa-renderer: it replaces document.body after DOMContentLoaded,
+          # wiping the event listeners that main.js registers. We manage routing ourselves.
+          sed -i 's|<script src="/spa-renderer.js" defer></script>||' dist/index.html
+          rm -f dist/spa-renderer.js
+          # Inject API URL into the <meta name="hermes-api-url"> placeholder
+          sed -i 's|__HERMES_API_URL__|${{ needs.deploy-infra.outputs.api_endpoint }}|g' dist/index.html
         working-directory: web
 
       - name: Configure AWS credentials (OIDC)
