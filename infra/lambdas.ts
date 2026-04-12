@@ -76,7 +76,7 @@ const dependsOnMounts = { dependsOn: mountTargets }
 /** Processes inbound email from SQS. */
 export const inboundLambda = new aws.lambda.Function('hermes-inbound', {
   ...commonConfig,
-  code: new pulumi.asset.AssetArchive({ '.': new pulumi.asset.FileArchive('../src/inbound') }),
+  code: new pulumi.asset.AssetArchive({ '.': new pulumi.asset.FileArchive('./bin/inbound') }),
   handler: 'index.handler',
   name: 'hermes-inbound',
 }, dependsOnMounts)
@@ -90,7 +90,7 @@ export const inboundEventSource = new aws.lambda.EventSourceMapping('hermes-inbo
 /** Handles SNS bounce/complaint/delivery events. */
 export const eventsLambda = new aws.lambda.Function('hermes-events', {
   ...commonConfig,
-  code: new pulumi.asset.AssetArchive({ '.': new pulumi.asset.FileArchive('../src/events') }),
+  code: new pulumi.asset.AssetArchive({ '.': new pulumi.asset.FileArchive('./bin/events') }),
   handler: 'index.handler',
   name: 'hermes-events',
 }, dependsOnMounts)
@@ -111,7 +111,7 @@ new aws.lambda.Permission('hermes-events-sns-permission', {
 /** Outbound send API. */
 export const sendLambda = new aws.lambda.Function('hermes-send', {
   ...commonConfig,
-  code: new pulumi.asset.AssetArchive({ '.': new pulumi.asset.FileArchive('../src/send') }),
+  code: new pulumi.asset.AssetArchive({ '.': new pulumi.asset.FileArchive('./bin/send') }),
   handler: 'index.handler',
   name: 'hermes-send',
 }, dependsOnMounts)
@@ -119,7 +119,7 @@ export const sendLambda = new aws.lambda.Function('hermes-send', {
 /** Management REST API. */
 export const apiLambda = new aws.lambda.Function('hermes-api', {
   ...commonConfig,
-  code: new pulumi.asset.AssetArchive({ '.': new pulumi.asset.FileArchive('../src/api') }),
+  code: new pulumi.asset.AssetArchive({ '.': new pulumi.asset.FileArchive('./bin/api') }),
   handler: 'index.handler',
   name: 'hermes-api',
 }, dependsOnMounts)

@@ -5,6 +5,7 @@
   "description": "Serverless multi-domain mail server on AWS",
   "main": "index.ts",
   "scripts": {
+    "build": "node build.mjs",
     "up": "pulumi up",
     "preview": "pulumi preview",
     "destroy": "pulumi destroy",
@@ -19,6 +20,7 @@
   "devDependencies": {
     "@types/aws-lambda": "^8.10.0",
     "@types/node": "^20.0.0",
+    "esbuild": "^0.24.0",
     "typescript": "^5.0.0"
   }
 }
