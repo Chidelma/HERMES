@@ -1,5 +1,5 @@
 config:
-  aws:region: us-east-1
+  aws:region: ca-central-1
   hermes:domains:
     - example.com
   hermes:vpcId: ""

@@ -4,6 +4,8 @@ import { domainDkims } from './ses'
 
 const cfg = new pulumi.Config()
 const domains = cfg.requireObject<string[]>('domains')
+const awsCfg = new pulumi.Config('aws')
+const region = awsCfg.require('region')
 
 /** Looks up the hosted zone for each domain and adds required DNS records. */
 export const dnsResources = domains.flatMap((domain, i) => {
@@ -37,7 +39,7 @@ export const dnsResources = domains.flatMap((domain, i) => {
     name: domain,
     type: 'MX',
     ttl: 300,
-    records: ['10 inbound-smtp.us-east-1.amazonaws.com'],
+    records: [`10 inbound-smtp.${region}.amazonaws.com`],
   })
 
   // SPF TXT record
