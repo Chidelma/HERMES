@@ -62,3 +62,4 @@ export const domainNotifications = domainIdentities.flatMap((identity, i) =>
 )
 
 export const domainIdentityArns = domainIdentities.map(d => d.arn)
+export const domainVerificationTokens = domainIdentities.map(d => d.verificationToken)

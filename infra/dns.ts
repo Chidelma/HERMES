@@ -1,6 +1,6 @@
 import * as aws from '@pulumi/aws'
 import * as pulumi from '@pulumi/pulumi'
-import { domainDkims } from './ses'
+import { domainDkims, domainVerificationTokens } from './ses'
 
 const cfg = new pulumi.Config()
 const domains = cfg.requireObject<string[]>('domains')
@@ -18,7 +18,7 @@ export const dnsResources = domains.flatMap((domain, i) => {
     name: `_amazonses.${domain}`,
     type: 'TXT',
     ttl: 300,
-    records: [pulumi.interpolate`${new aws.ses.DomainIdentity(`hermes-identity-ref-${domain}`, { domain }).verificationToken}`],
+    records: [pulumi.interpolate`${domainVerificationTokens[i]}`],
   })
 
   // DKIM CNAME records (SES issues 3 tokens)
