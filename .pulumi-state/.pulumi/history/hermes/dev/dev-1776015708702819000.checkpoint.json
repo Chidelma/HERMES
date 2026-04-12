@@ -1,10 +1,10 @@
 {
     "version": 3,
     "checkpoint": {
-        "Stack": "organization/hermes/dev",
-        "Latest": {
+        "stack": "organization/hermes/dev",
+        "latest": {
             "manifest": {
-                "time": "2026-04-12T13:42:10.916282-04:00",
+                "time": "2026-04-12T13:41:48.675011-04:00",
                 "magic": "d67539568b83836a29ebec33b94681fb04189ea530b5be5631513efd23f2bbbd",
                 "version": "v3.127.0"
             },
@@ -3867,7 +3867,7 @@
                         "customRules": [
                             {
                                 "__defaults": [],
-                                "source": "\u003c/^[^.]+$|\\.(?!(css|js|ico|png|jpg|svg|woff|woff2|ttf|map)$)([^.]+$)/\u003e",
+                                "source": "</^[^.]+$|\\.(?!(css|js|ico|png|jpg|svg|woff|woff2|ttf|map)$)([^.]+$)/>",
                                 "status": "200",
                                 "target": "/index.html"
                             }
@@ -3882,14 +3882,14 @@
                     "outputs": {
                         "accessToken": {
                             "4dabf18193072939515e22adb298388d": "1b47061264138c4ac30d75fd1eb44270",
-                            "ciphertext": "v1:Qe/rdn2Rx0oC/1LA:ajIDuuXSg7nfJER5kXfeWiGhgv4="
+                            "ciphertext": "v1:o53oqkMT3kwgUbUM:+hr+FRp1qk6Btuzpme5OUJB3cwg="
                         },
                         "arn": "arn:aws:amplify:us-east-1:117469679339:apps/d36fe9qs3tg1mb",
                         "autoBranchCreationConfig": null,
                         "autoBranchCreationPatterns": null,
                         "basicAuthCredentials": {
                             "4dabf18193072939515e22adb298388d": "1b47061264138c4ac30d75fd1eb44270",
-                            "ciphertext": "v1:R7vPstW0NpGmMTSj:6hM39cX2I5kRDmRWWKOvVzGd"
+                            "ciphertext": "v1:Q+FrqdOjeDfnCN0Z:WRKiGfOj357B7iKTiBXa0i0u"
                         },
                         "buildSpec": "",
                         "cacheConfig": {
@@ -3900,7 +3900,7 @@
                         "customRules": [
                             {
                                 "condition": "",
-                                "source": "\u003c/^[^.]+$|\\.(?!(css|js|ico|png|jpg|svg|woff|woff2|ttf|map)$)([^.]+$)/\u003e",
+                                "source": "</^[^.]+$|\\.(?!(css|js|ico|png|jpg|svg|woff|woff2|ttf|map)$)([^.]+$)/>",
                                 "status": "200",
                                 "target": "/index.html"
                             }
@@ -3919,7 +3919,7 @@
                         "name": "hermes-web",
                         "oauthToken": {
                             "4dabf18193072939515e22adb298388d": "1b47061264138c4ac30d75fd1eb44270",
-                            "ciphertext": "v1:awfSx6cCAA3Jp+F0:hyuBgHMYdTDcIwuIvdlH3aES50o="
+                            "ciphertext": "v1:jBv5myG5imkjnZsL:+RuOAoddWPO4R2x2bJDgr0r681I="
                         },
                         "platform": "WEB",
                         "productionBranches": [],
@@ -3992,6 +3992,7 @@
                         "waitForVerification": null
                     },
                     "parent": "urn:pulumi:dev::hermes::pulumi:pulumi:Stack::hermes-dev",
+                    "protect": true,
                     "provider": "urn:pulumi:dev::hermes::pulumi:providers:aws::default_6_83_2::9caafcd9-2b0f-49f8-bdc5-19605bdb4809",
                     "created": "2026-04-12T17:41:23.817333Z",
                     "modified": "2026-04-12T17:41:23.817333Z"
@@ -4035,6 +4036,7 @@
                         "zoneId": "Z078117179ROSCEURDQ4"
                     },
                     "parent": "urn:pulumi:dev::hermes::pulumi:pulumi:Stack::hermes-dev",
+                    "protect": true,
                     "provider": "urn:pulumi:dev::hermes::pulumi:providers:aws::default_6_83_2::9caafcd9-2b0f-49f8-bdc5-19605bdb4809",
                     "created": "2026-04-12T17:41:40.111787Z",
                     "modified": "2026-04-12T17:41:40.111787Z"
@@ -4078,54 +4080,10 @@
                         "zoneId": "Z078117179ROSCEURDQ4"
                     },
                     "parent": "urn:pulumi:dev::hermes::pulumi:pulumi:Stack::hermes-dev",
+                    "protect": true,
                     "provider": "urn:pulumi:dev::hermes::pulumi:providers:aws::default_6_83_2::9caafcd9-2b0f-49f8-bdc5-19605bdb4809",
                     "created": "2026-04-12T17:41:48.67351Z",
                     "modified": "2026-04-12T17:41:48.67351Z"
-                },
-                {
-                    "urn": "urn:pulumi:dev::hermes::aws:amplify/branch:Branch::hermes-web-master",
-                    "custom": true,
-                    "id": "d36fe9qs3tg1mb/master",
-                    "type": "aws:amplify/branch:Branch",
-                    "inputs": {
-                        "__defaults": [],
-                        "appId": "d36fe9qs3tg1mb",
-                        "branchName": "master",
-                        "displayName": "master",
-                        "stage": "NONE",
-                        "ttl": "5"
-                    },
-                    "outputs": {
-                        "appId": "d36fe9qs3tg1mb",
-                        "arn": "arn:aws:amplify:us-east-1:117469679339:apps/d36fe9qs3tg1mb/branches/master",
-                        "associatedResources": [],
-                        "backendEnvironmentArn": "",
-                        "basicAuthCredentials": {
-                            "4dabf18193072939515e22adb298388d": "1b47061264138c4ac30d75fd1eb44270",
-                            "ciphertext": "v1:0WJbTEjkUyclnLqd:hv5R73+VjYOnvzWuNThAgNLF"
-                        },
-                        "branchName": "master",
-                        "customDomains": [],
-                        "description": "",
-                        "destinationBranch": "",
-                        "displayName": "master",
-                        "enableAutoBuild": true,
-                        "enableBasicAuth": false,
-                        "enableNotification": false,
-                        "enablePerformanceMode": false,
-                        "enablePullRequestPreview": false,
-                        "environmentVariables": {},
-                        "framework": "",
-                        "id": "d36fe9qs3tg1mb/master",
-                        "pullRequestEnvironmentName": "",
-                        "sourceBranch": "",
-                        "stage": "NONE",
-                        "ttl": "5"
-                    },
-                    "parent": "urn:pulumi:dev::hermes::pulumi:pulumi:Stack::hermes-dev",
-                    "provider": "urn:pulumi:dev::hermes::pulumi:providers:aws::default_6_83_2::9caafcd9-2b0f-49f8-bdc5-19605bdb4809",
-                    "created": "2026-04-12T17:42:10.914839Z",
-                    "modified": "2026-04-12T17:42:10.914839Z"
                 }
             ]
         }
