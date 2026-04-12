@@ -1,6 +1,7 @@
 import * as aws from '@pulumi/aws'
 import * as pulumi from '@pulumi/pulumi'
 import { domainDkims, domainVerificationTokens } from './ses'
+import { domainAssociations } from './amplify'
 
 const cfg = new pulumi.Config()
 const domains = cfg.requireObject<string[]>('domains')
@@ -60,5 +61,26 @@ export const dnsResources = domains.flatMap((domain, i) => {
     records: [`v=DMARC1; p=quarantine; rua=mailto:dmarc@${domain}`],
   })
 
-  return [verificationRecord, ...dkimRecords, mxRecord, spfRecord, dmarcRecord]
+  // Amplify custom domain: mail.<domain> CNAME + ACM cert validation CNAME
+  const assoc = domainAssociations[i]
+
+  // ACM certificate validation record (format: "<name>. CNAME <value>.")
+  const certRecord = new aws.route53.Record(`hermes-amplify-cert-${domain}`, {
+    zoneId: zone.zoneId,
+    name: assoc.certificateVerificationDnsRecord.apply(r => r.split(' CNAME ')[0].replace(/\.$/, '')),
+    type: 'CNAME',
+    ttl: 300,
+    records: [assoc.certificateVerificationDnsRecord.apply(r => r.split(' CNAME ')[1].replace(/\.$/, ''))],
+  })
+
+  // mail.<domain> CNAME to Amplify (subDomain dnsRecord format: "mail CNAME <target>")
+  const mailRecord = new aws.route53.Record(`hermes-mail-cname-${domain}`, {
+    zoneId: zone.zoneId,
+    name: `mail.${domain}`,
+    type: 'CNAME',
+    ttl: 300,
+    records: [assoc.subDomains[0].dnsRecord.apply(r => r.split(' CNAME ')[1].replace(/\.$/, ''))],
+  })
+
+  return [verificationRecord, ...dkimRecords, mxRecord, spfRecord, dmarcRecord, certRecord, mailRecord]
 })

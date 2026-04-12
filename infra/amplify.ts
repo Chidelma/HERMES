@@ -3,6 +3,8 @@ import * as pulumi from '@pulumi/pulumi'
 import { apiEndpoint } from './api'
 
 const cfg = new pulumi.Config()
+const domains = cfg.requireObject<string[]>('domains')
+
 // Optional: pulumi config set --secret hermes:githubToken ghp_xxxx
 // Without it, connect GitHub manually in the Amplify console.
 const githubToken = cfg.getSecret('githubToken')
@@ -34,3 +36,16 @@ export const amplifyBranch = new aws.amplify.Branch('hermes-web-master', {
 })
 
 export const amplifyUrl = pulumi.interpolate`https://master.${amplifyApp.defaultDomain}`
+
+// Associate mail.<domain> with the Amplify app for each configured domain.
+// waitForVerification=false avoids blocking the deploy; ACM validation happens
+// via the CNAME records added in dns.ts after this resource is created.
+export const domainAssociations = domains.map(
+  domain =>
+    new aws.amplify.DomainAssociation(`hermes-amplify-domain-${domain}`, {
+      appId: amplifyApp.id,
+      domainName: domain,
+      subDomains: [{ branchName: amplifyBranch.branchName, prefix: 'mail' }],
+      waitForVerification: false,
+    })
+)
