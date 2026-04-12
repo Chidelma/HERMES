@@ -10,14 +10,31 @@ permissions:
   contents: write   # required to push state back to repo
 
 jobs:
-  deploy:
-    name: Pulumi Up
+  # ── 1. Unit tests (fast, no AWS) ───────────────────────────────────────────
+  unit-tests:
+    name: Unit Tests
     runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: latest
+
+      - name: Run frontend unit tests
+        run: bun test web/tests/unit.test.js
+
+  # ── 2. Deploy infrastructure ───────────────────────────────────────────────
+  deploy-infra:
+    name: Deploy Infrastructure
+    needs: unit-tests
+    runs-on: ubuntu-latest
+    outputs:
+      api_endpoint: ${{ steps.get-output.outputs.api_endpoint }}
 
     steps:
       - uses: actions/checkout@v4
         with:
-          # Fetch full history so the state commit can be pushed without conflict
           fetch-depth: 0
 
       - uses: actions/setup-node@v4
@@ -47,6 +64,15 @@ jobs:
           PULUMI_BACKEND_URL: file://${{ github.workspace }}/.pulumi-state
           PULUMI_CONFIG_PASSPHRASE: ${{ secrets.PULUMI_PASSPHRASE }}
 
+      - name: Get API endpoint
+        id: get-output
+        run: |
+          API=$(pulumi stack output apiEndpoint --stack dev 2>/dev/null || echo "")
+          echo "api_endpoint=$API" >> $GITHUB_OUTPUT
+        env:
+          PULUMI_BACKEND_URL: file://${{ github.workspace }}/.pulumi-state
+          PULUMI_CONFIG_PASSPHRASE: ${{ secrets.PULUMI_PASSPHRASE }}
+
       - name: Commit updated state
         run: |
           git config user.name "github-actions[bot]"
@@ -54,3 +80,78 @@ jobs:
           git add .pulumi-state/
           git diff --cached --quiet || git commit -m "chore: update pulumi state [skip ci]"
           git push
+
+  # ── 3. Build and deploy frontend to Amplify ────────────────────────────────
+  deploy-frontend:
+    name: Deploy Frontend
+    needs: deploy-infra
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: latest
+
+      - name: Install frontend dependencies
+        run: bun install
+        working-directory: web
+
+      - name: Build frontend
+        run: |
+          mkdir -p assets
+          printf 'window.HERMES_CONFIG={apiUrl:"%s"};\n' "${{ needs.deploy-infra.outputs.api_endpoint }}" > assets/config.js
+          bun run bundle
+        working-directory: web
+
+      - name: Configure AWS credentials (OIDC)
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: ${{ secrets.AWS_ROLE_ARN }}
+          aws-region: us-east-1
+
+      - name: Deploy to Amplify
+        run: |
+          cd web/dist && zip -r ../../frontend.zip . && cd ../..
+          DEPLOY=$(aws amplify create-deployment \
+            --app-id d36fe9qs3tg1mb \
+            --branch-name master \
+            --output json)
+          JOB_ID=$(echo "$DEPLOY" | jq -r '.jobId')
+          UPLOAD_URL=$(echo "$DEPLOY" | jq -r '.zipUploadUrl')
+          curl -s -T frontend.zip "$UPLOAD_URL"
+          aws amplify start-deployment \
+            --app-id d36fe9qs3tg1mb \
+            --branch-name master \
+            --job-id "$JOB_ID"
+
+  # ── 4. Integration tests (validates live API) ──────────────────────────────
+  test-integration:
+    name: Integration Tests
+    needs: [deploy-infra, deploy-frontend]
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: latest
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Configure AWS credentials (OIDC)
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: ${{ secrets.AWS_ROLE_ARN }}
+          aws-region: us-east-1
+
+      - name: Run API integration tests
+        run: bun test tests/api.test.ts --timeout 30000
