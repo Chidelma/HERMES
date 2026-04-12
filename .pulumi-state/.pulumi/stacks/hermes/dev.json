@@ -4,7 +4,7 @@
         "Stack": "organization/hermes/dev",
         "Latest": {
             "manifest": {
-                "time": "2026-04-12T00:10:32.044885-04:00",
+                "time": "2026-04-12T00:12:27.279732-04:00",
                 "magic": "d67539568b83836a29ebec33b94681fb04189ea530b5be5631513efd23f2bbbd",
                 "version": "v3.127.0"
             },
@@ -967,6 +967,61 @@
                     "provider": "urn:pulumi:dev::hermes::pulumi:providers:aws::default_6_83_2::9caafcd9-2b0f-49f8-bdc5-19605bdb4809",
                     "created": "2026-04-12T04:10:32.04337Z",
                     "modified": "2026-04-12T04:10:32.04337Z"
+                },
+                {
+                    "urn": "urn:pulumi:dev::hermes::aws:ses/receiptRule:ReceiptRule::hermes-receipt-gokeinvestmentcorp.com",
+                    "custom": true,
+                    "id": "hermes-inbound-gokeinvestmentcorp.com",
+                    "type": "aws:ses/receiptRule:ReceiptRule",
+                    "inputs": {
+                        "__defaults": [],
+                        "enabled": true,
+                        "name": "hermes-inbound-gokeinvestmentcorp.com",
+                        "recipients": [
+                            "gokeinvestmentcorp.com"
+                        ],
+                        "ruleSetName": "hermes-inbound",
+                        "scanEnabled": true,
+                        "snsActions": [
+                            {
+                                "__defaults": [],
+                                "encoding": "UTF-8",
+                                "position": 1,
+                                "topicArn": "arn:aws:sns:us-east-1:117469679339:hermes-inbound-delivery"
+                            }
+                        ],
+                        "tlsPolicy": "Optional"
+                    },
+                    "outputs": {
+                        "addHeaderActions": [],
+                        "after": null,
+                        "arn": "arn:aws:ses:us-east-1:117469679339:receipt-rule-set/hermes-inbound:receipt-rule/hermes-inbound-gokeinvestmentcorp.com",
+                        "bounceActions": [],
+                        "enabled": true,
+                        "id": "hermes-inbound-gokeinvestmentcorp.com",
+                        "lambdaActions": [],
+                        "name": "hermes-inbound-gokeinvestmentcorp.com",
+                        "recipients": [
+                            "gokeinvestmentcorp.com"
+                        ],
+                        "ruleSetName": "hermes-inbound",
+                        "s3Actions": [],
+                        "scanEnabled": true,
+                        "snsActions": [
+                            {
+                                "encoding": "UTF-8",
+                                "position": 1,
+                                "topicArn": "arn:aws:sns:us-east-1:117469679339:hermes-inbound-delivery"
+                            }
+                        ],
+                        "stopActions": [],
+                        "tlsPolicy": "Optional",
+                        "workmailActions": []
+                    },
+                    "parent": "urn:pulumi:dev::hermes::pulumi:pulumi:Stack::hermes-dev",
+                    "provider": "urn:pulumi:dev::hermes::pulumi:providers:aws::default_6_83_2::9caafcd9-2b0f-49f8-bdc5-19605bdb4809",
+                    "created": "2026-04-12T04:12:27.278762Z",
+                    "modified": "2026-04-12T04:12:27.278762Z"
                 }
             ]
         }
