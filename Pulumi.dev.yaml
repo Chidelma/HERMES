@@ -1,6 +1,13 @@
+encryptionsalt: v1:04f8lKSrnPg=:v1:fmfmI/kH6HmEtCID:5Jgwk4/ywhs0PvsATnXfdvskfjwiBA==
 config:
-  aws:region: ca-central-1
+  aws:region: us-east-1
   hermes:domains:
-    - example.com
-  hermes:vpcId: ""
-  hermes:subnetIds: []
+    - gokeinvestmentcorp.com
+  hermes:subnetIds:
+    - subnet-7312d542
+    - subnet-ed6c2fa0
+    - subnet-b179c5ee
+    - subnet-6208b804
+    - subnet-2747f906
+    - subnet-396d1837
+  hermes:vpcId: vpc-ea975897
