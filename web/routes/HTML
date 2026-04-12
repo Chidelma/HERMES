@@ -1,0 +1,28 @@
+<!-- Login screen -->
+<div id="screen-login" class="login-screen">
+  <login-form />
+</div>
+
+<!-- App screen (hidden until authenticated) -->
+<div id="screen-app" class="app-screen" hidden>
+
+  <header class="app-header">
+    <span class="app-brand">HERMES</span>
+    <span class="app-user" id="app-user-email"></span>
+    <button class="btn-ghost" id="btn-logout" style="margin-left:0.5rem;">Sign out</button>
+  </header>
+
+  <div class="app-body">
+    <aside class="sidebar">
+      <app-nav />
+    </aside>
+
+    <main class="main-content">
+      <div id="view-inbox"><inbox-view /></div>
+      <div id="view-email" hidden><email-detail /></div>
+      <div id="view-compose" hidden><compose-view /></div>
+      <div id="view-settings" hidden><settings-view /></div>
+    </main>
+  </div>
+
+</div>

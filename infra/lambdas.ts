@@ -3,7 +3,7 @@ import * as pulumi from '@pulumi/pulumi'
 import { inboundQueue, inboundQueueArn } from './queues'
 import { notificationsTopic, notificationsTopicArn } from './notifications'
 import { fileSystem, accessPoint, mountTargets } from './storage'
-import { encryptionKeySecretArn } from './secrets'
+import { encryptionKeySecretArn, apiKeySecretArn } from './secrets'
 
 const cfg = new pulumi.Config()
 const vpcId = cfg.require('vpcId')
@@ -36,15 +36,16 @@ new aws.iam.RolePolicyAttachment('hermes-lambda-vpc', {
 
 new aws.iam.RolePolicy('hermes-lambda-policy', {
   role: lambdaRole,
-  policy: pulumi.all([inboundQueueArn, notificationsTopicArn, encryptionKeySecretArn]).apply(
-    ([sqsArn, snsArn, secretArn]) =>
+  policy: pulumi.all([inboundQueueArn, notificationsTopicArn, encryptionKeySecretArn, apiKeySecretArn]).apply(
+    ([sqsArn, , , jwtSecretArn]) =>
       JSON.stringify({
         Version: '2012-10-17',
         Statement: [
           { Effect: 'Allow', Action: ['sqs:ReceiveMessage', 'sqs:DeleteMessage', 'sqs:GetQueueAttributes'], Resource: sqsArn },
           { Effect: 'Allow', Action: ['ses:SendEmail', 'ses:SendRawEmail'], Resource: '*' },
-          { Effect: 'Allow', Action: ['secretsmanager:GetSecretValue'], Resource: secretArn },
+          { Effect: 'Allow', Action: ['secretsmanager:GetSecretValue'], Resource: jwtSecretArn },
           { Effect: 'Allow', Action: ['elasticfilesystem:ClientMount', 'elasticfilesystem:ClientWrite'], Resource: '*' },
+          { Effect: 'Allow', Action: ['sns:Publish'], Resource: '*' },
         ],
       })
   ),
@@ -67,6 +68,7 @@ const commonConfig = {
     variables: {
       FYLO_ROOT: EFS_MOUNT_PATH,
       NODE_OPTIONS: '--enable-source-maps',
+      JWT_SECRET_ARN: apiKeySecretArn,
     },
   },
 }
@@ -122,6 +124,14 @@ export const apiLambda = new aws.lambda.Function('hermes-api', {
   code: new pulumi.asset.AssetArchive({ '.': new pulumi.asset.FileArchive('./bin/api') }),
   handler: 'index.handler',
   name: 'hermes-api',
+}, dependsOnMounts)
+
+/** Authentication Lambda (OTP request + confirm). */
+export const authLambda = new aws.lambda.Function('hermes-auth', {
+  ...commonConfig,
+  code: new pulumi.asset.AssetArchive({ '.': new pulumi.asset.FileArchive('./bin/auth') }),
+  handler: 'index.handler',
+  name: 'hermes-auth',
 }, dependsOnMounts)
 
 export const lambdaRoleArn = lambdaRole.arn

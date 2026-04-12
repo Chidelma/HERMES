@@ -1,6 +1,6 @@
 import { build } from 'esbuild'
 
-const lambdas = ['inbound', 'events', 'send', 'api']
+const lambdas = ['inbound', 'events', 'send', 'api', 'auth']
 
 await Promise.all(
   lambdas.map(name =>

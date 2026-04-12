@@ -1,0 +1,21 @@
+{
+  "name": "hermes-web",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "start": "bun run serve",
+    "serve": "tach.serve",
+    "bundle": "bun ./scripts/bundle.mjs",
+    "bundle:watch": "bun ./scripts/bundle.mjs --watch",
+    "preview": "bun ./scripts/preview.mjs"
+  },
+  "devDependencies": {
+    "@delma/tachyon": "^1.7.1",
+    "@tailwindcss/cli": "^4.2.2",
+    "tailwindcss": "^4.2.2"
+  },
+  "dependencies": {
+    "@aws-sdk/client-secrets-manager": "^3.1029.0",
+    "@aws-sdk/client-sns": "^3.1029.0"
+  }
+}

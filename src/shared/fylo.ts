@@ -14,16 +14,17 @@ export async function getFylo(): Promise<Fylo> {
     _fylo.createCollection('domains'),
     _fylo.createCollection('emails'),
     _fylo.createCollection('suppressed'),
+    _fylo.createCollection('users'),
+    _fylo.createCollection('otp_sessions'),
   ])
 
   return _fylo
 }
 
 export const Collections = {
-  /** DomainConfig records, keyed by domain name */
   DOMAINS: 'domains',
-  /** StoredEmail records */
   EMAILS: 'emails',
-  /** SuppressedAddress records */
   SUPPRESSED: 'suppressed',
+  USERS: 'users',
+  OTP_SESSIONS: 'otp_sessions',
 } as const

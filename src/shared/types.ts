@@ -40,6 +40,24 @@ export interface SuppressedAddress {
   suppressedAt: string
 }
 
+export interface User {
+  email: string
+  /** E.164 format, e.g. +14165551234 */
+  phone: string
+  /** Domains this user may access */
+  domains: string[]
+  role: 'admin' | 'viewer'
+}
+
+export interface OtpSession {
+  id: string
+  email: string
+  phone: string
+  /** SHA-256 hex of the 6-digit code */
+  codeHash: string
+  expiresAt: string
+}
+
 export interface SendRequest {
   from: string
   to: string[]

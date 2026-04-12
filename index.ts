@@ -5,5 +5,7 @@ import './infra/notifications'
 import './infra/ses'
 import './infra/dns'
 import './infra/lambdas'
+import './infra/amplify'
 
 export { apiEndpoint } from './infra/api'
+export { amplifyUrl } from './infra/amplify'
