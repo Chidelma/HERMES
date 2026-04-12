@@ -73,3 +73,12 @@ export const snsEndpoint = new aws.ec2.VpcEndpoint('hermes-ep-sns', {
   securityGroupIds: [endpointSg.id],
   privateDnsEnabled: true,
 })
+
+export const sesEndpoint = new aws.ec2.VpcEndpoint('hermes-ep-ses', {
+  vpcId,
+  serviceName: pulumi.interpolate`com.amazonaws.${region}.email`,
+  vpcEndpointType: 'Interface',
+  subnetIds,
+  securityGroupIds: [endpointSg.id],
+  privateDnsEnabled: true,
+})

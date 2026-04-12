@@ -3,7 +3,7 @@ import { SESClient, SendEmailCommand } from '@aws-sdk/client-ses'
 import { getFylo, Collections } from '../shared/fylo'
 import type { SendRequest, SuppressedAddress } from '../shared/types'
 
-const ses = new SESClient({})
+const ses = new SESClient({ maxAttempts: 1 })
 
 export async function handler(event: APIGatewayProxyEvent): Promise<APIGatewayProxyResult> {
   if (!event.body) return { statusCode: 400, body: JSON.stringify({ error: 'Missing body' }) }
