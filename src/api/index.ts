@@ -106,11 +106,13 @@ export async function handler(event: APIGatewayProxyEvent): Promise<APIGatewayPr
   // ── Domains (admin only) ────────────────────────────────────────────────
 
   if (httpMethod === 'GET' && path === '/domains') {
-    const results: Record<string, DomainConfig> = {}
+    const results: Record<string, any> = {}
     for await (const doc of fylo.findDocs(Collections.DOMAINS, { $ops: [] }).collect()) {
       Object.assign(results, doc)
     }
-    const configs = Object.values(results).filter(d => claims.domains.includes(d.domain))
+    const configs: DomainConfig[] = Object.values(results)
+      .filter(d => claims.domains.includes(d.domain))
+      .map(raw => ({ ...raw, routes: typeof raw.routes === 'string' ? JSON.parse(raw.routes) : (raw.routes ?? []) }))
     return ok(configs)
   }
 
@@ -118,7 +120,11 @@ export async function handler(event: APIGatewayProxyEvent): Promise<APIGatewayPr
     if (claims.role !== 'admin') return forbidden()
     if (!body) return badRequest('Missing body')
     const config: Omit<DomainConfig, 'identityArn'> & { identityArn?: string } = JSON.parse(body)
-    const id = await fylo.putData(Collections.DOMAINS, { ...config, identityArn: config.identityArn ?? '' })
+    const id = await fylo.putData(Collections.DOMAINS, {
+      ...config,
+      identityArn: config.identityArn ?? '',
+      routes: JSON.stringify(config.routes ?? []),
+    })
     return ok({ id })
   }
 
@@ -142,7 +148,7 @@ export async function handler(event: APIGatewayProxyEvent): Promise<APIGatewayPr
     const [docId, config] = await getDomainEntry(fylo, domain)
     if (!docId || !config) return notFound('Domain not found')
     const updatedRoutes = [...config.routes.filter(r => r.id !== ruleId), { ...rule, id: ruleId }]
-    await fylo.patchDoc(Collections.DOMAINS, { [docId]: { routes: updatedRoutes } })
+    await fylo.patchDoc(Collections.DOMAINS, { [docId]: { routes: JSON.stringify(updatedRoutes) } })
     return ok({ updated: ruleId })
   }
 
@@ -154,7 +160,7 @@ export async function handler(event: APIGatewayProxyEvent): Promise<APIGatewayPr
     const [docId, config] = await getDomainEntry(fylo, domain)
     if (!docId || !config) return notFound('Domain not found')
     const updatedRoutes = config.routes.filter(r => r.id !== ruleId)
-    await fylo.patchDoc(Collections.DOMAINS, { [docId]: { routes: updatedRoutes } })
+    await fylo.patchDoc(Collections.DOMAINS, { [docId]: { routes: JSON.stringify(updatedRoutes) } })
     return ok({ deleted: ruleId })
   }
 
@@ -222,7 +228,7 @@ async function getDomain(fylo: Awaited<ReturnType<typeof getFylo>>, domain: stri
 }
 
 async function getDomainEntry(fylo: Awaited<ReturnType<typeof getFylo>>, domain: string): Promise<[string | null, DomainConfig | null]> {
-  const results: Record<string, DomainConfig> = {}
+  const results: Record<string, any> = {}
   for await (const doc of fylo.findDocs(Collections.DOMAINS, {
     $ops: [{ domain: { $eq: domain } }],
   }).collect()) {
@@ -230,5 +236,7 @@ async function getDomainEntry(fylo: Awaited<ReturnType<typeof getFylo>>, domain:
   }
   const entries = Object.entries(results)
   if (entries.length === 0) return [null, null]
-  return entries[0]
+  const [id, raw] = entries[0]
+  const config: DomainConfig = { ...raw, routes: typeof raw.routes === 'string' ? JSON.parse(raw.routes) : (raw.routes ?? []) }
+  return [id, config]
 }

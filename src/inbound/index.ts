@@ -52,14 +52,15 @@ async function processRecord(fylo: Awaited<ReturnType<typeof getFylo>>, record: 
 }
 
 async function getDomainConfig(fylo: Awaited<ReturnType<typeof getFylo>>, domain: string): Promise<DomainConfig | null> {
-  const results: Record<string, DomainConfig> = {}
+  const results: Record<string, any> = {}
   for await (const doc of fylo.findDocs(Collections.DOMAINS, {
     $ops: [{ domain: { $eq: domain } }],
   }).collect()) {
     Object.assign(results, doc)
   }
-  const docs = Object.values(results)
-  return docs[0] ?? null
+  const raw = Object.values(results)[0]
+  if (!raw) return null
+  return { ...raw, routes: typeof raw.routes === 'string' ? JSON.parse(raw.routes) : (raw.routes ?? []) }
 }
 
 function matchRoute(rules: RouteRule[], recipient: string): RouteRule | null {
