@@ -25,7 +25,7 @@ async function processRecord(fylo: Awaited<ReturnType<typeof getFylo>>, record: 
   const sender: string = mail.source ?? ''
   const subject: string = mail.commonHeaders?.subject ?? '(no subject)'
   const messageId: string = mail.messageId ?? record.messageId
-  const body: string = extractTextBody(sesNotification.content ?? '')
+  const emailBody: string = extractTextBody(sesNotification.content ?? '')
 
   for (const recipient of recipients) {
     const domain = recipient.split('@')[1]?.toLowerCase()
@@ -44,7 +44,7 @@ async function processRecord(fylo: Awaited<ReturnType<typeof getFylo>>, record: 
       sender,
       subject,
       rawKey: messageId,
-      body,
+      body: emailBody,
       receivedAt: new Date().toISOString(),
       processed: false,
     } satisfies StoredEmail)
