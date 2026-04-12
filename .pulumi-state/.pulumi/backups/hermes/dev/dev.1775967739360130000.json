@@ -1,10 +1,10 @@
 {
     "version": 3,
     "checkpoint": {
-        "Stack": "organization/hermes/dev",
-        "Latest": {
+        "stack": "organization/hermes/dev",
+        "latest": {
             "manifest": {
-                "time": "2026-04-12T00:22:50.997698-04:00",
+                "time": "2026-04-12T00:22:19.339163-04:00",
                 "magic": "d67539568b83836a29ebec33b94681fb04189ea530b5be5631513efd23f2bbbd",
                 "version": "v3.127.0"
             },
@@ -1039,6 +1039,7 @@
                         "verificationToken": "BZNWzUBbL47E9TjwrMzeRdjBU93SEnBCS4RnPeyVqBU="
                     },
                     "parent": "urn:pulumi:dev::hermes::pulumi:pulumi:Stack::hermes-dev",
+                    "protect": true,
                     "provider": "urn:pulumi:dev::hermes::pulumi:providers:aws::default_6_83_2::9caafcd9-2b0f-49f8-bdc5-19605bdb4809",
                     "created": "2026-04-12T04:21:48.868644Z",
                     "modified": "2026-04-12T04:21:48.868644Z"
@@ -1062,6 +1063,7 @@
                         "id": "gokeinvestmentcorp.com"
                     },
                     "parent": "urn:pulumi:dev::hermes::pulumi:pulumi:Stack::hermes-dev",
+                    "protect": true,
                     "provider": "urn:pulumi:dev::hermes::pulumi:providers:aws::default_6_83_2::9caafcd9-2b0f-49f8-bdc5-19605bdb4809",
                     "created": "2026-04-12T04:21:59.888973Z",
                     "modified": "2026-04-12T04:21:59.888973Z"
@@ -1081,6 +1083,7 @@
                         "ruleSetName": "hermes-inbound"
                     },
                     "parent": "urn:pulumi:dev::hermes::pulumi:pulumi:Stack::hermes-dev",
+                    "protect": true,
                     "provider": "urn:pulumi:dev::hermes::pulumi:providers:aws::default_6_83_2::9caafcd9-2b0f-49f8-bdc5-19605bdb4809",
                     "created": "2026-04-12T04:22:09.467105Z",
                     "modified": "2026-04-12T04:22:09.467105Z"
@@ -1138,138 +1141,10 @@
                         "visibilityTimeoutSeconds": 300
                     },
                     "parent": "urn:pulumi:dev::hermes::pulumi:pulumi:Stack::hermes-dev",
+                    "protect": true,
                     "provider": "urn:pulumi:dev::hermes::pulumi:providers:aws::default_6_83_2::9caafcd9-2b0f-49f8-bdc5-19605bdb4809",
                     "created": "2026-04-12T04:22:19.336274Z",
                     "modified": "2026-04-12T04:22:19.336274Z"
-                },
-                {
-                    "urn": "urn:pulumi:dev::hermes::aws:route53/record:Record::hermes-dkim-gokeinvestmentcorp.com-0",
-                    "custom": true,
-                    "id": "Z078117179ROSCEURDQ4_erjc2pz7fqvbluzcnmkfo32ycb7u6s2r._domainkey.gokeinvestmentcorp.com_CNAME",
-                    "type": "aws:route53/record:Record",
-                    "inputs": {
-                        "__defaults": [],
-                        "name": "erjc2pz7fqvbluzcnmkfo32ycb7u6s2r._domainkey.gokeinvestmentcorp.com",
-                        "records": [
-                            "erjc2pz7fqvbluzcnmkfo32ycb7u6s2r.dkim.amazonses.com"
-                        ],
-                        "ttl": 300,
-                        "type": "CNAME",
-                        "zoneId": "Z078117179ROSCEURDQ4"
-                    },
-                    "outputs": {
-                        "__meta": "{\"e2bfb730-ecaa-11e6-8f88-34363bc7c4c0\":{\"create\":1800000000000,\"delete\":1800000000000,\"update\":1800000000000},\"schema_version\":\"2\"}",
-                        "aliases": [],
-                        "allowOverwrite": null,
-                        "cidrRoutingPolicy": null,
-                        "failoverRoutingPolicies": [],
-                        "fqdn": "erjc2pz7fqvbluzcnmkfo32ycb7u6s2r._domainkey.gokeinvestmentcorp.com",
-                        "geolocationRoutingPolicies": [],
-                        "geoproximityRoutingPolicy": null,
-                        "healthCheckId": "",
-                        "id": "Z078117179ROSCEURDQ4_erjc2pz7fqvbluzcnmkfo32ycb7u6s2r._domainkey.gokeinvestmentcorp.com_CNAME",
-                        "latencyRoutingPolicies": [],
-                        "multivalueAnswerRoutingPolicy": false,
-                        "name": "erjc2pz7fqvbluzcnmkfo32ycb7u6s2r._domainkey.gokeinvestmentcorp.com",
-                        "records": [
-                            "erjc2pz7fqvbluzcnmkfo32ycb7u6s2r.dkim.amazonses.com"
-                        ],
-                        "setIdentifier": "",
-                        "ttl": 300,
-                        "type": "CNAME",
-                        "weightedRoutingPolicies": [],
-                        "zoneId": "Z078117179ROSCEURDQ4"
-                    },
-                    "parent": "urn:pulumi:dev::hermes::pulumi:pulumi:Stack::hermes-dev",
-                    "provider": "urn:pulumi:dev::hermes::pulumi:providers:aws::default_6_83_2::9caafcd9-2b0f-49f8-bdc5-19605bdb4809",
-                    "created": "2026-04-12T04:22:31.271452Z",
-                    "modified": "2026-04-12T04:22:31.271452Z"
-                },
-                {
-                    "urn": "urn:pulumi:dev::hermes::aws:route53/record:Record::hermes-dkim-gokeinvestmentcorp.com-1",
-                    "custom": true,
-                    "id": "Z078117179ROSCEURDQ4_bgh75rnzhdplotbsf3eapq2hktdzz5wq._domainkey.gokeinvestmentcorp.com_CNAME",
-                    "type": "aws:route53/record:Record",
-                    "inputs": {
-                        "__defaults": [],
-                        "name": "bgh75rnzhdplotbsf3eapq2hktdzz5wq._domainkey.gokeinvestmentcorp.com",
-                        "records": [
-                            "bgh75rnzhdplotbsf3eapq2hktdzz5wq.dkim.amazonses.com"
-                        ],
-                        "ttl": 300,
-                        "type": "CNAME",
-                        "zoneId": "Z078117179ROSCEURDQ4"
-                    },
-                    "outputs": {
-                        "__meta": "{\"e2bfb730-ecaa-11e6-8f88-34363bc7c4c0\":{\"create\":1800000000000,\"delete\":1800000000000,\"update\":1800000000000},\"schema_version\":\"2\"}",
-                        "aliases": [],
-                        "allowOverwrite": null,
-                        "cidrRoutingPolicy": null,
-                        "failoverRoutingPolicies": [],
-                        "fqdn": "bgh75rnzhdplotbsf3eapq2hktdzz5wq._domainkey.gokeinvestmentcorp.com",
-                        "geolocationRoutingPolicies": [],
-                        "geoproximityRoutingPolicy": null,
-                        "healthCheckId": "",
-                        "id": "Z078117179ROSCEURDQ4_bgh75rnzhdplotbsf3eapq2hktdzz5wq._domainkey.gokeinvestmentcorp.com_CNAME",
-                        "latencyRoutingPolicies": [],
-                        "multivalueAnswerRoutingPolicy": false,
-                        "name": "bgh75rnzhdplotbsf3eapq2hktdzz5wq._domainkey.gokeinvestmentcorp.com",
-                        "records": [
-                            "bgh75rnzhdplotbsf3eapq2hktdzz5wq.dkim.amazonses.com"
-                        ],
-                        "setIdentifier": "",
-                        "ttl": 300,
-                        "type": "CNAME",
-                        "weightedRoutingPolicies": [],
-                        "zoneId": "Z078117179ROSCEURDQ4"
-                    },
-                    "parent": "urn:pulumi:dev::hermes::pulumi:pulumi:Stack::hermes-dev",
-                    "provider": "urn:pulumi:dev::hermes::pulumi:providers:aws::default_6_83_2::9caafcd9-2b0f-49f8-bdc5-19605bdb4809",
-                    "created": "2026-04-12T04:22:43.615333Z",
-                    "modified": "2026-04-12T04:22:43.615333Z"
-                },
-                {
-                    "urn": "urn:pulumi:dev::hermes::aws:route53/record:Record::hermes-dkim-gokeinvestmentcorp.com-2",
-                    "custom": true,
-                    "id": "Z078117179ROSCEURDQ4_q2get3vie36t3odbgvkp3mke7cpf4fs6._domainkey.gokeinvestmentcorp.com_CNAME",
-                    "type": "aws:route53/record:Record",
-                    "inputs": {
-                        "__defaults": [],
-                        "name": "q2get3vie36t3odbgvkp3mke7cpf4fs6._domainkey.gokeinvestmentcorp.com",
-                        "records": [
-                            "q2get3vie36t3odbgvkp3mke7cpf4fs6.dkim.amazonses.com"
-                        ],
-                        "ttl": 300,
-                        "type": "CNAME",
-                        "zoneId": "Z078117179ROSCEURDQ4"
-                    },
-                    "outputs": {
-                        "__meta": "{\"e2bfb730-ecaa-11e6-8f88-34363bc7c4c0\":{\"create\":1800000000000,\"delete\":1800000000000,\"update\":1800000000000},\"schema_version\":\"2\"}",
-                        "aliases": [],
-                        "allowOverwrite": null,
-                        "cidrRoutingPolicy": null,
-                        "failoverRoutingPolicies": [],
-                        "fqdn": "q2get3vie36t3odbgvkp3mke7cpf4fs6._domainkey.gokeinvestmentcorp.com",
-                        "geolocationRoutingPolicies": [],
-                        "geoproximityRoutingPolicy": null,
-                        "healthCheckId": "",
-                        "id": "Z078117179ROSCEURDQ4_q2get3vie36t3odbgvkp3mke7cpf4fs6._domainkey.gokeinvestmentcorp.com_CNAME",
-                        "latencyRoutingPolicies": [],
-                        "multivalueAnswerRoutingPolicy": false,
-                        "name": "q2get3vie36t3odbgvkp3mke7cpf4fs6._domainkey.gokeinvestmentcorp.com",
-                        "records": [
-                            "q2get3vie36t3odbgvkp3mke7cpf4fs6.dkim.amazonses.com"
-                        ],
-                        "setIdentifier": "",
-                        "ttl": 300,
-                        "type": "CNAME",
-                        "weightedRoutingPolicies": [],
-                        "zoneId": "Z078117179ROSCEURDQ4"
-                    },
-                    "parent": "urn:pulumi:dev::hermes::pulumi:pulumi:Stack::hermes-dev",
-                    "provider": "urn:pulumi:dev::hermes::pulumi:providers:aws::default_6_83_2::9caafcd9-2b0f-49f8-bdc5-19605bdb4809",
-                    "created": "2026-04-12T04:22:50.99634Z",
-                    "modified": "2026-04-12T04:22:50.99634Z"
                 }
             ]
         }

@@ -4,10 +4,10 @@ config:
   hermes:domains:
     - gokeinvestmentcorp.com
   hermes:subnetIds:
-    - subnet-7312d542
     - subnet-ed6c2fa0
+    - subnet-7312d542
     - subnet-b179c5ee
-    - subnet-6208b804
     - subnet-2747f906
     - subnet-396d1837
+    - subnet-6208b804
   hermes:vpcId: vpc-ea975897
