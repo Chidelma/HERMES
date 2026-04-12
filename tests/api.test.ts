@@ -405,15 +405,23 @@ describe('DELETE /suppressed/:address', () => {
 // ── Send ──────────────────────────────────────────────────────────────────────
 
 describe('POST /send', () => {
-  test('missing body → 400', async () => {
+  test('no auth → 401', async () => {
     const res = await fetch(`${API}/send`, { method: 'POST' })
+    expect(res.status).toBe(401)
+  })
+
+  test('missing body → 400', async () => {
+    const res = await fetch(`${API}/send`, {
+      method: 'POST',
+      headers: { Authorization: `Bearer ${adminToken}` },
+    })
     expect(res.status).toBe(400)
   })
 
   test('invalid JSON → 400', async () => {
     const res = await fetch(`${API}/send`, {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${adminToken}` },
       body: '{bad json',
     })
     expect(res.status).toBe(400)

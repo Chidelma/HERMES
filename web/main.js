@@ -278,14 +278,13 @@ function initCompose() {
   document.getElementById('btn-discard').addEventListener('click', () => navigate('inbox'))
 
   document.getElementById('btn-send').addEventListener('click', async () => {
-    const from = document.getElementById('compose-from').value.trim()
     const to = document.getElementById('compose-to').value.trim()
     const cc = document.getElementById('compose-cc').value.trim()
     const subject = document.getElementById('compose-subject').value.trim()
     const text = document.getElementById('compose-body').value.trim()
 
-    if (!from || !to || !subject) {
-      toast('From, To, and Subject are required.')
+    if (!to || !subject) {
+      toast('To and Subject are required.')
       return
     }
 
@@ -296,7 +295,7 @@ function initCompose() {
     try {
       const res = await apiFetch('/send', {
         method: 'POST',
-        body: JSON.stringify({ from, to: [to], cc: cc ? [cc] : [], subject, text }),
+        body: JSON.stringify({ to: [to], cc: cc ? [cc] : [], subject, text }),
       })
       if (!res) return
       if (res.ok) {
@@ -317,14 +316,13 @@ function initCompose() {
 }
 
 function clearCompose() {
-  for (const id of ['compose-from', 'compose-to', 'compose-cc', 'compose-subject', 'compose-body']) {
+  for (const id of ['compose-to', 'compose-cc', 'compose-subject', 'compose-body']) {
     const el = document.getElementById(id)
     if (el) el.value = ''
   }
 }
 
 function openCompose(prefill = {}) {
-  if (prefill.from) document.getElementById('compose-from').value = prefill.from
   if (prefill.to) document.getElementById('compose-to').value = prefill.to
   if (prefill.subject) document.getElementById('compose-subject').value = prefill.subject
   navigate('compose')
