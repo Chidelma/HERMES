@@ -1,0 +1,70 @@
+{
+    "kind": "update",
+    "startTime": 1776019229,
+    "message": "chore: retrigger deploy after endpoint deletion complete [ci]",
+    "environment": {
+        "ci.build.id": "24313648296",
+        "ci.build.number": "28",
+        "ci.build.type": "push",
+        "ci.build.url": "https://github.com/Chidelma/HERMES/actions/runs/24313648296",
+        "ci.pr.headSHA": "f6351ebb1a19f3fabf7fea5d8ad715ffa9615875",
+        "ci.system": "GitHub Actions",
+        "exec.agent": "pulumi/actions@v5",
+        "exec.kind": "auto.local",
+        "git.author": "chidelma",
+        "git.author.email": "samuel@clickspace.com",
+        "git.committer": "chidelma",
+        "git.committer.email": "samuel@clickspace.com",
+        "git.dirty": "false",
+        "git.head": "f6351ebb1a19f3fabf7fea5d8ad715ffa9615875",
+        "git.headName": "refs/heads/master",
+        "pulumi.arch": "amd64",
+        "pulumi.env.PULUMI_BACKEND_URL": "set",
+        "pulumi.env.PULUMI_CONFIG_PASSPHRASE": "set",
+        "pulumi.env.PULUMI_DEBUG_COMMANDS": "true",
+        "pulumi.flag.color": "set",
+        "pulumi.flag.exec-agent": "set",
+        "pulumi.flag.exec-kind": "set",
+        "pulumi.flag.non-interactive": "true",
+        "pulumi.flag.skip-preview": "true",
+        "pulumi.flag.stack": "set",
+        "pulumi.flag.yes": "true",
+        "pulumi.os": "linux",
+        "pulumi.version": "v3.229.0",
+        "runtime.executable": "/opt/hostedtoolcache/node/20.20.2/x64/bin/node",
+        "runtime.metadata.packagemanager": "npm",
+        "runtime.metadata.packagemanagerVersion": "10.8.2",
+        "runtime.name": "nodejs",
+        "runtime.version": "v20.20.2",
+        "stack.environments": "[]",
+        "updatePlan": "false",
+        "vcs.kind": "github.com",
+        "vcs.owner": "Chidelma",
+        "vcs.repo": "HERMES",
+        "vcs.root": "."
+    },
+    "config": {
+        "aws:region": "us-east-1",
+        "hermes:domains": [
+            "gokeinvestmentcorp.com"
+        ],
+        "hermes:subnetIds": [
+            "subnet-ed6c2fa0",
+            "subnet-7312d542",
+            "subnet-b179c5ee",
+            "subnet-2747f906",
+            "subnet-396d1837",
+            "subnet-6208b804"
+        ],
+        "hermes:vpcId": "vpc-ea975897"
+    },
+    "version": 0,
+    "result": "succeeded",
+    "endTime": 1776019337,
+    "resourceChanges": {
+        "create": 3,
+        "replace": 1,
+        "same": 61,
+        "update": 6
+    }
+}
