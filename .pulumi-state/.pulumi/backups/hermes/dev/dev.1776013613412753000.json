@@ -1,10 +1,10 @@
 {
     "version": 3,
     "checkpoint": {
-        "Stack": "organization/hermes/dev",
-        "Latest": {
+        "stack": "organization/hermes/dev",
+        "latest": {
             "manifest": {
-                "time": "2026-04-12T13:07:07.473842-04:00",
+                "time": "2026-04-12T13:06:53.383164-04:00",
                 "magic": "d67539568b83836a29ebec33b94681fb04189ea530b5be5631513efd23f2bbbd",
                 "version": "v3.127.0"
             },
@@ -3622,6 +3622,7 @@
                         "restApi": "v5qp86a33m"
                     },
                     "parent": "urn:pulumi:dev::hermes::pulumi:pulumi:Stack::hermes-dev",
+                    "protect": true,
                     "provider": "urn:pulumi:dev::hermes::pulumi:providers:aws::default_6_83_2::9caafcd9-2b0f-49f8-bdc5-19605bdb4809",
                     "created": "2026-04-12T17:05:53.292372Z",
                     "modified": "2026-04-12T17:05:53.292372Z"
@@ -3664,41 +3665,10 @@
                         "uri": "arn:aws:apigateway:us-east-1:lambda:path/2015-03-31/functions/arn:aws:lambda:us-east-1:117469679339:function:hermes-auth/invocations"
                     },
                     "parent": "urn:pulumi:dev::hermes::pulumi:pulumi:Stack::hermes-dev",
+                    "protect": true,
                     "provider": "urn:pulumi:dev::hermes::pulumi:providers:aws::default_6_83_2::9caafcd9-2b0f-49f8-bdc5-19605bdb4809",
                     "created": "2026-04-12T17:06:53.381696Z",
                     "modified": "2026-04-12T17:06:53.381696Z"
-                },
-                {
-                    "urn": "urn:pulumi:dev::hermes::aws:lambda/permission:Permission::hermes-api-gw-auth-permission",
-                    "custom": true,
-                    "id": "hermes-api-gw-auth-permission-94ff0b8",
-                    "type": "aws:lambda/permission:Permission",
-                    "inputs": {
-                        "__defaults": [],
-                        "action": "lambda:InvokeFunction",
-                        "function": "hermes-auth",
-                        "principal": "apigateway.amazonaws.com",
-                        "sourceArn": "arn:aws:execute-api:us-east-1:117469679339:v5qp86a33m/*/*",
-                        "statementId": "hermes-api-gw-auth-permission-94ff0b8"
-                    },
-                    "outputs": {
-                        "action": "lambda:InvokeFunction",
-                        "eventSourceToken": null,
-                        "function": "hermes-auth",
-                        "functionUrlAuthType": null,
-                        "id": "hermes-api-gw-auth-permission-94ff0b8",
-                        "principal": "apigateway.amazonaws.com",
-                        "principalOrgId": null,
-                        "qualifier": "",
-                        "sourceAccount": null,
-                        "sourceArn": "arn:aws:execute-api:us-east-1:117469679339:v5qp86a33m/*/*",
-                        "statementId": "hermes-api-gw-auth-permission-94ff0b8",
-                        "statementIdPrefix": ""
-                    },
-                    "parent": "urn:pulumi:dev::hermes::pulumi:pulumi:Stack::hermes-dev",
-                    "provider": "urn:pulumi:dev::hermes::pulumi:providers:aws::default_6_83_2::9caafcd9-2b0f-49f8-bdc5-19605bdb4809",
-                    "created": "2026-04-12T17:07:07.47253Z",
-                    "modified": "2026-04-12T17:07:07.47253Z"
                 }
             ]
         }

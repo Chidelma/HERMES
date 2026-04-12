@@ -1,0 +1,48 @@
+{
+    "kind": "resource-import",
+    "startTime": 1776013609,
+    "message": "Import orphaned auth Lambda and API GW resources into Pulumi state",
+    "environment": {
+        "exec.kind": "cli",
+        "git.author": "chidelma",
+        "git.author.email": "samuel@clickspace.com",
+        "git.committer": "chidelma",
+        "git.committer.email": "samuel@clickspace.com",
+        "git.dirty": "true",
+        "git.head": "15196a98639ef61c88ea7028b85c77e51d697fb6",
+        "git.headName": "refs/heads/master",
+        "pulumi.arch": "arm64",
+        "pulumi.env.PULUMI_BACKEND_URL": "set",
+        "pulumi.env.PULUMI_CONFIG_PASSPHRASE": "set",
+        "pulumi.flag.yes": "true",
+        "pulumi.os": "darwin",
+        "pulumi.version": "v3.127.0",
+        "updatePlan": "false",
+        "vcs.kind": "github.com",
+        "vcs.owner": "Chidelma",
+        "vcs.repo": "HERMES",
+        "vcs.root": "."
+    },
+    "config": {
+        "aws:region": "us-east-1",
+        "hermes:domains": [
+            "gokeinvestmentcorp.com"
+        ],
+        "hermes:subnetIds": [
+            "subnet-ed6c2fa0",
+            "subnet-7312d542",
+            "subnet-b179c5ee",
+            "subnet-2747f906",
+            "subnet-396d1837",
+            "subnet-6208b804"
+        ],
+        "hermes:vpcId": "vpc-ea975897"
+    },
+    "version": 0,
+    "result": "succeeded",
+    "endTime": 1776013613,
+    "resourceChanges": {
+        "import": 1,
+        "same": 61
+    }
+}
