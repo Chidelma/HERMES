@@ -3,13 +3,16 @@ import * as pulumi from '@pulumi/pulumi'
 import { apiEndpoint } from './api'
 
 const cfg = new pulumi.Config()
-// Set with: pulumi config set --secret hermes:githubToken ghp_xxxx
+// Optional: pulumi config set --secret hermes:githubToken ghp_xxxx
+// Without it, connect GitHub manually in the Amplify console.
 const githubToken = cfg.getSecret('githubToken')
 
-export const amplifyApp = new aws.amplify.App('hermes-web', {
+const appArgs: aws.amplify.AppArgs = {
   name: 'hermes-web',
-  repository: 'https://github.com/Chidelma/HERMES',
-  accessToken: githubToken,
+  ...(githubToken !== undefined && {
+    repository: 'https://github.com/Chidelma/HERMES',
+    accessToken: githubToken,
+  }),
   environmentVariables: {
     HERMES_API_URL: apiEndpoint,
   },
@@ -20,7 +23,9 @@ export const amplifyApp = new aws.amplify.App('hermes-web', {
     status: '200',
   }],
   enableBranchAutoBuild: true,
-})
+}
+
+export const amplifyApp = new aws.amplify.App('hermes-web', appArgs)
 
 export const amplifyBranch = new aws.amplify.Branch('hermes-web-master', {
   appId: amplifyApp.id,
