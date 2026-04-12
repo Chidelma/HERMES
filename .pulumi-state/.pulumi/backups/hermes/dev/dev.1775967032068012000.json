@@ -1,8 +1,8 @@
 {
     "version": 3,
     "checkpoint": {
-        "Stack": "organization/hermes/dev",
-        "Latest": {
+        "stack": "organization/hermes/dev",
+        "latest": {
             "manifest": {
                 "time": "2026-04-12T00:10:32.044885-04:00",
                 "magic": "d67539568b83836a29ebec33b94681fb04189ea530b5be5631513efd23f2bbbd",
@@ -685,6 +685,7 @@
                         "throughputMode": "bursting"
                     },
                     "parent": "urn:pulumi:dev::hermes::pulumi:pulumi:Stack::hermes-dev",
+                    "protect": true,
                     "provider": "urn:pulumi:dev::hermes::pulumi:providers:aws::default_6_83_2::9caafcd9-2b0f-49f8-bdc5-19605bdb4809",
                     "created": "2026-04-12T04:09:36.787709Z",
                     "modified": "2026-04-12T04:09:36.787709Z"
@@ -748,6 +749,7 @@
                         }
                     },
                     "parent": "urn:pulumi:dev::hermes::pulumi:pulumi:Stack::hermes-dev",
+                    "protect": true,
                     "provider": "urn:pulumi:dev::hermes::pulumi:providers:aws::default_6_83_2::9caafcd9-2b0f-49f8-bdc5-19605bdb4809",
                     "created": "2026-04-12T04:09:43.852434Z",
                     "modified": "2026-04-12T04:09:43.852434Z"
@@ -784,6 +786,7 @@
                         "subnetId": "subnet-ed6c2fa0"
                     },
                     "parent": "urn:pulumi:dev::hermes::pulumi:pulumi:Stack::hermes-dev",
+                    "protect": true,
                     "provider": "urn:pulumi:dev::hermes::pulumi:providers:aws::default_6_83_2::9caafcd9-2b0f-49f8-bdc5-19605bdb4809",
                     "created": "2026-04-12T04:09:52.010225Z",
                     "modified": "2026-04-12T04:09:52.010225Z"
@@ -820,6 +823,7 @@
                         "subnetId": "subnet-7312d542"
                     },
                     "parent": "urn:pulumi:dev::hermes::pulumi:pulumi:Stack::hermes-dev",
+                    "protect": true,
                     "provider": "urn:pulumi:dev::hermes::pulumi:providers:aws::default_6_83_2::9caafcd9-2b0f-49f8-bdc5-19605bdb4809",
                     "created": "2026-04-12T04:09:59.991036Z",
                     "modified": "2026-04-12T04:09:59.991036Z"
@@ -856,6 +860,7 @@
                         "subnetId": "subnet-b179c5ee"
                     },
                     "parent": "urn:pulumi:dev::hermes::pulumi:pulumi:Stack::hermes-dev",
+                    "protect": true,
                     "provider": "urn:pulumi:dev::hermes::pulumi:providers:aws::default_6_83_2::9caafcd9-2b0f-49f8-bdc5-19605bdb4809",
                     "created": "2026-04-12T04:10:07.98543Z",
                     "modified": "2026-04-12T04:10:07.98543Z"
@@ -892,6 +897,7 @@
                         "subnetId": "subnet-2747f906"
                     },
                     "parent": "urn:pulumi:dev::hermes::pulumi:pulumi:Stack::hermes-dev",
+                    "protect": true,
                     "provider": "urn:pulumi:dev::hermes::pulumi:providers:aws::default_6_83_2::9caafcd9-2b0f-49f8-bdc5-19605bdb4809",
                     "created": "2026-04-12T04:10:15.997783Z",
                     "modified": "2026-04-12T04:10:15.997783Z"
@@ -928,6 +934,7 @@
                         "subnetId": "subnet-396d1837"
                     },
                     "parent": "urn:pulumi:dev::hermes::pulumi:pulumi:Stack::hermes-dev",
+                    "protect": true,
                     "provider": "urn:pulumi:dev::hermes::pulumi:providers:aws::default_6_83_2::9caafcd9-2b0f-49f8-bdc5-19605bdb4809",
                     "created": "2026-04-12T04:10:24.041503Z",
                     "modified": "2026-04-12T04:10:24.041503Z"

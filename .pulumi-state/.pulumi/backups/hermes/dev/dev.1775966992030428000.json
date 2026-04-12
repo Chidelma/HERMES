@@ -1,10 +1,10 @@
 {
     "version": 3,
     "checkpoint": {
-        "Stack": "organization/hermes/dev",
-        "Latest": {
+        "stack": "organization/hermes/dev",
+        "latest": {
             "manifest": {
-                "time": "2026-04-12T00:10:32.044885-04:00",
+                "time": "2026-04-12T00:09:52.011331-04:00",
                 "magic": "d67539568b83836a29ebec33b94681fb04189ea530b5be5631513efd23f2bbbd",
                 "version": "v3.127.0"
             },
@@ -685,6 +685,7 @@
                         "throughputMode": "bursting"
                     },
                     "parent": "urn:pulumi:dev::hermes::pulumi:pulumi:Stack::hermes-dev",
+                    "protect": true,
                     "provider": "urn:pulumi:dev::hermes::pulumi:providers:aws::default_6_83_2::9caafcd9-2b0f-49f8-bdc5-19605bdb4809",
                     "created": "2026-04-12T04:09:36.787709Z",
                     "modified": "2026-04-12T04:09:36.787709Z"
@@ -748,6 +749,7 @@
                         }
                     },
                     "parent": "urn:pulumi:dev::hermes::pulumi:pulumi:Stack::hermes-dev",
+                    "protect": true,
                     "provider": "urn:pulumi:dev::hermes::pulumi:providers:aws::default_6_83_2::9caafcd9-2b0f-49f8-bdc5-19605bdb4809",
                     "created": "2026-04-12T04:09:43.852434Z",
                     "modified": "2026-04-12T04:09:43.852434Z"
@@ -784,190 +786,10 @@
                         "subnetId": "subnet-ed6c2fa0"
                     },
                     "parent": "urn:pulumi:dev::hermes::pulumi:pulumi:Stack::hermes-dev",
+                    "protect": true,
                     "provider": "urn:pulumi:dev::hermes::pulumi:providers:aws::default_6_83_2::9caafcd9-2b0f-49f8-bdc5-19605bdb4809",
                     "created": "2026-04-12T04:09:52.010225Z",
                     "modified": "2026-04-12T04:09:52.010225Z"
-                },
-                {
-                    "urn": "urn:pulumi:dev::hermes::aws:efs/mountTarget:MountTarget::hermes-efs-mt-1",
-                    "custom": true,
-                    "id": "fsmt-0c83736147779de21",
-                    "type": "aws:efs/mountTarget:MountTarget",
-                    "inputs": {
-                        "__defaults": [],
-                        "fileSystemId": "fs-0ee1ed3eae293d7c7",
-                        "ipAddress": "172.31.53.64",
-                        "securityGroups": [
-                            "sg-00dc608d985843dec"
-                        ],
-                        "subnetId": "subnet-7312d542"
-                    },
-                    "outputs": {
-                        "__meta": "{\"e2bfb730-ecaa-11e6-8f88-34363bc7c4c0\":{\"create\":1800000000000,\"delete\":600000000000},\"schema_version\":\"0\"}",
-                        "availabilityZoneId": "use1-az3",
-                        "availabilityZoneName": "us-east-1e",
-                        "dnsName": "fs-0ee1ed3eae293d7c7.efs.us-east-1.amazonaws.com",
-                        "fileSystemArn": "arn:aws:elasticfilesystem:us-east-1:117469679339:file-system/fs-0ee1ed3eae293d7c7",
-                        "fileSystemId": "fs-0ee1ed3eae293d7c7",
-                        "id": "fsmt-0c83736147779de21",
-                        "ipAddress": "172.31.53.64",
-                        "mountTargetDnsName": "us-east-1e.fs-0ee1ed3eae293d7c7.efs.us-east-1.amazonaws.com",
-                        "networkInterfaceId": "eni-0ce7059d89983c8b6",
-                        "ownerId": "117469679339",
-                        "securityGroups": [
-                            "sg-00dc608d985843dec"
-                        ],
-                        "subnetId": "subnet-7312d542"
-                    },
-                    "parent": "urn:pulumi:dev::hermes::pulumi:pulumi:Stack::hermes-dev",
-                    "provider": "urn:pulumi:dev::hermes::pulumi:providers:aws::default_6_83_2::9caafcd9-2b0f-49f8-bdc5-19605bdb4809",
-                    "created": "2026-04-12T04:09:59.991036Z",
-                    "modified": "2026-04-12T04:09:59.991036Z"
-                },
-                {
-                    "urn": "urn:pulumi:dev::hermes::aws:efs/mountTarget:MountTarget::hermes-efs-mt-2",
-                    "custom": true,
-                    "id": "fsmt-0487b989d13a7cf6a",
-                    "type": "aws:efs/mountTarget:MountTarget",
-                    "inputs": {
-                        "__defaults": [],
-                        "fileSystemId": "fs-0ee1ed3eae293d7c7",
-                        "ipAddress": "172.31.40.147",
-                        "securityGroups": [
-                            "sg-00dc608d985843dec"
-                        ],
-                        "subnetId": "subnet-b179c5ee"
-                    },
-                    "outputs": {
-                        "__meta": "{\"e2bfb730-ecaa-11e6-8f88-34363bc7c4c0\":{\"create\":1800000000000,\"delete\":600000000000},\"schema_version\":\"0\"}",
-                        "availabilityZoneId": "use1-az6",
-                        "availabilityZoneName": "us-east-1d",
-                        "dnsName": "fs-0ee1ed3eae293d7c7.efs.us-east-1.amazonaws.com",
-                        "fileSystemArn": "arn:aws:elasticfilesystem:us-east-1:117469679339:file-system/fs-0ee1ed3eae293d7c7",
-                        "fileSystemId": "fs-0ee1ed3eae293d7c7",
-                        "id": "fsmt-0487b989d13a7cf6a",
-                        "ipAddress": "172.31.40.147",
-                        "mountTargetDnsName": "us-east-1d.fs-0ee1ed3eae293d7c7.efs.us-east-1.amazonaws.com",
-                        "networkInterfaceId": "eni-0a5a320d603f7c3ca",
-                        "ownerId": "117469679339",
-                        "securityGroups": [
-                            "sg-00dc608d985843dec"
-                        ],
-                        "subnetId": "subnet-b179c5ee"
-                    },
-                    "parent": "urn:pulumi:dev::hermes::pulumi:pulumi:Stack::hermes-dev",
-                    "provider": "urn:pulumi:dev::hermes::pulumi:providers:aws::default_6_83_2::9caafcd9-2b0f-49f8-bdc5-19605bdb4809",
-                    "created": "2026-04-12T04:10:07.98543Z",
-                    "modified": "2026-04-12T04:10:07.98543Z"
-                },
-                {
-                    "urn": "urn:pulumi:dev::hermes::aws:efs/mountTarget:MountTarget::hermes-efs-mt-3",
-                    "custom": true,
-                    "id": "fsmt-017b02ae1da7b4a51",
-                    "type": "aws:efs/mountTarget:MountTarget",
-                    "inputs": {
-                        "__defaults": [],
-                        "fileSystemId": "fs-0ee1ed3eae293d7c7",
-                        "ipAddress": "172.31.86.30",
-                        "securityGroups": [
-                            "sg-00dc608d985843dec"
-                        ],
-                        "subnetId": "subnet-2747f906"
-                    },
-                    "outputs": {
-                        "__meta": "{\"e2bfb730-ecaa-11e6-8f88-34363bc7c4c0\":{\"create\":1800000000000,\"delete\":600000000000},\"schema_version\":\"0\"}",
-                        "availabilityZoneId": "use1-az2",
-                        "availabilityZoneName": "us-east-1b",
-                        "dnsName": "fs-0ee1ed3eae293d7c7.efs.us-east-1.amazonaws.com",
-                        "fileSystemArn": "arn:aws:elasticfilesystem:us-east-1:117469679339:file-system/fs-0ee1ed3eae293d7c7",
-                        "fileSystemId": "fs-0ee1ed3eae293d7c7",
-                        "id": "fsmt-017b02ae1da7b4a51",
-                        "ipAddress": "172.31.86.30",
-                        "mountTargetDnsName": "us-east-1b.fs-0ee1ed3eae293d7c7.efs.us-east-1.amazonaws.com",
-                        "networkInterfaceId": "eni-0589d072c2eabc0f0",
-                        "ownerId": "117469679339",
-                        "securityGroups": [
-                            "sg-00dc608d985843dec"
-                        ],
-                        "subnetId": "subnet-2747f906"
-                    },
-                    "parent": "urn:pulumi:dev::hermes::pulumi:pulumi:Stack::hermes-dev",
-                    "provider": "urn:pulumi:dev::hermes::pulumi:providers:aws::default_6_83_2::9caafcd9-2b0f-49f8-bdc5-19605bdb4809",
-                    "created": "2026-04-12T04:10:15.997783Z",
-                    "modified": "2026-04-12T04:10:15.997783Z"
-                },
-                {
-                    "urn": "urn:pulumi:dev::hermes::aws:efs/mountTarget:MountTarget::hermes-efs-mt-4",
-                    "custom": true,
-                    "id": "fsmt-0bc481f5113a65aeb",
-                    "type": "aws:efs/mountTarget:MountTarget",
-                    "inputs": {
-                        "__defaults": [],
-                        "fileSystemId": "fs-0ee1ed3eae293d7c7",
-                        "ipAddress": "172.31.78.186",
-                        "securityGroups": [
-                            "sg-00dc608d985843dec"
-                        ],
-                        "subnetId": "subnet-396d1837"
-                    },
-                    "outputs": {
-                        "__meta": "{\"e2bfb730-ecaa-11e6-8f88-34363bc7c4c0\":{\"create\":1800000000000,\"delete\":600000000000},\"schema_version\":\"0\"}",
-                        "availabilityZoneId": "use1-az5",
-                        "availabilityZoneName": "us-east-1f",
-                        "dnsName": "fs-0ee1ed3eae293d7c7.efs.us-east-1.amazonaws.com",
-                        "fileSystemArn": "arn:aws:elasticfilesystem:us-east-1:117469679339:file-system/fs-0ee1ed3eae293d7c7",
-                        "fileSystemId": "fs-0ee1ed3eae293d7c7",
-                        "id": "fsmt-0bc481f5113a65aeb",
-                        "ipAddress": "172.31.78.186",
-                        "mountTargetDnsName": "us-east-1f.fs-0ee1ed3eae293d7c7.efs.us-east-1.amazonaws.com",
-                        "networkInterfaceId": "eni-0f79c1798b8505f41",
-                        "ownerId": "117469679339",
-                        "securityGroups": [
-                            "sg-00dc608d985843dec"
-                        ],
-                        "subnetId": "subnet-396d1837"
-                    },
-                    "parent": "urn:pulumi:dev::hermes::pulumi:pulumi:Stack::hermes-dev",
-                    "provider": "urn:pulumi:dev::hermes::pulumi:providers:aws::default_6_83_2::9caafcd9-2b0f-49f8-bdc5-19605bdb4809",
-                    "created": "2026-04-12T04:10:24.041503Z",
-                    "modified": "2026-04-12T04:10:24.041503Z"
-                },
-                {
-                    "urn": "urn:pulumi:dev::hermes::aws:efs/mountTarget:MountTarget::hermes-efs-mt-5",
-                    "custom": true,
-                    "id": "fsmt-0e67684527e287a6c",
-                    "type": "aws:efs/mountTarget:MountTarget",
-                    "inputs": {
-                        "__defaults": [],
-                        "fileSystemId": "fs-0ee1ed3eae293d7c7",
-                        "ipAddress": "172.31.0.206",
-                        "securityGroups": [
-                            "sg-00dc608d985843dec"
-                        ],
-                        "subnetId": "subnet-6208b804"
-                    },
-                    "outputs": {
-                        "__meta": "{\"e2bfb730-ecaa-11e6-8f88-34363bc7c4c0\":{\"create\":1800000000000,\"delete\":600000000000},\"schema_version\":\"0\"}",
-                        "availabilityZoneId": "use1-az1",
-                        "availabilityZoneName": "us-east-1a",
-                        "dnsName": "fs-0ee1ed3eae293d7c7.efs.us-east-1.amazonaws.com",
-                        "fileSystemArn": "arn:aws:elasticfilesystem:us-east-1:117469679339:file-system/fs-0ee1ed3eae293d7c7",
-                        "fileSystemId": "fs-0ee1ed3eae293d7c7",
-                        "id": "fsmt-0e67684527e287a6c",
-                        "ipAddress": "172.31.0.206",
-                        "mountTargetDnsName": "us-east-1a.fs-0ee1ed3eae293d7c7.efs.us-east-1.amazonaws.com",
-                        "networkInterfaceId": "eni-0c5bfd4a318b2f180",
-                        "ownerId": "117469679339",
-                        "securityGroups": [
-                            "sg-00dc608d985843dec"
-                        ],
-                        "subnetId": "subnet-6208b804"
-                    },
-                    "parent": "urn:pulumi:dev::hermes::pulumi:pulumi:Stack::hermes-dev",
-                    "protect": true,
-                    "provider": "urn:pulumi:dev::hermes::pulumi:providers:aws::default_6_83_2::9caafcd9-2b0f-49f8-bdc5-19605bdb4809",
-                    "created": "2026-04-12T04:10:32.04337Z",
-                    "modified": "2026-04-12T04:10:32.04337Z"
                 }
             ]
         }
