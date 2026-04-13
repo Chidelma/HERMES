@@ -2,7 +2,7 @@
   // ── App bootstrap — runs as the page module after spa-renderer hydrates.
   // Browser-API usage is guarded so SSG pre-rendering in Node.js is safe.
 
-  if (typeof window !== 'undefined') {
+  if (typeof window !== 'undefined' && typeof document?.querySelector === 'function') {
 
     // ── Config ──────────────────────────────────────────────────────────────
     const API_URL = document.querySelector('meta[name="hermes-api-url"]')?.content || ''
