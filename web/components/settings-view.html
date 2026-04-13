@@ -1,7 +1,7 @@
 <script>
   let domains = [], users = [], loading = true, showAddUser = false
   let newEmail = '', newPhone = '', newDomains = '', newRole = 'viewer'
-  const isAdmin = typeof window !== 'undefined' && sessionStorage.getItem('hermes_role') === 'admin'
+  const isAdmin = typeof sessionStorage !== 'undefined' && sessionStorage.getItem('hermes_role') === 'admin'
 
   async function loadAll() {
     loading = true
