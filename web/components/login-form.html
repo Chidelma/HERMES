@@ -5,7 +5,7 @@
   let mfaSessionId = '', otpSessionId = '', setupToken = '', totpSecret = '', totpUri = ''
   let loading = false, error = ''
 
-  const _api = () => document.querySelector('meta[name="hermes-api-url"]')?.content || ''
+  const _api = () => window.HERMES_CONFIG?.apiUrl || ''
 
   // ── Step: start ─────────────────────────────────────────────────────────────
   // Ask the server whether the user has MFA devices registered.

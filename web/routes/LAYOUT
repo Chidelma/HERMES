@@ -4,11 +4,11 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>HERMES</title>
-    <meta name="hermes-api-url" content="__HERMES_API_URL__" />
     <link rel="stylesheet" href="/assets/styles.css" />
   </head>
   <body>
     <slot />
+    <script src="/assets/config.js"></script>
     <script src="/main.js" defer></script>
   </body>
 </html>

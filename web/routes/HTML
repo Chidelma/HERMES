@@ -30,9 +30,7 @@
   let composeData   = {}
 
   // ── API client ───────────────────────────────────────────────────────────────
-  const API_URL = typeof document !== 'undefined'
-    ? (document.querySelector?.('meta[name="hermes-api-url"]')?.content || '')
-    : ''
+  const API_URL = typeof window !== 'undefined' ? (window.HERMES_CONFIG?.apiUrl || '') : ''
 
   async function apiFetch(path, options = {}) {
     const headers = { 'Content-Type': 'application/json', ...options.headers }
