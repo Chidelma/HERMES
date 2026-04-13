@@ -1,6 +1,151 @@
 <script>
-  // Runs after spa-renderer hydrates this route — re-applies auth state and current view
-  window.dispatchEvent(new Event('hermes:ready'))
+  // ── App bootstrap — runs as the page module after spa-renderer hydrates.
+  // Browser-API usage is guarded so SSG pre-rendering in Node.js is safe.
+
+  if (typeof window !== 'undefined') {
+
+    // ── Config ──────────────────────────────────────────────────────────────
+    const API_URL = document.querySelector('meta[name="hermes-api-url"]')?.content || ''
+
+    // ── Auth state ───────────────────────────────────────────────────────────
+    const auth = {
+      get token()   { return sessionStorage.getItem('hermes_token') },
+      get email()   { return sessionStorage.getItem('hermes_email') },
+      get role()    { return sessionStorage.getItem('hermes_role') },
+      get domains() {
+        try { return JSON.parse(sessionStorage.getItem('hermes_domains') || '[]') } catch { return [] }
+      },
+      save(data) {
+        sessionStorage.setItem('hermes_token',   data.token)
+        sessionStorage.setItem('hermes_email',   data.email)
+        sessionStorage.setItem('hermes_role',    data.role)
+        sessionStorage.setItem('hermes_domains', JSON.stringify(data.domains))
+      },
+      clear() {
+        ['hermes_token','hermes_email','hermes_role','hermes_domains'].forEach(k => sessionStorage.removeItem(k))
+      },
+      get isLoggedIn() { return !!this.token },
+    }
+
+    // ── API client ───────────────────────────────────────────────────────────
+    async function apiFetch(path, options = {}) {
+      const headers = { 'Content-Type': 'application/json', ...options.headers }
+      if (auth.token) headers['Authorization'] = `Bearer ${auth.token}`
+      const res = await fetch(API_URL + path, { ...options, headers })
+      if (res.status === 401) {
+        auth.clear()
+        window.dispatchEvent(new Event('hermes:logout'))
+        return null
+      }
+      return res
+    }
+
+    // ── Toast ────────────────────────────────────────────────────────────────
+    let _toastTimer
+    function toast(msg, duration = 2500) {
+      clearTimeout(_toastTimer)
+      let el = document.getElementById('hermes-toast')
+      if (!el) {
+        el = document.createElement('div')
+        el.id = 'hermes-toast'
+        el.className = 'toast'
+        document.body.appendChild(el)
+      }
+      el.textContent = msg
+      el.style.display = 'block'
+      _toastTimer = setTimeout(() => { el.style.display = 'none' }, duration)
+    }
+
+    // ── Router ───────────────────────────────────────────────────────────────
+    const _views = ['inbox', 'email', 'compose', 'settings']
+    let _currentView = 'inbox'
+
+    function navigate(view, pushState = true) {
+      if (!_views.includes(view)) return
+      _currentView = view
+      _views.forEach(v => {
+        const el = document.getElementById(`view-${v}`)
+        if (el) el.hidden = v !== view
+      })
+      if (pushState) {
+        const paths = { inbox: '/inbox', compose: '/compose', settings: '/settings', email: '/inbox' }
+        history.pushState({ view }, '', paths[view] || '/inbox')
+      }
+      window.dispatchEvent(new CustomEvent('hermes:view-changed', { detail: view }))
+    }
+
+    function showLogin() {
+      const login = document.getElementById('screen-login')
+      const app   = document.getElementById('screen-app')
+      if (login) login.hidden = false
+      if (app)   app.hidden   = true
+    }
+
+    function showApp() {
+      const login = document.getElementById('screen-login')
+      const app   = document.getElementById('screen-app')
+      if (login) login.hidden = true
+      if (app)   app.hidden   = false
+      const userEl = document.getElementById('app-user-email')
+      if (userEl) userEl.textContent = auth.email || ''
+    }
+
+    // ── Expose globals for components ────────────────────────────────────────
+    window._hermes = { auth, apiFetch, toast, navigate }
+
+    // ── UI init ──────────────────────────────────────────────────────────────
+    function initUI() {
+      if (auth.isLoggedIn) {
+        showApp()
+        const pathMap = { '/inbox': 'inbox', '/compose': 'compose', '/settings': 'settings' }
+        navigate(pathMap[location.pathname] || _currentView, false)
+      } else {
+        showLogin()
+      }
+    }
+
+    // ── App-level event listeners (registered once; survive body replacement)
+    if (!window._hermesInitialised) {
+      window._hermesInitialised = true
+
+      window.addEventListener('hermes:login', (e) => {
+        auth.save(e.detail)
+        showApp()
+        navigate('inbox', false)
+        history.replaceState({ view: 'inbox' }, '', '/inbox')
+      })
+
+      window.addEventListener('hermes:logout', () => {
+        auth.clear()
+        showLogin()
+        history.replaceState({}, '', '/')
+      })
+
+      // Sign-out button (event delegation — survives body replacement)
+      document.addEventListener('click', (e) => {
+        if (e.target.closest('#btn-logout')) {
+          auth.clear()
+          showLogin()
+          history.replaceState({}, '', '/')
+        }
+      })
+
+      // Keyboard shortcut: C → compose
+      document.addEventListener('keydown', (e) => {
+        if (e.key === 'c' && !['INPUT', 'TEXTAREA'].includes(document.activeElement?.tagName)) {
+          window.dispatchEvent(new CustomEvent('hermes:compose', { detail: {} }))
+        }
+      })
+
+      // Browser back/forward
+      window.addEventListener('popstate', (e) => {
+        if (auth.isLoggedIn) navigate(e.state?.view || 'inbox', false)
+      })
+    }
+
+    // Re-apply UI state (runs on initial load and after every spa-renderer hydration)
+    initUI()
+  }
 </script>
 
 <!-- Login screen -->
