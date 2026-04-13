@@ -1,37 +1,78 @@
+<script>
+  let email = '', phone = '', code = '', sessionId = '', step = 'request'
+  let loading = false, error = ''
+
+  const _api = () => document.querySelector('meta[name="hermes-api-url"]')?.content || ''
+
+  async function requestCode() {
+    if (!email || !phone) { error = 'Email and phone are required.'; return }
+    loading = true; error = ''
+    try {
+      const res = await fetch(`${_api()}/auth/request`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email, phone }),
+      })
+      const data = await res.json()
+      if (!res.ok) { error = data.error || 'Unable to send code.'; return }
+      sessionId = data.sessionId
+      step = 'confirm'
+    } catch { error = 'Network error. Check your connection.' }
+    finally { loading = false }
+  }
+
+  async function confirmCode() {
+    if (!code || code.length !== 6) { error = 'Enter the 6-digit code.'; return }
+    loading = true; error = ''
+    try {
+      const res = await fetch(`${_api()}/auth/confirm`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ sessionId, code }),
+      })
+      const data = await res.json()
+      if (!res.ok) { error = data.error || 'Invalid code.'; return }
+      window.dispatchEvent(new CustomEvent('hermes:login', { detail: data }))
+    } catch { error = 'Network error. Check your connection.' }
+    finally { loading = false }
+  }
+</script>
+
 <div class="login-card">
   <div class="login-logo">HERMES</div>
 
-  <!-- Step 1: email + phone -->
-  <div id="login-step-1">
+  <logic :if="step === 'request'">
     <p class="login-title">Sign in</p>
     <p class="login-subtitle">Enter your email and phone number to receive a verification code.</p>
 
     <div class="form-group">
-      <label class="form-label" for="login-email">Email</label>
-      <input id="login-email" type="email" placeholder="you@example.com" autocomplete="email" />
+      <label class="form-label">Email</label>
+      <input type="email" :value="email" placeholder="you@example.com" autocomplete="email" />
     </div>
-
     <div class="form-group">
-      <label class="form-label" for="login-phone">Phone</label>
-      <input id="login-phone" type="tel" placeholder="+1 416 555 0100" autocomplete="tel" />
+      <label class="form-label">Phone</label>
+      <input type="tel" :value="phone" placeholder="+1 416 555 0100" autocomplete="tel" />
     </div>
 
-    <p class="login-error" id="login-error-1"></p>
-    <button class="btn-primary" id="btn-request-otp">Send code</button>
-  </div>
+    <logic :if="error"><p class="login-error">{error}</p></logic>
+    <button class="btn-primary" :disabled="loading" @click="requestCode()">
+      {loading ? 'Sending…' : 'Send code'}
+    </button>
+  </logic>
 
-  <!-- Step 2: OTP -->
-  <div id="login-step-2" hidden>
+  <logic :if="step === 'confirm'">
     <p class="login-title">Enter your code</p>
-    <p class="login-subtitle otp-hint" id="otp-hint">We sent a 6-digit code to your phone.</p>
+    <p class="login-subtitle">We sent a 6-digit code to your phone.</p>
 
     <div class="form-group">
-      <label class="form-label" for="login-otp">Verification code</label>
-      <input id="login-otp" type="text" inputmode="numeric" maxlength="6" placeholder="000000" autocomplete="one-time-code" />
+      <label class="form-label">Verification code</label>
+      <input type="text" :value="code" inputmode="numeric" maxlength="6" placeholder="000000" autocomplete="one-time-code" />
     </div>
 
-    <p class="login-error" id="login-error-2"></p>
-    <button class="btn-primary" id="btn-confirm-otp">Verify</button>
-    <button class="btn-ghost" id="btn-back-to-step1" style="display:block;margin-top:0.75rem;width:100%;text-align:center;">← Back</button>
-  </div>
+    <logic :if="error"><p class="login-error">{error}</p></logic>
+    <button class="btn-primary" :disabled="loading" @click="confirmCode()">
+      {loading ? 'Verifying…' : 'Verify'}
+    </button>
+    <button class="btn-ghost" @click="step = 'request'; error = ''" style="display:block;margin-top:0.75rem;width:100%;text-align:center;">← Back</button>
+  </logic>
 </div>

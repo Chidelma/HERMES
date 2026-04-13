@@ -1,6 +1,11 @@
+<script>
+  // Runs after spa-renderer hydrates this route — re-applies auth state and current view
+  window.dispatchEvent(new Event('hermes:ready'))
+</script>
+
 <!-- Login screen -->
 <div id="screen-login" class="login-screen">
-  <login-form />
+  <login-form_ />
 </div>
 
 <!-- App screen (hidden until authenticated) -->
@@ -14,14 +19,14 @@
 
   <div class="app-body">
     <aside class="sidebar">
-      <app-nav />
+      <app-nav_ />
     </aside>
 
     <main class="main-content">
-      <div id="view-inbox"><inbox-view /></div>
-      <div id="view-email" hidden><email-detail /></div>
-      <div id="view-compose" hidden><compose-view /></div>
-      <div id="view-settings" hidden><settings-view /></div>
+      <div id="view-inbox"><inbox-view_ /></div>
+      <div id="view-email" hidden><email-detail_ /></div>
+      <div id="view-compose" hidden><compose-view_ /></div>
+      <div id="view-settings" hidden><settings-view_ /></div>
     </main>
   </div>
 

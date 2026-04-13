@@ -1,17 +1,128 @@
+<script>
+  let domains = [], users = [], loading = true, showAddUser = false
+  let newEmail = '', newPhone = '', newDomains = '', newRole = 'viewer'
+  const isAdmin = typeof window !== 'undefined' && sessionStorage.getItem('hermes_role') === 'admin'
+
+  async function loadAll() {
+    loading = true
+    const apiFetch = window._hermes?.apiFetch
+    if (!apiFetch) { loading = false; return }
+    const res = await apiFetch('/domains')
+    domains = res?.ok ? await res.json() : []
+    if (isAdmin) {
+      const ur = await apiFetch('/users')
+      users = ur?.ok ? await ur.json() : []
+    }
+    loading = false
+  }
+
+  await loadAll()
+
+  async function addUser() {
+    if (!newEmail || !newPhone || !newDomains) return
+    const apiFetch = window._hermes?.apiFetch
+    if (!apiFetch) return
+    const res = await apiFetch('/users', {
+      method: 'POST',
+      body: JSON.stringify({
+        email: newEmail,
+        phone: newPhone,
+        domains: newDomains.split(',').map(d => d.trim()).filter(Boolean),
+        role: newRole,
+      }),
+    })
+    if (res?.ok) {
+      showAddUser = false
+      newEmail = newPhone = newDomains = ''
+      newRole = 'viewer'
+      const ur = await apiFetch('/users')
+      users = ur?.ok ? await ur.json() : []
+      window._hermes?.toast('User added.')
+    } else {
+      const data = await res?.json()
+      window._hermes?.toast(data?.error || 'Failed to add user.')
+    }
+  }
+</script>
+
 <div class="settings-panel">
   <div class="settings-section">
     <p class="settings-section-title">Routing Rules</p>
-    <div id="settings-routes-container">
-      <div class="inbox-empty" id="settings-loading">
-        <div class="spinner"></div>
-        <span>Loading…</span>
+
+    <logic :if="loading">
+      <div class="inbox-empty"><div class="spinner"></div><span>Loading…</span></div>
+    </logic>
+
+    <logic :if="!loading && domains.length === 0">
+      <p style="color:var(--muted);padding:1rem;">No domains configured.</p>
+    </logic>
+
+    <loop :for="domain of domains">
+      <div style="margin-bottom:1rem;">
+        <p style="font-size:13px;font-weight:600;margin:0 0 0.5rem;color:var(--muted);">{domain.domain}</p>
+        <div class="settings-card">
+          <loop :for="route of domain.routes">
+            <div class="settings-row">
+              <span class="settings-row-label">{route.match}</span>
+              <span :class="'route-badge ' + route.action.type">{route.action.type}</span>
+              <logic :if="!route.enabled">
+                <span style="color:var(--muted);font-size:12px;margin-left:0.5rem;">(disabled)</span>
+              </logic>
+            </div>
+          </loop>
+          <logic :if="domain.routes.length === 0">
+            <div class="settings-row"><span style="color:var(--muted);">No rules</span></div>
+          </logic>
+        </div>
       </div>
-    </div>
+    </loop>
   </div>
 
-  <div class="settings-section" id="settings-users-section" hidden>
-    <p class="settings-section-title">Users</p>
-    <div id="settings-users-container"></div>
-    <button class="btn-secondary" id="btn-add-user" style="margin-top:0.75rem;">+ Add user</button>
-  </div>
+  <logic :if="isAdmin">
+    <div class="settings-section">
+      <p class="settings-section-title">Users</p>
+
+      <logic :if="!loading && users.length > 0">
+        <div class="settings-card">
+          <loop :for="user of users">
+            <div class="settings-row">
+              <span class="settings-row-label">{user.email}</span>
+              <span class="settings-row-value">{user.domains.join(', ')}</span>
+              <span :class="'route-badge ' + (user.role === 'admin' ? 'store' : 'forward')" style="margin-left:0.5rem;">{user.role}</span>
+            </div>
+          </loop>
+        </div>
+      </logic>
+
+      <button class="btn-secondary" @click="showAddUser = !showAddUser" style="margin-top:0.75rem;">+ Add user</button>
+
+      <logic :if="showAddUser">
+        <div class="settings-card" style="margin-top:0.75rem;padding:1rem;display:flex;flex-direction:column;gap:0.75rem;">
+          <div class="form-group">
+            <label class="form-label">Email</label>
+            <input type="email" :value="newEmail" placeholder="user@example.com" />
+          </div>
+          <div class="form-group">
+            <label class="form-label">Phone (E.164)</label>
+            <input type="tel" :value="newPhone" placeholder="+1 416 555 0100" />
+          </div>
+          <div class="form-group">
+            <label class="form-label">Domains (comma-separated)</label>
+            <input type="text" :value="newDomains" placeholder="example.com" />
+          </div>
+          <div class="form-group">
+            <label class="form-label">Role</label>
+            <select :value="newRole">
+              <option value="viewer">viewer</option>
+              <option value="admin">admin</option>
+            </select>
+          </div>
+          <div style="display:flex;gap:0.5rem;">
+            <button class="btn-primary" @click="addUser()">Save</button>
+            <button class="btn-secondary" @click="showAddUser = false">Cancel</button>
+          </div>
+        </div>
+      </logic>
+    </div>
+  </logic>
 </div>

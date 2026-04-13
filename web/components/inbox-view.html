@@ -1,11 +1,59 @@
+<script>
+  let emails = [], loading = true
+
+  function initials(addr) {
+    return (addr.split('@')[0] || '?').slice(0, 2).toUpperCase()
+  }
+
+  function formatDate(iso) {
+    const d = new Date(iso), now = new Date()
+    if (d.toDateString() === now.toDateString())
+      return d.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+    return d.toLocaleDateString([], { month: 'short', day: 'numeric' })
+  }
+
+  async function load() {
+    loading = true
+    const apiFetch = window._hermes?.apiFetch
+    if (!apiFetch) { loading = false; return }
+    const res = await apiFetch('/inbox')
+    emails = res?.ok ? await res.json() : []
+    loading = false
+  }
+
+  await load()
+
+  window.addEventListener('hermes:refresh-inbox', load)
+</script>
+
 <div class="inbox-toolbar">
   <span class="inbox-title">Inbox</span>
-  <button class="btn-secondary" id="btn-refresh-inbox" style="margin-left:auto;">Refresh</button>
+  <button class="btn-secondary" style="margin-left:auto;" @click="load()">Refresh</button>
 </div>
 
-<div class="inbox-list" id="inbox-list">
-  <div class="inbox-empty" id="inbox-loading">
-    <div class="spinner"></div>
-    <span>Loading…</span>
-  </div>
+<div class="inbox-list">
+  <logic :if="loading">
+    <div class="inbox-empty"><div class="spinner"></div><span>Loading…</span></div>
+  </logic>
+
+  <logic :if="!loading && emails.length === 0">
+    <div class="inbox-empty">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+        <path d="M22 12h-6l-2 3h-4l-2-3H2"/>
+        <path d="M5.45 5.11L2 12v6a2 2 0 002 2h16a2 2 0 002-2v-6l-3.45-6.89A2 2 0 0016.76 4H7.24a2 2 0 00-1.79 1.11z"/>
+      </svg>
+      <span>No messages</span>
+    </div>
+  </logic>
+
+  <loop :for="email of emails">
+    <div class="email-row unread" @click="window.dispatchEvent(new CustomEvent('hermes:open-email', { detail: email }))">
+      <div class="email-avatar">{initials(email.sender)}</div>
+      <div class="email-meta">
+        <div class="email-sender">{email.sender}</div>
+        <div class="email-subject">{email.subject}</div>
+      </div>
+      <span class="email-time">{formatDate(email.receivedAt)}</span>
+    </div>
+  </loop>
 </div>
