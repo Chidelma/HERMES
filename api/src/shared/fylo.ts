@@ -16,15 +16,17 @@ export async function getFylo(): Promise<Fylo> {
     _fylo.createCollection('suppressed'),
     _fylo.createCollection('users'),
     _fylo.createCollection('otp-sessions'),
+    _fylo.createCollection('inbox-rules'),
   ])
 
   return _fylo
 }
 
 export const Collections = {
-  DOMAINS: 'domains',
-  EMAILS: 'emails',
-  SUPPRESSED: 'suppressed',
-  USERS: 'users',
+  DOMAINS:      'domains',
+  EMAILS:       'emails',
+  SUPPRESSED:   'suppressed',
+  USERS:        'users',
   OTP_SESSIONS: 'otp-sessions',
+  INBOX_RULES:  'inbox-rules',
 } as const

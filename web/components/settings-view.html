@@ -1,14 +1,21 @@
 <script>
-  let domains = [], users = [], loading = true, showAddUser = false
+  let domains = [], users = [], rules = [], loading = true
+  let showAddUser = false, showAddRule = false
   let newEmail = '', newPhone = '', newDomains = '', newRole = 'viewer'
+  let newRuleName = '', newRuleDomain = '', newConditionMatch = 'all'
+  let newConditions = [], newActions = []
+  let condField = 'from', condOp = 'contains', condValue = ''
+  let actionType = 'folder', actionFolder = '', actionTo = ''
+
   const isAdmin = typeof sessionStorage !== 'undefined' && sessionStorage.getItem('hermes_role') === 'admin'
 
   async function loadAll() {
     loading = true
     const apiFetch = window._hermes?.apiFetch
     if (!apiFetch) { loading = false; return }
-    const res = await apiFetch('/domains')
-    domains = res?.ok ? await res.json() : []
+    const [dr, rr] = await Promise.all([apiFetch('/domains'), apiFetch('/rules')])
+    domains = dr?.ok ? await dr.json() : []
+    rules = rr?.ok ? await rr.json() : []
     if (isAdmin) {
       const ur = await apiFetch('/users')
       users = ur?.ok ? await ur.json() : []
@@ -43,9 +50,109 @@
       window._hermes?.toast(data?.error || 'Failed to add user.')
     }
   }
+
+  function addCondition() {
+    if (!condValue) return
+    newConditions = [...newConditions, { field: condField, op: condOp, value: condValue }]
+    condValue = ''
+  }
+
+  function removeCondition(i) {
+    newConditions = newConditions.filter((_, idx) => idx !== i)
+  }
+
+  function addAction() {
+    if (actionType === 'folder' && !actionFolder) return
+    if (actionType === 'forward' && !actionTo) return
+    const action = actionType === 'folder'  ? { type: 'folder', folder: actionFolder }
+                 : actionType === 'forward' ? { type: 'forward', to: actionTo }
+                 :                            { type: 'delete' }
+    newActions = [...newActions, action]
+    actionFolder = actionTo = ''
+  }
+
+  function removeAction(i) {
+    newActions = newActions.filter((_, idx) => idx !== i)
+  }
+
+  function resetRuleForm() {
+    newRuleName = newRuleDomain = ''
+    newConditionMatch = 'all'
+    newConditions = []
+    newActions = []
+    condField = 'from'; condOp = 'contains'; condValue = ''
+    actionType = 'folder'; actionFolder = actionTo = ''
+    showAddRule = false
+  }
+
+  async function saveRule() {
+    if (!newRuleName || !newRuleDomain || newActions.length === 0) {
+      window._hermes?.toast('Name, domain, and at least one action are required.')
+      return
+    }
+    const apiFetch = window._hermes?.apiFetch
+    if (!apiFetch) return
+    const res = await apiFetch('/rules', {
+      method: 'POST',
+      body: JSON.stringify({
+        name: newRuleName,
+        domain: newRuleDomain,
+        enabled: true,
+        conditionMatch: newConditionMatch,
+        conditions: newConditions,
+        actions: newActions,
+      }),
+    })
+    if (res?.ok) {
+      const rr = await apiFetch('/rules')
+      rules = rr?.ok ? await rr.json() : []
+      window._hermes?.toast('Rule saved.')
+      resetRuleForm()
+    } else {
+      const data = await res?.json()
+      window._hermes?.toast(data?.error || 'Failed to save rule.')
+    }
+  }
+
+  async function deleteRule(id) {
+    if (!confirm('Delete this rule?')) return
+    const apiFetch = window._hermes?.apiFetch
+    if (!apiFetch) return
+    const res = await apiFetch(`/rules/${id}`, { method: 'DELETE' })
+    if (res?.ok) {
+      rules = rules.filter(r => r.id !== id)
+      window._hermes?.toast('Rule deleted.')
+    }
+  }
+
+  async function toggleRule(id, enabled) {
+    const apiFetch = window._hermes?.apiFetch
+    if (!apiFetch) return
+    await apiFetch(`/rules/${id}`, {
+      method: 'PUT',
+      body: JSON.stringify({ enabled: !enabled }),
+    })
+    const rr = await apiFetch('/rules')
+    rules = rr?.ok ? await rr.json() : []
+  }
+
+  function describeConditions(rule) {
+    if (!rule.conditions?.length) return 'Always'
+    return rule.conditions.map(c => `${c.field} ${c.op} "${c.value}"`).join(` ${rule.conditionMatch} `)
+  }
+
+  function describeActions(rule) {
+    return (rule.actions || []).map(a =>
+      a.type === 'folder'  ? `→ folder "${a.folder}"` :
+      a.type === 'forward' ? `→ forward to ${a.to}` :
+      '→ delete'
+    ).join(', ')
+  }
 </script>
 
 <div class="settings-panel">
+
+  <!-- Routing Rules -->
   <div class="settings-section">
     <p class="settings-section-title">Routing Rules</p>
 
@@ -78,6 +185,135 @@
     </loop>
   </div>
 
+  <!-- Inbox Rules -->
+  <logic :if="isAdmin">
+    <div class="settings-section">
+      <p class="settings-section-title">Inbox Rules</p>
+
+      <logic :if="!loading && rules.length > 0">
+        <div class="settings-card">
+          <loop :for="rule of rules">
+            <div class="settings-row" style="flex-direction:column;align-items:flex-start;gap:0.25rem;padding:0.6rem 0;">
+              <div style="display:flex;align-items:center;gap:0.5rem;width:100%;">
+                <span class="settings-row-label" style="font-weight:600;">{rule.name}</span>
+                <span style="color:var(--muted);font-size:12px;">{rule.domain}</span>
+                <span :class="'route-badge ' + (rule.enabled ? 'store' : 'drop')" style="cursor:pointer;margin-left:auto;" @click="toggleRule(rule.id, rule.enabled)">
+                  {rule.enabled ? 'on' : 'off'}
+                </span>
+                <button class="btn-danger" style="padding:2px 8px;font-size:12px;" @click="deleteRule(rule.id)">×</button>
+              </div>
+              <div style="font-size:12px;color:var(--muted);">If {describeConditions(rule)}</div>
+              <div style="font-size:12px;color:var(--fg);">{describeActions(rule)}</div>
+            </div>
+          </loop>
+        </div>
+      </logic>
+
+      <logic :if="!loading && rules.length === 0">
+        <p style="color:var(--muted);padding:0.5rem 0;font-size:13px;">No inbox rules.</p>
+      </logic>
+
+      <button class="btn-secondary" @click="showAddRule = !showAddRule" style="margin-top:0.75rem;">+ Add rule</button>
+
+      <logic :if="showAddRule">
+        <div class="settings-card" style="margin-top:0.75rem;padding:1rem;display:flex;flex-direction:column;gap:0.75rem;">
+
+          <div class="form-group">
+            <label class="form-label">Rule name</label>
+            <input type="text" :value="newRuleName" placeholder="e.g. Move newsletters" />
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">Domain</label>
+            <select :value="newRuleDomain">
+              <option value="">��� select domain —</option>
+              <loop :for="d of domains">
+                <option :value="d.domain">{d.domain}</option>
+              </loop>
+            </select>
+          </div>
+
+          <!-- Conditions -->
+          <div>
+            <label class="form-label" style="margin-bottom:0.4rem;">
+              When
+              <select :value="newConditionMatch" style="margin:0 0.25rem;font-size:13px;">
+                <option value="all">all</option>
+                <option value="any">any</option>
+              </select>
+              of these conditions are met:
+            </label>
+
+            <logic :if="newConditions.length > 0">
+              <div class="settings-card" style="margin-bottom:0.5rem;">
+                <loop :for="(c, i) of newConditions">
+                  <div class="settings-row">
+                    <span style="font-size:13px;">{c.field} {c.op} "{c.value}"</span>
+                    <button class="btn-ghost" style="margin-left:auto;padding:2px 8px;font-size:12px;" @click="removeCondition(i)">×</button>
+                  </div>
+                </loop>
+              </div>
+            </logic>
+
+            <div style="display:flex;gap:0.4rem;flex-wrap:wrap;align-items:center;">
+              <select :value="condField" style="font-size:13px;">
+                <option value="from">From</option>
+                <option value="to">To</option>
+                <option value="subject">Subject</option>
+              </select>
+              <select :value="condOp" style="font-size:13px;">
+                <option value="contains">contains</option>
+                <option value="equals">equals</option>
+                <option value="startsWith">starts with</option>
+              </select>
+              <input type="text" :value="condValue" placeholder="value" style="flex:1;min-width:100px;" />
+              <button class="btn-secondary" style="padding:6px 12px;font-size:13px;" @click="addCondition()">+ Add</button>
+            </div>
+          </div>
+
+          <!-- Actions -->
+          <div>
+            <label class="form-label" style="margin-bottom:0.4rem;">Then do this:</label>
+
+            <logic :if="newActions.length > 0">
+              <div class="settings-card" style="margin-bottom:0.5rem;">
+                <loop :for="(a, i) of newActions">
+                  <div class="settings-row">
+                    <span style="font-size:13px;">
+                      {a.type === 'folder' ? '→ folder "' + a.folder + '"' : a.type === 'forward' ? '→ forward to ' + a.to : '→ delete'}
+                    </span>
+                    <button class="btn-ghost" style="margin-left:auto;padding:2px 8px;font-size:12px;" @click="removeAction(i)">×</button>
+                  </div>
+                </loop>
+              </div>
+            </logic>
+
+            <div style="display:flex;gap:0.4rem;flex-wrap:wrap;align-items:center;">
+              <select :value="actionType" style="font-size:13px;">
+                <option value="folder">Move to folder</option>
+                <option value="forward">Forward to</option>
+                <option value="delete">Delete</option>
+              </select>
+              <logic :if="actionType === 'folder'">
+                <input type="text" :value="actionFolder" placeholder="folder name" style="flex:1;min-width:100px;" />
+              </logic>
+              <logic :if="actionType === 'forward'">
+                <input type="email" :value="actionTo" placeholder="email@example.com" style="flex:1;min-width:100px;" />
+              </logic>
+              <button class="btn-secondary" style="padding:6px 12px;font-size:13px;" @click="addAction()">+ Add</button>
+            </div>
+          </div>
+
+          <div style="display:flex;gap:0.5rem;">
+            <button class="btn-primary" @click="saveRule()">Save</button>
+            <button class="btn-secondary" @click="resetRuleForm()">Cancel</button>
+          </div>
+        </div>
+      </logic>
+    </div>
+  </logic>
+
+  <!-- Users -->
   <logic :if="isAdmin">
     <div class="settings-section">
       <p class="settings-section-title">Users</p>
@@ -87,6 +323,7 @@
           <loop :for="user of users">
             <div class="settings-row">
               <span class="settings-row-label">{user.email}</span>
+              <span style="color:var(--muted);font-size:12px;margin-right:0.5rem;">{user.phone}</span>
               <span class="settings-row-value">{user.domains.join(', ')}</span>
               <span :class="'route-badge ' + (user.role === 'admin' ? 'store' : 'forward')" style="margin-left:0.5rem;">{user.role}</span>
             </div>
@@ -125,4 +362,5 @@
       </logic>
     </div>
   </logic>
+
 </div>

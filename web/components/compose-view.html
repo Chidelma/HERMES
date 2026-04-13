@@ -1,15 +1,10 @@
 <script>
-  let to = '', cc = '', subject = '', text = '', loading = false, error = ''
-
-  window.addEventListener('hermes:compose', (e) => {
-    const d = e.detail || {}
-    to = d.to || ''
-    cc = ''
-    subject = d.subject || ''
-    text = ''
-    error = ''
-    window._hermes?.navigate('compose')
-  })
+  const _prefill = props.prefill || {}
+  let to = _prefill.to || ''
+  let cc = ''
+  let subject = _prefill.subject || ''
+  let text = ''
+  let loading = false, error = ''
 
   async function send() {
     if (!to || !subject) { error = 'To and Subject are required.'; return }

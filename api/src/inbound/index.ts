@@ -1,7 +1,7 @@
 import type { SQSEvent, SQSRecord } from 'aws-lambda'
 import { SESClient, SendRawEmailCommand } from '@aws-sdk/client-ses'
 import { getFylo, Collections } from '../shared/fylo'
-import type { DomainConfig, StoredEmail, RouteRule } from '../shared/types'
+import type { DomainConfig, StoredEmail, RouteRule, InboxRule, RuleCondition } from '../shared/types'
 
 const ses = new SESClient({})
 
@@ -31,11 +31,11 @@ async function processRecord(fylo: Awaited<ReturnType<typeof getFylo>>, record: 
     const domain = recipient.split('@')[1]?.toLowerCase()
     if (!domain) continue
 
-    const domainDocs = await getDomainConfig(fylo, domain)
-    if (!domainDocs) continue
+    const domainConfig = await getDomainConfig(fylo, domain)
+    if (!domainConfig) continue
 
-    const rule = matchRoute(domainDocs.routes, recipient)
-    if (!rule) continue
+    const rule = matchRoute(domainConfig.routes, recipient)
+    if (!rule || rule.action.type === 'drop') continue
 
     const emailId = await fylo.putData(Collections.EMAILS, {
       id: messageId,
@@ -45,11 +45,13 @@ async function processRecord(fylo: Awaited<ReturnType<typeof getFylo>>, record: 
       subject,
       rawKey: messageId,
       body: emailBody,
+      folder: 'inbox',
       receivedAt: new Date().toISOString(),
       processed: false,
     } satisfies StoredEmail)
 
     await applyRouteAction(fylo, rule, emailId, sender, recipient, subject)
+    await applyInboxRules(fylo, emailId, domain, { sender, recipient, subject })
   }
 }
 
@@ -83,8 +85,6 @@ async function applyRouteAction(
   recipient: string,
   subject: string
 ): Promise<void> {
-  if (rule.action.type === 'drop') return
-
   if (rule.action.type === 'store') {
     await fylo.patchDoc(Collections.EMAILS, { [emailId]: { processed: true } })
     return
@@ -113,6 +113,81 @@ async function applyRouteAction(
     await fylo.patchDoc(Collections.EMAILS, { [emailId]: { processed: true } })
   }
 }
+
+// ── Inbox rules ──────────────────────────���────────────────────���───────────────
+
+async function applyInboxRules(
+  fylo: Awaited<ReturnType<typeof getFylo>>,
+  emailId: string,
+  domain: string,
+  email: { sender: string; recipient: string; subject: string }
+): Promise<void> {
+  const results: Record<string, any> = {}
+  for await (const doc of fylo.findDocs(Collections.INBOX_RULES, {
+    $ops: [{ domain: { $eq: domain } }],
+  }).collect()) {
+    Object.assign(results, doc)
+  }
+
+  const rules: InboxRule[] = Object.values(results)
+    .filter(r => r.enabled)
+    .map(raw => ({
+      ...raw,
+      conditions: typeof raw.conditions === 'string' ? JSON.parse(raw.conditions) : (raw.conditions ?? []),
+      actions:    typeof raw.actions    === 'string' ? JSON.parse(raw.actions)    : (raw.actions    ?? []),
+    }))
+
+  for (const rule of rules) {
+    if (!conditionsMatch(rule, email)) continue
+
+    for (const action of rule.actions) {
+      if (action.type === 'folder') {
+        await fylo.patchDoc(Collections.EMAILS, { [emailId]: { folder: action.folder } })
+      } else if (action.type === 'forward') {
+        await ses.send(new SendRawEmailCommand({
+          Destinations: [action.to],
+          RawMessage: {
+            Data: Buffer.from(
+              `From: ${email.sender}\r\nTo: ${action.to}\r\nSubject: Fwd: ${email.subject}\r\n\r\n`
+            ),
+          },
+        }))
+      } else if (action.type === 'delete') {
+        await fylo.delDoc(Collections.EMAILS, emailId)
+        return  // email is gone; stop processing further rules
+      }
+    }
+  }
+}
+
+function conditionsMatch(rule: InboxRule, email: { sender: string; recipient: string; subject: string }): boolean {
+  if (rule.conditions.length === 0) return true
+
+  const results = rule.conditions.map(c => evaluateCondition(c, email))
+  return rule.conditionMatch === 'any' ? results.some(Boolean) : results.every(Boolean)
+}
+
+function evaluateCondition(
+  condition: RuleCondition,
+  email: { sender: string; recipient: string; subject: string }
+): boolean {
+  const fieldMap: Record<RuleCondition['field'], string> = {
+    from:    email.sender,
+    to:      email.recipient,
+    subject: email.subject,
+  }
+  const haystack = (fieldMap[condition.field] ?? '').toLowerCase()
+  const needle = condition.value.toLowerCase()
+
+  switch (condition.op) {
+    case 'equals':     return haystack === needle
+    case 'contains':   return haystack.includes(needle)
+    case 'startsWith': return haystack.startsWith(needle)
+    default:           return false
+  }
+}
+
+// ── MIME parsing ─────────────────────────────────���────────────────────────────
 
 function extractTextBody(mime: string): string {
   if (!mime) return ''

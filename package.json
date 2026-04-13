@@ -3,27 +3,11 @@
   "version": "0.1.0",
   "private": true,
   "description": "Serverless multi-domain mail server on AWS",
-  "main": "index.ts",
   "scripts": {
-    "build": "node build.mjs",
-    "up": "pulumi up",
-    "preview": "pulumi preview",
-    "destroy": "pulumi destroy",
-    "typecheck": "tsc --noEmit",
-    "test": "bun test tests/api.test.ts --timeout 30000 && bun test web/tests/unit.test.js"
-  },
-  "dependencies": {
-    "@aws-sdk/client-secrets-manager": "^3.1029.0",
-    "@aws-sdk/client-ses": "^3.0.0",
-    "@aws-sdk/client-sns": "^3.1029.0",
-    "@delma/fylo": "^2.1.1",
-    "@pulumi/aws": "^6.0.0",
-    "@pulumi/pulumi": "^3.0.0"
-  },
-  "devDependencies": {
-    "@types/aws-lambda": "^8.10.0",
-    "@types/node": "^20.0.0",
-    "esbuild": "^0.24.0",
-    "typescript": "^5.0.0"
+    "build": "bun run build --cwd api",
+    "up": "bun run up --cwd infra",
+    "preview": "bun run preview --cwd infra",
+    "typecheck": "bun run typecheck --cwd api && bun run typecheck --cwd infra",
+    "test": "bun test api/tests/api.test.ts --timeout 30000 && bun test web/tests/unit.test.js"
   }
 }

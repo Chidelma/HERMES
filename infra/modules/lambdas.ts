@@ -78,7 +78,7 @@ const dependsOnMounts = { dependsOn: mountTargets }
 /** Processes inbound email from SQS. */
 export const inboundLambda = new aws.lambda.Function('hermes-inbound', {
   ...commonConfig,
-  code: new pulumi.asset.AssetArchive({ '.': new pulumi.asset.FileArchive('./bin/inbound') }),
+  code: new pulumi.asset.AssetArchive({ '.': new pulumi.asset.FileArchive('../api/bin/inbound') }),
   handler: 'index.handler',
   name: 'hermes-inbound',
 }, dependsOnMounts)
@@ -92,7 +92,7 @@ export const inboundEventSource = new aws.lambda.EventSourceMapping('hermes-inbo
 /** Handles SNS bounce/complaint/delivery events. */
 export const eventsLambda = new aws.lambda.Function('hermes-events', {
   ...commonConfig,
-  code: new pulumi.asset.AssetArchive({ '.': new pulumi.asset.FileArchive('./bin/events') }),
+  code: new pulumi.asset.AssetArchive({ '.': new pulumi.asset.FileArchive('../api/bin/events') }),
   handler: 'index.handler',
   name: 'hermes-events',
 }, dependsOnMounts)
@@ -113,7 +113,7 @@ new aws.lambda.Permission('hermes-events-sns-permission', {
 /** Outbound send API. */
 export const sendLambda = new aws.lambda.Function('hermes-send', {
   ...commonConfig,
-  code: new pulumi.asset.AssetArchive({ '.': new pulumi.asset.FileArchive('./bin/send') }),
+  code: new pulumi.asset.AssetArchive({ '.': new pulumi.asset.FileArchive('../api/bin/send') }),
   handler: 'index.handler',
   name: 'hermes-send',
 }, dependsOnMounts)
@@ -121,7 +121,7 @@ export const sendLambda = new aws.lambda.Function('hermes-send', {
 /** Management REST API. */
 export const apiLambda = new aws.lambda.Function('hermes-api', {
   ...commonConfig,
-  code: new pulumi.asset.AssetArchive({ '.': new pulumi.asset.FileArchive('./bin/api') }),
+  code: new pulumi.asset.AssetArchive({ '.': new pulumi.asset.FileArchive('../api/bin/api') }),
   handler: 'index.handler',
   name: 'hermes-api',
 }, dependsOnMounts)
@@ -129,7 +129,7 @@ export const apiLambda = new aws.lambda.Function('hermes-api', {
 /** Authentication Lambda (OTP request + confirm). */
 export const authLambda = new aws.lambda.Function('hermes-auth', {
   ...commonConfig,
-  code: new pulumi.asset.AssetArchive({ '.': new pulumi.asset.FileArchive('./bin/auth') }),
+  code: new pulumi.asset.AssetArchive({ '.': new pulumi.asset.FileArchive('../api/bin/auth') }),
   handler: 'index.handler',
   name: 'hermes-auth',
 }, dependsOnMounts)

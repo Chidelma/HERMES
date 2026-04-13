@@ -1,8 +1,9 @@
 import type { APIGatewayProxyEvent, APIGatewayProxyResult } from 'aws-lambda'
 import { SecretsManagerClient, GetSecretValueCommand } from '@aws-sdk/client-secrets-manager'
+import { randomBytes } from 'node:crypto'
 import { getFylo, Collections } from '../shared/fylo'
 import { verifyJwt } from '../shared/jwt'
-import type { DomainConfig, RouteRule, StoredEmail, User } from '../shared/types'
+import type { DomainConfig, RouteRule, StoredEmail, User, InboxRule } from '../shared/types'
 
 const sm = new SecretsManagerClient({ maxAttempts: 1 })
 
@@ -172,7 +173,7 @@ export async function handler(event: APIGatewayProxyEvent): Promise<APIGatewayPr
     for await (const doc of fylo.findDocs(Collections.USERS, { $ops: [] }).collect()) {
       Object.assign(results, doc)
     }
-    return ok(Object.entries(results).map(([id, u]) => ({ id, email: u.email, domains: u.domains, role: u.role })))
+    return ok(Object.entries(results).map(([id, u]) => ({ id, email: u.email, phone: u.phone, domains: u.domains, role: u.role })))
   }
 
   if (httpMethod === 'POST' && path === '/users') {
@@ -190,6 +191,70 @@ export async function handler(event: APIGatewayProxyEvent): Promise<APIGatewayPr
     const id = decodeURIComponent(userMatch[1])
     await fylo.delDoc(Collections.USERS, id)
     return ok({ deleted: id })
+  }
+
+  // ── Inbox rules ─────────────────────────────────────────────────────────────
+
+  if (httpMethod === 'GET' && path === '/rules') {
+    const results: Record<string, any> = {}
+    for await (const doc of fylo.findDocs(Collections.INBOX_RULES, { $ops: [] }).collect()) {
+      Object.assign(results, doc)
+    }
+    const rules = Object.entries(results)
+      .filter(([, r]) => claims.domains.includes(r.domain))
+      .map(([id, raw]) => ({ id, ...parseInboxRule(raw) }))
+    return ok(rules)
+  }
+
+  if (httpMethod === 'POST' && path === '/rules') {
+    if (claims.role !== 'admin') return forbidden()
+    if (!body) return badRequest('Missing body')
+    const input: Omit<InboxRule, 'id'> = JSON.parse(body)
+    if (!input.name) return badRequest('name required')
+    if (!input.domain || !claims.domains.includes(input.domain)) return forbidden()
+    const ruleId = randomBytes(16).toString('hex')
+    const id = await fylo.putData(Collections.INBOX_RULES, {
+      id: ruleId,
+      domain: input.domain,
+      name: input.name,
+      enabled: input.enabled ?? true,
+      conditionMatch: input.conditionMatch ?? 'all',
+      conditions: JSON.stringify(input.conditions ?? []),
+      actions: JSON.stringify(input.actions ?? []),
+    })
+    return ok({ id })
+  }
+
+  const ruleMatch = path.match(/^\/rules\/([^/]+)$/)
+
+  if (httpMethod === 'PUT' && ruleMatch) {
+    if (claims.role !== 'admin') return forbidden()
+    const ruleId = decodeURIComponent(ruleMatch[1])
+    if (!body) return badRequest('Missing body')
+    const [docId, existing] = await getRuleEntry(fylo, ruleId)
+    if (!docId || !existing) return notFound('Rule not found')
+    if (!claims.domains.includes(existing.domain)) return forbidden()
+    const input: Partial<InboxRule> = JSON.parse(body)
+    await fylo.patchDoc(Collections.INBOX_RULES, {
+      [docId]: {
+        ...(input.name !== undefined && { name: input.name }),
+        ...(input.enabled !== undefined && { enabled: input.enabled }),
+        ...(input.conditionMatch !== undefined && { conditionMatch: input.conditionMatch }),
+        ...(input.conditions !== undefined && { conditions: JSON.stringify(input.conditions) }),
+        ...(input.actions !== undefined && { actions: JSON.stringify(input.actions) }),
+      },
+    })
+    return ok({ updated: ruleId })
+  }
+
+  if (httpMethod === 'DELETE' && ruleMatch) {
+    if (claims.role !== 'admin') return forbidden()
+    const ruleId = decodeURIComponent(ruleMatch[1])
+    const [docId, existing] = await getRuleEntry(fylo, ruleId)
+    if (!docId || !existing) return notFound('Rule not found')
+    if (!claims.domains.includes(existing.domain)) return forbidden()
+    await fylo.delDoc(Collections.INBOX_RULES, docId)
+    return ok({ deleted: ruleId })
   }
 
   // ── Suppressed ──────────────────────────────────────────────────────────
@@ -239,4 +304,25 @@ async function getDomainEntry(fylo: Awaited<ReturnType<typeof getFylo>>, domain:
   const [id, raw] = entries[0]
   const config: DomainConfig = { ...raw, routes: typeof raw.routes === 'string' ? JSON.parse(raw.routes) : (raw.routes ?? []) }
   return [id, config]
+}
+
+function parseInboxRule(raw: any): Omit<InboxRule, 'id'> {
+  return {
+    ...raw,
+    conditions: typeof raw.conditions === 'string' ? JSON.parse(raw.conditions) : (raw.conditions ?? []),
+    actions:    typeof raw.actions    === 'string' ? JSON.parse(raw.actions)    : (raw.actions    ?? []),
+  }
+}
+
+async function getRuleEntry(fylo: Awaited<ReturnType<typeof getFylo>>, ruleId: string): Promise<[string | null, InboxRule | null]> {
+  const results: Record<string, any> = {}
+  for await (const doc of fylo.findDocs(Collections.INBOX_RULES, {
+    $ops: [{ id: { $eq: ruleId } }],
+  }).collect()) {
+    Object.assign(results, doc)
+  }
+  const entries = Object.entries(results)
+  if (entries.length === 0) return [null, null]
+  const [docId, raw] = entries[0]
+  return [docId, { id: ruleId, ...parseInboxRule(raw) } as InboxRule]
 }

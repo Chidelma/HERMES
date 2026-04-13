@@ -30,6 +30,7 @@ export interface StoredEmail {
   subject: string
   rawKey: string
   body: string
+  folder: string
   receivedAt: string
   processed: boolean
 }
@@ -68,3 +69,26 @@ export interface SendRequest {
   html?: string
   replyTo?: string[]
 }
+
+// ── Inbox rules ───────────────────────────────────────────────────────────────
+
+export interface InboxRule {
+  id: string
+  domain: string
+  name: string
+  enabled: boolean
+  /** Whether ALL or ANY condition must match */
+  conditionMatch: 'all' | 'any'
+  conditions: RuleCondition[]
+  actions: InboxRuleAction[]
+}
+
+export type RuleCondition =
+  | { field: 'from';    op: 'contains' | 'equals' | 'startsWith'; value: string }
+  | { field: 'to';      op: 'contains' | 'equals' | 'startsWith'; value: string }
+  | { field: 'subject'; op: 'contains' | 'equals' | 'startsWith'; value: string }
+
+export type InboxRuleAction =
+  | { type: 'folder';  folder: string }
+  | { type: 'forward'; to: string }
+  | { type: 'delete' }

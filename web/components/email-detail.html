@@ -1,14 +1,9 @@
 <script>
-  let email = null
+  let email = props.email || null
 
   function initials(addr) {
     return (addr.split('@')[0] || '?').slice(0, 2).toUpperCase()
   }
-
-  window.addEventListener('hermes:open-email', (e) => {
-    email = e.detail
-    window._hermes?.navigate('email')
-  })
 
   async function deleteEmail() {
     if (!email || !confirm('Delete this message?')) return

@@ -37,16 +37,21 @@ jobs:
         with:
           fetch-depth: 0
 
-      - uses: actions/setup-node@v4
+      - uses: oven-sh/setup-bun@v2
         with:
-          node-version: '20'
-          cache: 'npm'
+          bun-version: latest
 
-      - name: Install dependencies
-        run: npm ci
+      - name: Install API dependencies
+        run: bun install
+        working-directory: api
 
       - name: Build Lambda functions
-        run: npm run build
+        run: bun run build
+        working-directory: api
+
+      - name: Install infra dependencies
+        run: bun install
+        working-directory: infra
 
       - name: Configure AWS credentials (OIDC)
         uses: aws-actions/configure-aws-credentials@v4
@@ -59,9 +64,9 @@ jobs:
         with:
           command: up
           stack-name: dev
-          work-dir: .
+          work-dir: infra
         env:
-          PULUMI_BACKEND_URL: file://${{ github.workspace }}/.pulumi-state
+          PULUMI_BACKEND_URL: file://${{ github.workspace }}/infra/.pulumi-state
           PULUMI_CONFIG_PASSPHRASE: ${{ secrets.PULUMI_PASSPHRASE }}
 
       - name: Get API endpoint
@@ -69,15 +74,16 @@ jobs:
         run: |
           API=$(pulumi stack output apiEndpoint --stack dev 2>/dev/null || echo "")
           echo "api_endpoint=$API" >> $GITHUB_OUTPUT
+        working-directory: infra
         env:
-          PULUMI_BACKEND_URL: file://${{ github.workspace }}/.pulumi-state
+          PULUMI_BACKEND_URL: file://${{ github.workspace }}/infra/.pulumi-state
           PULUMI_CONFIG_PASSPHRASE: ${{ secrets.PULUMI_PASSPHRASE }}
 
       - name: Commit updated state
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
-          git add .pulumi-state/
+          git add infra/.pulumi-state/
           git diff --cached --quiet || git commit -m "chore: update pulumi state [skip ci]"
           git push
 
@@ -141,13 +147,9 @@ jobs:
         with:
           bun-version: latest
 
-      - uses: actions/setup-node@v4
-        with:
-          node-version: '20'
-          cache: 'npm'
-
-      - name: Install dependencies
-        run: npm ci
+      - name: Install API dependencies
+        run: bun install
+        working-directory: api
 
       - name: Configure AWS credentials (OIDC)
         uses: aws-actions/configure-aws-credentials@v4
@@ -157,3 +159,4 @@ jobs:
 
       - name: Run API integration tests
         run: bun test tests/api.test.ts --timeout 30000
+        working-directory: api

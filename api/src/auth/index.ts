@@ -102,7 +102,7 @@ export async function handler(event: APIGatewayProxyEvent): Promise<APIGatewayPr
 
     await fylo.delDoc(Collections.OTP_SESSIONS, docId)
 
-    const user = await findUserByEmail(fylo, session.email)
+    const user = await findUser(fylo, session.email, session.phone)
     if (!user) return err(401, 'Account not found')
 
     const secret = await getSecret()
@@ -126,19 +126,6 @@ async function findUser(
     Object.assign(results, doc)
   }
   return Object.values(results).find(u => u.phone === phone) ?? null
-}
-
-async function findUserByEmail(
-  fylo: Awaited<ReturnType<typeof getFylo>>,
-  email: string
-): Promise<User | null> {
-  const results: Record<string, User> = {}
-  for await (const doc of fylo.findDocs(Collections.USERS, {
-    $ops: [{ email: { $eq: email } }],
-  }).collect()) {
-    Object.assign(results, doc)
-  }
-  return Object.values(results)[0] ?? null
 }
 
 async function findSession(
