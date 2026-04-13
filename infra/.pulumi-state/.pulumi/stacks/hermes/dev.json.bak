@@ -4,7 +4,7 @@
         "stack": "organization/hermes/dev",
         "latest": {
             "manifest": {
-                "time": "2026-04-13T03:10:37.392553621Z",
+                "time": "2026-04-13T03:10:37.601656687Z",
                 "magic": "88d0da18f668d21177091127bf6af43a4706b834600c4edf2e942a3f566ca00e",
                 "version": "v3.229.0"
             },
@@ -7542,6 +7542,141 @@
                     ]
                 },
                 {
+                    "urn": "urn:pulumi:dev::hermes::aws:lambda/permission:Permission::hermes-events-sns-permission",
+                    "custom": true,
+                    "id": "hermes-events-sns-permission-deb1b6d",
+                    "type": "aws:lambda/permission:Permission",
+                    "inputs": {
+                        "__defaults": [
+                            "statementId"
+                        ],
+                        "action": "lambda:InvokeFunction",
+                        "function": "hermes-events",
+                        "principal": "sns.amazonaws.com",
+                        "sourceArn": "arn:aws:sns:us-east-1:117469679339:hermes-ses-notifications",
+                        "statementId": "hermes-events-sns-permission-deb1b6d"
+                    },
+                    "outputs": {
+                        "action": "lambda:InvokeFunction",
+                        "eventSourceToken": null,
+                        "function": "hermes-events",
+                        "functionUrlAuthType": null,
+                        "id": "hermes-events-sns-permission-deb1b6d",
+                        "principal": "sns.amazonaws.com",
+                        "principalOrgId": null,
+                        "qualifier": "",
+                        "sourceAccount": null,
+                        "sourceArn": "arn:aws:sns:us-east-1:117469679339:hermes-ses-notifications",
+                        "statementId": "hermes-events-sns-permission-deb1b6d",
+                        "statementIdPrefix": ""
+                    },
+                    "parent": "urn:pulumi:dev::hermes::pulumi:pulumi:Stack::hermes-dev",
+                    "dependencies": [
+                        "urn:pulumi:dev::hermes::aws:lambda/function:Function::hermes-events",
+                        "urn:pulumi:dev::hermes::aws:sns/topic:Topic::hermes-notifications"
+                    ],
+                    "provider": "urn:pulumi:dev::hermes::pulumi:providers:aws::default_6_83_2::9caafcd9-2b0f-49f8-bdc5-19605bdb4809",
+                    "propertyDependencies": {
+                        "action": [],
+                        "function": [
+                            "urn:pulumi:dev::hermes::aws:lambda/function:Function::hermes-events"
+                        ],
+                        "principal": [],
+                        "sourceArn": [
+                            "urn:pulumi:dev::hermes::aws:sns/topic:Topic::hermes-notifications"
+                        ]
+                    },
+                    "created": "2026-04-12T04:43:53.57351255Z",
+                    "modified": "2026-04-12T04:43:53.57351255Z",
+                    "sourcePosition": "project:///modules/lambdas.ts#106,1",
+                    "stackTrace": [
+                        {
+                            "sourcePosition": "project:///modules/lambdas.ts#106,1"
+                        },
+                        {},
+                        {
+                            "sourcePosition": "project:///node_modules/@pulumi/pulumi/vendor/ts-node@7.0.1/index.js#3009,23"
+                        },
+                        {},
+                        {
+                            "sourcePosition": "project:///node_modules/@pulumi/pulumi/vendor/ts-node@7.0.1/index.js#3011,12"
+                        },
+                        {},
+                        {},
+                        {},
+                        {},
+                        {
+                            "sourcePosition": "project:///modules/api.ts#3,1"
+                        },
+                        {},
+                        {
+                            "sourcePosition": "project:///node_modules/@pulumi/pulumi/vendor/ts-node@7.0.1/index.js#3009,23"
+                        },
+                        {},
+                        {
+                            "sourcePosition": "project:///node_modules/@pulumi/pulumi/vendor/ts-node@7.0.1/index.js#3011,12"
+                        },
+                        {},
+                        {},
+                        {},
+                        {},
+                        {
+                            "sourcePosition": "project:///modules/amplify.ts#3,1"
+                        },
+                        {},
+                        {
+                            "sourcePosition": "project:///node_modules/@pulumi/pulumi/vendor/ts-node@7.0.1/index.js#3009,23"
+                        },
+                        {},
+                        {
+                            "sourcePosition": "project:///node_modules/@pulumi/pulumi/vendor/ts-node@7.0.1/index.js#3011,12"
+                        },
+                        {},
+                        {},
+                        {},
+                        {},
+                        {
+                            "sourcePosition": "project:///modules/dns.ts#4,1"
+                        },
+                        {},
+                        {
+                            "sourcePosition": "project:///node_modules/@pulumi/pulumi/vendor/ts-node@7.0.1/index.js#3009,23"
+                        },
+                        {},
+                        {
+                            "sourcePosition": "project:///node_modules/@pulumi/pulumi/vendor/ts-node@7.0.1/index.js#3011,12"
+                        },
+                        {},
+                        {},
+                        {},
+                        {},
+                        {
+                            "sourcePosition": "project:///index.ts#6,1"
+                        },
+                        {},
+                        {
+                            "sourcePosition": "project:///node_modules/@pulumi/pulumi/vendor/ts-node@7.0.1/index.js#3009,23"
+                        },
+                        {},
+                        {
+                            "sourcePosition": "project:///node_modules/@pulumi/pulumi/vendor/ts-node@7.0.1/index.js#3011,12"
+                        },
+                        {},
+                        {},
+                        {},
+                        {},
+                        {
+                            "sourcePosition": "project:///node_modules/@pulumi/cmd/run/run.ts#545,33"
+                        },
+                        {
+                            "sourcePosition": "project:///node_modules/@pulumi/runtime/stack.ts#78,28"
+                        },
+                        {
+                            "sourcePosition": "project:///node_modules/@pulumi/resource.ts#1579,22"
+                        }
+                    ]
+                },
+                {
                     "urn": "urn:pulumi:dev::hermes::aws:sns/topicSubscription:TopicSubscription::hermes-events-sub",
                     "custom": true,
                     "id": "arn:aws:sns:us-east-1:117469679339:hermes-ses-notifications:2b37c33b-8d8a-4346-a85d-5a0800abac07",
@@ -7595,10 +7730,10 @@
                     },
                     "created": "2026-04-12T04:43:54.038932673Z",
                     "modified": "2026-04-12T04:43:54.038932673Z",
-                    "sourcePosition": "project:///infra/lambdas.ts#100,35",
+                    "sourcePosition": "project:///modules/lambdas.ts#100,35",
                     "stackTrace": [
                         {
-                            "sourcePosition": "project:///infra/lambdas.ts#100,35"
+                            "sourcePosition": "project:///modules/lambdas.ts#100,35"
                         },
                         {},
                         {
@@ -7613,7 +7748,7 @@
                         {},
                         {},
                         {
-                            "sourcePosition": "project:///infra/api.ts#3,1"
+                            "sourcePosition": "project:///modules/api.ts#3,1"
                         },
                         {},
                         {
@@ -7628,7 +7763,7 @@
                         {},
                         {},
                         {
-                            "sourcePosition": "project:///infra/amplify.ts#3,1"
+                            "sourcePosition": "project:///modules/amplify.ts#3,1"
                         },
                         {},
                         {
@@ -7643,142 +7778,7 @@
                         {},
                         {},
                         {
-                            "sourcePosition": "project:///infra/dns.ts#4,1"
-                        },
-                        {},
-                        {
-                            "sourcePosition": "project:///node_modules/@pulumi/pulumi/vendor/ts-node@7.0.1/index.js#3009,23"
-                        },
-                        {},
-                        {
-                            "sourcePosition": "project:///node_modules/@pulumi/pulumi/vendor/ts-node@7.0.1/index.js#3011,12"
-                        },
-                        {},
-                        {},
-                        {},
-                        {},
-                        {
-                            "sourcePosition": "project:///index.ts#6,1"
-                        },
-                        {},
-                        {
-                            "sourcePosition": "project:///node_modules/@pulumi/pulumi/vendor/ts-node@7.0.1/index.js#3009,23"
-                        },
-                        {},
-                        {
-                            "sourcePosition": "project:///node_modules/@pulumi/pulumi/vendor/ts-node@7.0.1/index.js#3011,12"
-                        },
-                        {},
-                        {},
-                        {},
-                        {},
-                        {
-                            "sourcePosition": "project:///node_modules/@pulumi/cmd/run/run.ts#545,33"
-                        },
-                        {
-                            "sourcePosition": "project:///node_modules/@pulumi/runtime/stack.ts#78,28"
-                        },
-                        {
-                            "sourcePosition": "project:///node_modules/@pulumi/resource.ts#1579,22"
-                        }
-                    ]
-                },
-                {
-                    "urn": "urn:pulumi:dev::hermes::aws:lambda/permission:Permission::hermes-events-sns-permission",
-                    "custom": true,
-                    "id": "hermes-events-sns-permission-deb1b6d",
-                    "type": "aws:lambda/permission:Permission",
-                    "inputs": {
-                        "__defaults": [
-                            "statementId"
-                        ],
-                        "action": "lambda:InvokeFunction",
-                        "function": "hermes-events",
-                        "principal": "sns.amazonaws.com",
-                        "sourceArn": "arn:aws:sns:us-east-1:117469679339:hermes-ses-notifications",
-                        "statementId": "hermes-events-sns-permission-deb1b6d"
-                    },
-                    "outputs": {
-                        "action": "lambda:InvokeFunction",
-                        "eventSourceToken": null,
-                        "function": "hermes-events",
-                        "functionUrlAuthType": null,
-                        "id": "hermes-events-sns-permission-deb1b6d",
-                        "principal": "sns.amazonaws.com",
-                        "principalOrgId": null,
-                        "qualifier": "",
-                        "sourceAccount": null,
-                        "sourceArn": "arn:aws:sns:us-east-1:117469679339:hermes-ses-notifications",
-                        "statementId": "hermes-events-sns-permission-deb1b6d",
-                        "statementIdPrefix": ""
-                    },
-                    "parent": "urn:pulumi:dev::hermes::pulumi:pulumi:Stack::hermes-dev",
-                    "dependencies": [
-                        "urn:pulumi:dev::hermes::aws:lambda/function:Function::hermes-events",
-                        "urn:pulumi:dev::hermes::aws:sns/topic:Topic::hermes-notifications"
-                    ],
-                    "provider": "urn:pulumi:dev::hermes::pulumi:providers:aws::default_6_83_2::9caafcd9-2b0f-49f8-bdc5-19605bdb4809",
-                    "propertyDependencies": {
-                        "action": [],
-                        "function": [
-                            "urn:pulumi:dev::hermes::aws:lambda/function:Function::hermes-events"
-                        ],
-                        "principal": [],
-                        "sourceArn": [
-                            "urn:pulumi:dev::hermes::aws:sns/topic:Topic::hermes-notifications"
-                        ]
-                    },
-                    "created": "2026-04-12T04:43:53.57351255Z",
-                    "modified": "2026-04-12T04:43:53.57351255Z",
-                    "sourcePosition": "project:///infra/lambdas.ts#106,1",
-                    "stackTrace": [
-                        {
-                            "sourcePosition": "project:///infra/lambdas.ts#106,1"
-                        },
-                        {},
-                        {
-                            "sourcePosition": "project:///node_modules/@pulumi/pulumi/vendor/ts-node@7.0.1/index.js#3009,23"
-                        },
-                        {},
-                        {
-                            "sourcePosition": "project:///node_modules/@pulumi/pulumi/vendor/ts-node@7.0.1/index.js#3011,12"
-                        },
-                        {},
-                        {},
-                        {},
-                        {},
-                        {
-                            "sourcePosition": "project:///infra/api.ts#3,1"
-                        },
-                        {},
-                        {
-                            "sourcePosition": "project:///node_modules/@pulumi/pulumi/vendor/ts-node@7.0.1/index.js#3009,23"
-                        },
-                        {},
-                        {
-                            "sourcePosition": "project:///node_modules/@pulumi/pulumi/vendor/ts-node@7.0.1/index.js#3011,12"
-                        },
-                        {},
-                        {},
-                        {},
-                        {},
-                        {
-                            "sourcePosition": "project:///infra/amplify.ts#3,1"
-                        },
-                        {},
-                        {
-                            "sourcePosition": "project:///node_modules/@pulumi/pulumi/vendor/ts-node@7.0.1/index.js#3009,23"
-                        },
-                        {},
-                        {
-                            "sourcePosition": "project:///node_modules/@pulumi/pulumi/vendor/ts-node@7.0.1/index.js#3011,12"
-                        },
-                        {},
-                        {},
-                        {},
-                        {},
-                        {
-                            "sourcePosition": "project:///infra/dns.ts#4,1"
+                            "sourcePosition": "project:///modules/dns.ts#4,1"
                         },
                         {},
                         {
@@ -7859,9 +7859,9 @@
                     },
                     "parent": "urn:pulumi:dev::hermes::pulumi:pulumi:Stack::hermes-dev",
                     "dependencies": [
-                        "urn:pulumi:dev::hermes::aws:apigateway/resource:Resource::hermes-auth-proxy-resource",
                         "urn:pulumi:dev::hermes::aws:apigateway/restApi:RestApi::hermes-api-gw",
-                        "urn:pulumi:dev::hermes::aws:lambda/function:Function::hermes-auth"
+                        "urn:pulumi:dev::hermes::aws:lambda/function:Function::hermes-auth",
+                        "urn:pulumi:dev::hermes::aws:apigateway/resource:Resource::hermes-auth-proxy-resource"
                     ],
                     "provider": "urn:pulumi:dev::hermes::pulumi:providers:aws::default_6_83_2::9caafcd9-2b0f-49f8-bdc5-19605bdb4809",
                     "propertyDependencies": {
@@ -7880,10 +7880,10 @@
                     },
                     "created": "2026-04-12T17:06:53.381696Z",
                     "modified": "2026-04-12T17:06:53.381696Z",
-                    "sourcePosition": "project:///infra/api.ts#30,25",
+                    "sourcePosition": "project:///modules/api.ts#30,25",
                     "stackTrace": [
                         {
-                            "sourcePosition": "project:///infra/api.ts#30,25"
+                            "sourcePosition": "project:///modules/api.ts#30,25"
                         },
                         {},
                         {
@@ -7898,7 +7898,7 @@
                         {},
                         {},
                         {
-                            "sourcePosition": "project:///infra/amplify.ts#3,1"
+                            "sourcePosition": "project:///modules/amplify.ts#3,1"
                         },
                         {},
                         {
@@ -7913,7 +7913,7 @@
                         {},
                         {},
                         {
-                            "sourcePosition": "project:///infra/dns.ts#4,1"
+                            "sourcePosition": "project:///modules/dns.ts#4,1"
                         },
                         {},
                         {
@@ -8000,10 +8000,10 @@
                     },
                     "created": "2026-04-12T17:07:07.47253Z",
                     "modified": "2026-04-12T17:07:07.47253Z",
-                    "sourcePosition": "project:///infra/api.ts#39,1",
+                    "sourcePosition": "project:///modules/api.ts#39,1",
                     "stackTrace": [
                         {
-                            "sourcePosition": "project:///infra/api.ts#39,1"
+                            "sourcePosition": "project:///modules/api.ts#39,1"
                         },
                         {},
                         {
@@ -8018,7 +8018,7 @@
                         {},
                         {},
                         {
-                            "sourcePosition": "project:///infra/amplify.ts#3,1"
+                            "sourcePosition": "project:///modules/amplify.ts#3,1"
                         },
                         {},
                         {
@@ -8033,7 +8033,7 @@
                         {},
                         {},
                         {
-                            "sourcePosition": "project:///infra/dns.ts#4,1"
+                            "sourcePosition": "project:///modules/dns.ts#4,1"
                         },
                         {},
                         {
@@ -8102,9 +8102,9 @@
                     },
                     "parent": "urn:pulumi:dev::hermes::pulumi:pulumi:Stack::hermes-dev",
                     "dependencies": [
+                        "urn:pulumi:dev::hermes::aws:apigateway/restApi:RestApi::hermes-api-gw",
                         "urn:pulumi:dev::hermes::aws:apigateway/integration:Integration::hermes-auth-integration",
-                        "urn:pulumi:dev::hermes::aws:apigateway/integration:Integration::hermes-api-integration",
-                        "urn:pulumi:dev::hermes::aws:apigateway/restApi:RestApi::hermes-api-gw"
+                        "urn:pulumi:dev::hermes::aws:apigateway/integration:Integration::hermes-api-integration"
                     ],
                     "provider": "urn:pulumi:dev::hermes::pulumi:providers:aws::default_6_83_2::9caafcd9-2b0f-49f8-bdc5-19605bdb4809",
                     "propertyDependencies": {
@@ -8118,10 +8118,10 @@
                     },
                     "created": "2026-04-12T18:40:54.924214331Z",
                     "modified": "2026-04-12T18:40:54.924214331Z",
-                    "sourcePosition": "project:///infra/api.ts#107,20",
+                    "sourcePosition": "project:///modules/api.ts#107,20",
                     "stackTrace": [
                         {
-                            "sourcePosition": "project:///infra/api.ts#107,20"
+                            "sourcePosition": "project:///modules/api.ts#107,20"
                         },
                         {},
                         {
@@ -8136,7 +8136,7 @@
                         {},
                         {},
                         {
-                            "sourcePosition": "project:///infra/amplify.ts#3,1"
+                            "sourcePosition": "project:///modules/amplify.ts#3,1"
                         },
                         {},
                         {
@@ -8151,7 +8151,7 @@
                         {},
                         {},
                         {
-                            "sourcePosition": "project:///infra/dns.ts#4,1"
+                            "sourcePosition": "project:///modules/dns.ts#4,1"
                         },
                         {},
                         {
@@ -8238,10 +8238,10 @@
                     },
                     "created": "2026-04-12T04:43:54.732158887Z",
                     "modified": "2026-04-12T18:40:55.338786401Z",
-                    "sourcePosition": "project:///infra/api.ts#117,15",
+                    "sourcePosition": "project:///modules/api.ts#117,15",
                     "stackTrace": [
                         {
-                            "sourcePosition": "project:///infra/api.ts#117,15"
+                            "sourcePosition": "project:///modules/api.ts#117,15"
                         },
                         {},
                         {
@@ -8256,7 +8256,7 @@
                         {},
                         {},
                         {
-                            "sourcePosition": "project:///infra/amplify.ts#3,1"
+                            "sourcePosition": "project:///modules/amplify.ts#3,1"
                         },
                         {},
                         {
@@ -8271,7 +8271,7 @@
                         {},
                         {},
                         {
-                            "sourcePosition": "project:///infra/dns.ts#4,1"
+                            "sourcePosition": "project:///modules/dns.ts#4,1"
                         },
                         {},
                         {
@@ -8401,10 +8401,10 @@
                     ],
                     "created": "2026-04-12T17:08:27.706263764Z",
                     "modified": "2026-04-12T17:08:27.706263764Z",
-                    "sourcePosition": "project:///infra/amplify.ts#30,27",
+                    "sourcePosition": "project:///modules/amplify.ts#30,27",
                     "stackTrace": [
                         {
-                            "sourcePosition": "project:///infra/amplify.ts#30,27"
+                            "sourcePosition": "project:///modules/amplify.ts#30,27"
                         },
                         {},
                         {
@@ -8419,7 +8419,7 @@
                         {},
                         {},
                         {
-                            "sourcePosition": "project:///infra/dns.ts#4,1"
+                            "sourcePosition": "project:///modules/dns.ts#4,1"
                         },
                         {},
                         {
@@ -8514,10 +8514,10 @@
                     ],
                     "created": "2026-04-12T17:42:10.914839Z",
                     "modified": "2026-04-12T17:42:10.914839Z",
-                    "sourcePosition": "project:///infra/amplify.ts#32,30",
+                    "sourcePosition": "project:///modules/amplify.ts#32,30",
                     "stackTrace": [
                         {
-                            "sourcePosition": "project:///infra/amplify.ts#32,30"
+                            "sourcePosition": "project:///modules/amplify.ts#32,30"
                         },
                         {},
                         {
@@ -8532,7 +8532,7 @@
                         {},
                         {},
                         {
-                            "sourcePosition": "project:///infra/dns.ts#4,1"
+                            "sourcePosition": "project:///modules/dns.ts#4,1"
                         },
                         {},
                         {
@@ -8637,7 +8637,7 @@
                         {},
                         {},
                         {
-                            "sourcePosition": "project:///infra/amplify.ts#43,43"
+                            "sourcePosition": "project:///modules/amplify.ts#43,43"
                         },
                         {},
                         {
@@ -8652,105 +8652,7 @@
                         {},
                         {},
                         {
-                            "sourcePosition": "project:///infra/dns.ts#4,1"
-                        },
-                        {},
-                        {
-                            "sourcePosition": "project:///node_modules/@pulumi/pulumi/vendor/ts-node@7.0.1/index.js#3009,23"
-                        },
-                        {},
-                        {
-                            "sourcePosition": "project:///node_modules/@pulumi/pulumi/vendor/ts-node@7.0.1/index.js#3011,12"
-                        },
-                        {},
-                        {},
-                        {},
-                        {},
-                        {
-                            "sourcePosition": "project:///index.ts#6,1"
-                        },
-                        {},
-                        {
-                            "sourcePosition": "project:///node_modules/@pulumi/pulumi/vendor/ts-node@7.0.1/index.js#3009,23"
-                        },
-                        {},
-                        {
-                            "sourcePosition": "project:///node_modules/@pulumi/pulumi/vendor/ts-node@7.0.1/index.js#3011,12"
-                        },
-                        {},
-                        {},
-                        {},
-                        {},
-                        {
-                            "sourcePosition": "project:///node_modules/@pulumi/cmd/run/run.ts#545,33"
-                        },
-                        {
-                            "sourcePosition": "project:///node_modules/@pulumi/runtime/stack.ts#78,28"
-                        },
-                        {
-                            "sourcePosition": "project:///node_modules/@pulumi/resource.ts#1579,22"
-                        }
-                    ]
-                },
-                {
-                    "urn": "urn:pulumi:dev::hermes::aws:route53/record:Record::hermes-mail-cname-gokeinvestmentcorp.com",
-                    "custom": true,
-                    "id": "Z078117179ROSCEURDQ4_mail.gokeinvestmentcorp.com_CNAME",
-                    "type": "aws:route53/record:Record",
-                    "inputs": {
-                        "__defaults": [],
-                        "name": "mail.gokeinvestmentcorp.com",
-                        "records": [
-                            "d300hu3xwxonfg.cloudfront.net"
-                        ],
-                        "ttl": 300,
-                        "type": "CNAME",
-                        "zoneId": "Z078117179ROSCEURDQ4"
-                    },
-                    "outputs": {
-                        "__meta": "{\"e2bfb730-ecaa-11e6-8f88-34363bc7c4c0\":{\"create\":1800000000000,\"delete\":1800000000000,\"update\":1800000000000},\"schema_version\":\"2\"}",
-                        "aliases": [],
-                        "allowOverwrite": null,
-                        "cidrRoutingPolicy": null,
-                        "failoverRoutingPolicies": [],
-                        "fqdn": "mail.gokeinvestmentcorp.com",
-                        "geolocationRoutingPolicies": [],
-                        "geoproximityRoutingPolicy": null,
-                        "healthCheckId": "",
-                        "id": "Z078117179ROSCEURDQ4_mail.gokeinvestmentcorp.com_CNAME",
-                        "latencyRoutingPolicies": [],
-                        "multivalueAnswerRoutingPolicy": false,
-                        "name": "mail.gokeinvestmentcorp.com",
-                        "records": [
-                            "d300hu3xwxonfg.cloudfront.net"
-                        ],
-                        "setIdentifier": "",
-                        "ttl": 300,
-                        "type": "CNAME",
-                        "weightedRoutingPolicies": [],
-                        "zoneId": "Z078117179ROSCEURDQ4"
-                    },
-                    "parent": "urn:pulumi:dev::hermes::pulumi:pulumi:Stack::hermes-dev",
-                    "dependencies": [
-                        "urn:pulumi:dev::hermes::aws:amplify/domainAssociation:DomainAssociation::hermes-amplify-domain-gokeinvestmentcorp.com"
-                    ],
-                    "provider": "urn:pulumi:dev::hermes::pulumi:providers:aws::default_6_83_2::9caafcd9-2b0f-49f8-bdc5-19605bdb4809",
-                    "propertyDependencies": {
-                        "name": [],
-                        "records": [
-                            "urn:pulumi:dev::hermes::aws:amplify/domainAssociation:DomainAssociation::hermes-amplify-domain-gokeinvestmentcorp.com"
-                        ],
-                        "ttl": [],
-                        "type": [],
-                        "zoneId": []
-                    },
-                    "created": "2026-04-12T17:41:48.67351Z",
-                    "modified": "2026-04-12T17:43:29.446587971Z",
-                    "stackTrace": [
-                        {},
-                        {},
-                        {
-                            "sourcePosition": "project:///infra/dns.ts#12,37"
+                            "sourcePosition": "project:///modules/dns.ts#4,1"
                         },
                         {},
                         {
@@ -8850,7 +8752,105 @@
                         {},
                         {},
                         {
-                            "sourcePosition": "project:///infra/dns.ts#12,37"
+                            "sourcePosition": "project:///modules/dns.ts#12,37"
+                        },
+                        {},
+                        {
+                            "sourcePosition": "project:///node_modules/@pulumi/pulumi/vendor/ts-node@7.0.1/index.js#3009,23"
+                        },
+                        {},
+                        {
+                            "sourcePosition": "project:///node_modules/@pulumi/pulumi/vendor/ts-node@7.0.1/index.js#3011,12"
+                        },
+                        {},
+                        {},
+                        {},
+                        {},
+                        {
+                            "sourcePosition": "project:///index.ts#6,1"
+                        },
+                        {},
+                        {
+                            "sourcePosition": "project:///node_modules/@pulumi/pulumi/vendor/ts-node@7.0.1/index.js#3009,23"
+                        },
+                        {},
+                        {
+                            "sourcePosition": "project:///node_modules/@pulumi/pulumi/vendor/ts-node@7.0.1/index.js#3011,12"
+                        },
+                        {},
+                        {},
+                        {},
+                        {},
+                        {
+                            "sourcePosition": "project:///node_modules/@pulumi/cmd/run/run.ts#545,33"
+                        },
+                        {
+                            "sourcePosition": "project:///node_modules/@pulumi/runtime/stack.ts#78,28"
+                        },
+                        {
+                            "sourcePosition": "project:///node_modules/@pulumi/resource.ts#1579,22"
+                        }
+                    ]
+                },
+                {
+                    "urn": "urn:pulumi:dev::hermes::aws:route53/record:Record::hermes-mail-cname-gokeinvestmentcorp.com",
+                    "custom": true,
+                    "id": "Z078117179ROSCEURDQ4_mail.gokeinvestmentcorp.com_CNAME",
+                    "type": "aws:route53/record:Record",
+                    "inputs": {
+                        "__defaults": [],
+                        "name": "mail.gokeinvestmentcorp.com",
+                        "records": [
+                            "d300hu3xwxonfg.cloudfront.net"
+                        ],
+                        "ttl": 300,
+                        "type": "CNAME",
+                        "zoneId": "Z078117179ROSCEURDQ4"
+                    },
+                    "outputs": {
+                        "__meta": "{\"e2bfb730-ecaa-11e6-8f88-34363bc7c4c0\":{\"create\":1800000000000,\"delete\":1800000000000,\"update\":1800000000000},\"schema_version\":\"2\"}",
+                        "aliases": [],
+                        "allowOverwrite": null,
+                        "cidrRoutingPolicy": null,
+                        "failoverRoutingPolicies": [],
+                        "fqdn": "mail.gokeinvestmentcorp.com",
+                        "geolocationRoutingPolicies": [],
+                        "geoproximityRoutingPolicy": null,
+                        "healthCheckId": "",
+                        "id": "Z078117179ROSCEURDQ4_mail.gokeinvestmentcorp.com_CNAME",
+                        "latencyRoutingPolicies": [],
+                        "multivalueAnswerRoutingPolicy": false,
+                        "name": "mail.gokeinvestmentcorp.com",
+                        "records": [
+                            "d300hu3xwxonfg.cloudfront.net"
+                        ],
+                        "setIdentifier": "",
+                        "ttl": 300,
+                        "type": "CNAME",
+                        "weightedRoutingPolicies": [],
+                        "zoneId": "Z078117179ROSCEURDQ4"
+                    },
+                    "parent": "urn:pulumi:dev::hermes::pulumi:pulumi:Stack::hermes-dev",
+                    "dependencies": [
+                        "urn:pulumi:dev::hermes::aws:amplify/domainAssociation:DomainAssociation::hermes-amplify-domain-gokeinvestmentcorp.com"
+                    ],
+                    "provider": "urn:pulumi:dev::hermes::pulumi:providers:aws::default_6_83_2::9caafcd9-2b0f-49f8-bdc5-19605bdb4809",
+                    "propertyDependencies": {
+                        "name": [],
+                        "records": [
+                            "urn:pulumi:dev::hermes::aws:amplify/domainAssociation:DomainAssociation::hermes-amplify-domain-gokeinvestmentcorp.com"
+                        ],
+                        "ttl": [],
+                        "type": [],
+                        "zoneId": []
+                    },
+                    "created": "2026-04-12T17:41:48.67351Z",
+                    "modified": "2026-04-12T17:43:29.446587971Z",
+                    "stackTrace": [
+                        {},
+                        {},
+                        {
+                            "sourcePosition": "project:///modules/dns.ts#12,37"
                         },
                         {},
                         {
