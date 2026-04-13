@@ -84,7 +84,7 @@
   }
 
   // ── Expose globals for components ────────────────────────────────────────────
-  if (typeof window !== 'undefined') {
+  if (typeof window !== 'undefined' && typeof document?.addEventListener === 'function') {
     window._hermes = { auth, apiFetch, toast, navigate }
 
     // Set initial view from URL path
