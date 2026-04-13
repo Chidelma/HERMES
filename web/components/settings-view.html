@@ -6,6 +6,7 @@
   let newConditions = [], newActions = []
   let condField = 'from', condOp = 'contains', condValue = ''
   let actionType = 'folder', actionFolder = '', actionTo = ''
+  let _condSeq = 0, _actSeq = 0
 
   const isAdmin = typeof sessionStorage !== 'undefined' && sessionStorage.getItem('hermes_role') === 'admin'
 
@@ -53,26 +54,26 @@
 
   function addCondition() {
     if (!condValue) return
-    newConditions = [...newConditions, { field: condField, op: condOp, value: condValue }]
+    newConditions = [...newConditions, { _id: ++_condSeq, field: condField, op: condOp, value: condValue }]
     condValue = ''
   }
 
-  function removeCondition(i) {
-    newConditions = newConditions.filter((_, idx) => idx !== i)
+  function removeCondition(id) {
+    newConditions = newConditions.filter(c => c._id !== id)
   }
 
   function addAction() {
     if (actionType === 'folder' && !actionFolder) return
     if (actionType === 'forward' && !actionTo) return
-    const action = actionType === 'folder'  ? { type: 'folder', folder: actionFolder }
-                 : actionType === 'forward' ? { type: 'forward', to: actionTo }
-                 :                            { type: 'delete' }
+    const action = actionType === 'folder'  ? { _id: ++_actSeq, type: 'folder', folder: actionFolder }
+                 : actionType === 'forward' ? { _id: ++_actSeq, type: 'forward', to: actionTo }
+                 :                            { _id: ++_actSeq, type: 'delete' }
     newActions = [...newActions, action]
     actionFolder = actionTo = ''
   }
 
-  function removeAction(i) {
-    newActions = newActions.filter((_, idx) => idx !== i)
+  function removeAction(id) {
+    newActions = newActions.filter(a => a._id !== id)
   }
 
   function resetRuleForm() {
@@ -99,8 +100,8 @@
         domain: newRuleDomain,
         enabled: true,
         conditionMatch: newConditionMatch,
-        conditions: newConditions,
-        actions: newActions,
+        conditions: newConditions.map(({ _id, ...c }) => c),
+        actions: newActions.map(({ _id, ...a }) => a),
       }),
     })
     if (res?.ok) {
@@ -246,10 +247,10 @@
 
             <logic :if="newConditions.length > 0">
               <div class="settings-card" style="margin-bottom:0.5rem;">
-                <loop :for="(c, i) of newConditions">
+                <loop :for="c of newConditions">
                   <div class="settings-row">
                     <span style="font-size:13px;">{c.field} {c.op} "{c.value}"</span>
-                    <button class="btn-ghost" style="margin-left:auto;padding:2px 8px;font-size:12px;" @click="removeCondition(i)">×</button>
+                    <button class="btn-ghost" style="margin-left:auto;padding:2px 8px;font-size:12px;" @click="removeCondition(c._id)">×</button>
                   </div>
                 </loop>
               </div>
@@ -277,12 +278,12 @@
 
             <logic :if="newActions.length > 0">
               <div class="settings-card" style="margin-bottom:0.5rem;">
-                <loop :for="(a, i) of newActions">
+                <loop :for="a of newActions">
                   <div class="settings-row">
                     <span style="font-size:13px;">
                       {a.type === 'folder' ? '→ folder "' + a.folder + '"' : a.type === 'forward' ? '→ forward to ' + a.to : '→ delete'}
                     </span>
-                    <button class="btn-ghost" style="margin-left:auto;padding:2px 8px;font-size:12px;" @click="removeAction(i)">×</button>
+                    <button class="btn-ghost" style="margin-left:auto;padding:2px 8px;font-size:12px;" @click="removeAction(a._id)">×</button>
                   </div>
                 </loop>
               </div>
