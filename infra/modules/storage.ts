@@ -17,7 +17,7 @@ export const fileSystem = new aws.efs.FileSystem('hermes-efs', {
 
 export const efsSecurityGroup = new aws.ec2.SecurityGroup('hermes-efs-sg', {
   vpcId,
-  ingress: [{ protocol: 'tcp', fromPort: 2049, toPort: 2049, cidrBlocks: ['0.0.0.0/0'] }],
+  ingress: [{ protocol: 'tcp', fromPort: 2049, toPort: 2049, cidrBlocks: ['172.31.0.0/16'] }],
   egress: [{ protocol: '-1', fromPort: 0, toPort: 0, cidrBlocks: ['0.0.0.0/0'] }],
   tags: { Name: 'hermes-efs-sg' },
 })

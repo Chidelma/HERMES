@@ -1,12 +1,18 @@
 <script>
-  let domains = [], users = [], rules = [], loading = true
+  let domains = [], users = [], rules = [], mfaDevices = [], loading = true
   let showAddUser = false, showAddRule = false
-  let newEmail = '', newPhone = '', newDomains = '', newRole = 'viewer'
+  let newEmail = '', newPhones = '', newDomains = '', newRole = 'viewer'
   let newRuleName = '', newRuleDomain = '', newConditionMatch = 'all'
   let newConditions = [], newActions = []
   let condField = 'from', condOp = 'contains', condValue = ''
   let actionType = 'folder', actionFolder = '', actionTo = ''
   let _condSeq = 0, _actSeq = 0
+
+  // MFA device provisioning state
+  let showAddDevice = false
+  let deviceProvision = null   // { setupToken, totpSecret, totpUri }
+  let newDeviceName = '', newDeviceCode = ''
+  let deviceLoading = false, deviceError = ''
 
   const isAdmin = typeof sessionStorage !== 'undefined' && sessionStorage.getItem('hermes_role') === 'admin'
 
@@ -14,9 +20,14 @@
     loading = true
     const apiFetch = window._hermes?.apiFetch
     if (!apiFetch) { loading = false; return }
-    const [dr, rr] = await Promise.all([apiFetch('/domains'), apiFetch('/rules')])
-    domains = dr?.ok ? await dr.json() : []
-    rules = rr?.ok ? await rr.json() : []
+    const [dr, rr, mr] = await Promise.all([
+      apiFetch('/domains'),
+      apiFetch('/rules'),
+      apiFetch('/mfa/devices'),
+    ])
+    domains    = dr?.ok ? await dr.json() : []
+    rules      = rr?.ok ? await rr.json() : []
+    mfaDevices = mr?.ok ? await mr.json() : []
     if (isAdmin) {
       const ur = await apiFetch('/users')
       users = ur?.ok ? await ur.json() : []
@@ -26,22 +37,24 @@
 
   await loadAll()
 
+  // ── Users ──────────────────────────────────────────────────────────────────
+
   async function addUser() {
-    if (!newEmail || !newPhone || !newDomains) return
+    if (!newEmail || !newPhones || !newDomains) return
     const apiFetch = window._hermes?.apiFetch
     if (!apiFetch) return
     const res = await apiFetch('/users', {
       method: 'POST',
       body: JSON.stringify({
         email: newEmail,
-        phone: newPhone,
+        phones: newPhones.split(',').map(p => p.trim()).filter(Boolean),
         domains: newDomains.split(',').map(d => d.trim()).filter(Boolean),
         role: newRole,
       }),
     })
     if (res?.ok) {
       showAddUser = false
-      newEmail = newPhone = newDomains = ''
+      newEmail = newPhones = newDomains = ''
       newRole = 'viewer'
       const ur = await apiFetch('/users')
       users = ur?.ok ? await ur.json() : []
@@ -51,6 +64,8 @@
       window._hermes?.toast(data?.error || 'Failed to add user.')
     }
   }
+
+  // ── Inbox rule helpers ─────────────────────────────────────────────────────
 
   function addCondition() {
     if (!condValue) return
@@ -149,6 +164,69 @@
       '→ delete'
     ).join(', ')
   }
+
+  // ── MFA devices ────────────────────────────────────────────────────────────
+
+  async function startAddDevice() {
+    if (showAddDevice) {
+      showAddDevice = false; deviceProvision = null
+      newDeviceName = newDeviceCode = deviceError = ''
+      return
+    }
+    showAddDevice = true
+    deviceProvision = null
+    const apiFetch = window._hermes?.apiFetch
+    if (!apiFetch) return
+    const res = await apiFetch('/mfa/provision', { method: 'POST' })
+    if (res?.ok) {
+      deviceProvision = await res.json()
+    } else {
+      window._hermes?.toast('Failed to start device setup.')
+      showAddDevice = false
+    }
+  }
+
+  async function confirmDevice() {
+    if (!deviceProvision || !newDeviceCode || newDeviceCode.length !== 6) {
+      deviceError = 'Enter the 6-digit code from your authenticator.'
+      return
+    }
+    deviceLoading = true; deviceError = ''
+    const apiFetch = window._hermes?.apiFetch
+    if (!apiFetch) return
+    try {
+      const res = await apiFetch('/auth/mfa/setup', {
+        method: 'POST',
+        body: JSON.stringify({
+          setupToken: deviceProvision.setupToken,
+          code: newDeviceCode,
+          name: newDeviceName.trim() || 'Authenticator',
+        }),
+      })
+      if (res?.ok) {
+        window._hermes?.toast('Device added.')
+        showAddDevice = false; deviceProvision = null
+        newDeviceName = newDeviceCode = ''
+        const mr = await apiFetch('/mfa/devices')
+        mfaDevices = mr?.ok ? await mr.json() : []
+      } else {
+        const data = await res?.json()
+        deviceError = data?.error || 'Invalid code.'
+      }
+    } catch { deviceError = 'Network error.' }
+    finally { deviceLoading = false }
+  }
+
+  async function deleteMfaDevice(id) {
+    if (!confirm('Remove this MFA device?')) return
+    const apiFetch = window._hermes?.apiFetch
+    if (!apiFetch) return
+    const res = await apiFetch(`/mfa/devices/${id}`, { method: 'DELETE' })
+    if (res?.ok) {
+      mfaDevices = mfaDevices.filter(d => d.id !== id)
+      window._hermes?.toast('Device removed.')
+    }
+  }
 </script>
 
 <div class="settings-panel">
@@ -184,6 +262,74 @@
         </div>
       </div>
     </loop>
+  </div>
+
+  <!-- MFA Devices -->
+  <div class="settings-section">
+    <p class="settings-section-title">MFA Devices</p>
+
+    <logic :if="loading">
+      <div class="inbox-empty"><div class="spinner"></div><span>Loading…</span></div>
+    </logic>
+
+    <logic :if="!loading && mfaDevices.length > 0">
+      <div class="settings-card">
+        <loop :for="device of mfaDevices">
+          <div class="settings-row">
+            <span class="settings-row-label">{device.name}</span>
+            <span style="color:var(--muted);font-size:12px;">{new Date(device.createdAt).toLocaleDateString()}</span>
+            <button class="btn-danger" style="padding:2px 8px;font-size:12px;margin-left:auto;" @click="deleteMfaDevice(device.id)">Remove</button>
+          </div>
+        </loop>
+      </div>
+    </logic>
+
+    <logic :if="!loading && mfaDevices.length === 0">
+      <p style="color:var(--muted);font-size:13px;padding:0.5rem 0;">No MFA devices registered.</p>
+    </logic>
+
+    <button class="btn-secondary" @click="startAddDevice()" style="margin-top:0.75rem;">
+      {showAddDevice ? 'Cancel' : '+ Add device'}
+    </button>
+
+    <logic :if="showAddDevice && !deviceProvision">
+      <div class="inbox-empty" style="padding:1rem;"><div class="spinner"></div><span>Generating…</span></div>
+    </logic>
+
+    <logic :if="deviceProvision">
+      <div class="settings-card" style="margin-top:0.75rem;padding:1rem;display:flex;flex-direction:column;gap:0.75rem;">
+        <p style="font-size:13px;margin:0;">Add the secret key to your authenticator app (Google Authenticator, Authy, 1Password, etc.), then enter the code it shows.</p>
+
+        <div class="form-group">
+          <label class="form-label">Secret key</label>
+          <input type="text" :value="deviceProvision.totpSecret" readonly style="font-family:monospace;font-size:13px;letter-spacing:0.05em;" />
+        </div>
+
+        <p style="font-size:12px;margin:0;">
+          On mobile? <a :href="deviceProvision.totpUri" style="color:var(--accent);">Open in authenticator app</a>
+        </p>
+
+        <div class="form-group">
+          <label class="form-label">Device name <span style="color:var(--muted);font-weight:400;">(optional)</span></label>
+          <input type="text" :value="newDeviceName" placeholder="e.g. iPhone 15" />
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Confirmation code</label>
+          <input type="text" :value="newDeviceCode" inputmode="numeric" maxlength="6" placeholder="000000" autocomplete="one-time-code" />
+        </div>
+
+        <logic :if="deviceError">
+          <p class="login-error" style="margin:0;">{deviceError}</p>
+        </logic>
+
+        <div style="display:flex;gap:0.5rem;">
+          <button class="btn-primary" :disabled="deviceLoading" @click="confirmDevice()">
+            {deviceLoading ? 'Saving…' : 'Add device'}
+          </button>
+        </div>
+      </div>
+    </logic>
   </div>
 
   <!-- Inbox Rules -->
@@ -227,7 +373,7 @@
           <div class="form-group">
             <label class="form-label">Domain</label>
             <select :value="newRuleDomain">
-              <option value="">��� select domain —</option>
+              <option value="">— select domain —</option>
               <loop :for="d of domains">
                 <option :value="d.domain">{d.domain}</option>
               </loop>
@@ -324,7 +470,7 @@
           <loop :for="user of users">
             <div class="settings-row">
               <span class="settings-row-label">{user.email}</span>
-              <span style="color:var(--muted);font-size:12px;margin-right:0.5rem;">{user.phone}</span>
+              <span style="color:var(--muted);font-size:12px;margin-right:0.5rem;">{user.phones.join(', ')}</span>
               <span class="settings-row-value">{user.domains.join(', ')}</span>
               <span :class="'route-badge ' + (user.role === 'admin' ? 'store' : 'forward')" style="margin-left:0.5rem;">{user.role}</span>
             </div>
@@ -341,8 +487,8 @@
             <input type="email" :value="newEmail" placeholder="user@example.com" />
           </div>
           <div class="form-group">
-            <label class="form-label">Phone (E.164)</label>
-            <input type="tel" :value="newPhone" placeholder="+1 416 555 0100" />
+            <label class="form-label">Phone numbers (comma-separated, E.164)</label>
+            <input type="text" :value="newPhones" placeholder="+1 416 555 0100, +1 647 555 0200" />
           </div>
           <div class="form-group">
             <label class="form-label">Domains (comma-separated)</label>

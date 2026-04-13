@@ -87,37 +87,37 @@ describe('CORS', () => {
     expect(res.headers.get('access-control-allow-methods')).toContain('GET')
   })
 
-  test('OPTIONS /auth/request returns 200 with CORS headers', async () => {
-    const res = await options('/auth/request')
+  test('OPTIONS /auth/sms/request returns 200 with CORS headers', async () => {
+    const res = await options('/auth/sms/request')
     expect(res.status).toBe(200)
     expect(res.headers.get('access-control-allow-origin')).toBe('*')
   })
 })
 
-// ── Auth: POST /auth/request ──────────────────────────────────────────────────
+// ── Auth: POST /auth/sms/request ─────────────────────────────────────────────
 
-describe('POST /auth/request', () => {
+describe('POST /auth/sms/request', () => {
   test('missing body → 400', async () => {
-    const res = await fetch(`${API}/auth/request`, { method: 'POST' })
+    const res = await fetch(`${API}/auth/sms/request`, { method: 'POST' })
     expect(res.status).toBe(400)
   })
 
   test('missing email → 400', async () => {
-    const res = await post('/auth/request', { phone: '+15483906233' })
+    const res = await post('/auth/sms/request', { phone: '+15483906233' })
     expect(res.status).toBe(400)
     const body = await json(res)
     expect(body.error).toBeTruthy()
   })
 
   test('missing phone → 400', async () => {
-    const res = await post('/auth/request', { email: ADMIN_EMAIL })
+    const res = await post('/auth/sms/request', { email: ADMIN_EMAIL })
     expect(res.status).toBe(400)
     const body = await json(res)
     expect(body.error).toBeTruthy()
   })
 
   test('unknown credentials → 404', async () => {
-    const res = await post('/auth/request', {
+    const res = await post('/auth/sms/request', {
       email: 'nobody@example.com',
       phone: '+10000000000',
     })
@@ -127,7 +127,7 @@ describe('POST /auth/request', () => {
   })
 
   test('invalid JSON → 400', async () => {
-    const res = await fetch(`${API}/auth/request`, {
+    const res = await fetch(`${API}/auth/sms/request`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: 'not-json',
@@ -136,27 +136,80 @@ describe('POST /auth/request', () => {
   })
 })
 
-// ── Auth: POST /auth/confirm ──────────────────────────────────────────────────
+// ── Auth: POST /auth/sms/confirm ──────────────────────────────────────────────
 
-describe('POST /auth/confirm', () => {
+describe('POST /auth/sms/confirm', () => {
   test('missing body → 400', async () => {
-    const res = await fetch(`${API}/auth/confirm`, { method: 'POST' })
+    const res = await fetch(`${API}/auth/sms/confirm`, { method: 'POST' })
     expect(res.status).toBe(400)
   })
 
   test('missing code → 400', async () => {
-    const res = await post('/auth/confirm', { sessionId: 'abc' })
+    const res = await post('/auth/sms/confirm', { sessionId: 'abc' })
     expect(res.status).toBe(400)
   })
 
   test('missing sessionId → 400', async () => {
-    const res = await post('/auth/confirm', { code: '123456' })
+    const res = await post('/auth/sms/confirm', { code: '123456' })
     expect(res.status).toBe(400)
   })
 
   test('nonexistent session → 401', async () => {
-    const res = await post('/auth/confirm', {
+    const res = await post('/auth/sms/confirm', {
       sessionId: 'deadbeefdeadbeefdeadbeefdeadbeefdeadbeefdeadbeefdeadbeefdeadbeef',
+      code: '000000',
+    })
+    expect(res.status).toBe(401)
+  })
+})
+
+// ── Auth: POST /auth/mfa/request ──────────────────────────────────────────────
+
+describe('POST /auth/mfa/request', () => {
+  test('missing body → 400', async () => {
+    const res = await fetch(`${API}/auth/mfa/request`, { method: 'POST' })
+    expect(res.status).toBe(400)
+  })
+
+  test('missing email → 400', async () => {
+    const res = await post('/auth/mfa/request', {})
+    expect(res.status).toBe(400)
+  })
+
+  test('unknown email → 404', async () => {
+    const res = await post('/auth/mfa/request', { email: 'nobody@example.com' })
+    expect(res.status).toBe(404)
+  })
+})
+
+// ── Auth: POST /auth/mfa/confirm ──────────────────────────────────────────────
+
+describe('POST /auth/mfa/confirm', () => {
+  test('missing body → 400', async () => {
+    const res = await fetch(`${API}/auth/mfa/confirm`, { method: 'POST' })
+    expect(res.status).toBe(400)
+  })
+
+  test('nonexistent session → 401', async () => {
+    const res = await post('/auth/mfa/confirm', {
+      mfaSessionId: 'deadbeefdeadbeefdeadbeefdeadbeefdeadbeefdeadbeefdeadbeefdeadbeef',
+      code: '000000',
+    })
+    expect(res.status).toBe(401)
+  })
+})
+
+// ── Auth: POST /auth/mfa/setup ────────────────────────────────────────────────
+
+describe('POST /auth/mfa/setup', () => {
+  test('missing body → 400', async () => {
+    const res = await fetch(`${API}/auth/mfa/setup`, { method: 'POST' })
+    expect(res.status).toBe(400)
+  })
+
+  test('invalid setup token → 401', async () => {
+    const res = await post('/auth/mfa/setup', {
+      setupToken: 'deadbeefdeadbeefdeadbeefdeadbeefdeadbeefdeadbeefdeadbeefdeadbeef',
       code: '000000',
     })
     expect(res.status).toBe(401)

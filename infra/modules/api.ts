@@ -87,7 +87,7 @@ new aws.apigateway.Method('hermes-send-method', {
   authorization: 'NONE',
 })
 
-new aws.apigateway.Integration('hermes-send-integration', {
+const sendIntegration = new aws.apigateway.Integration('hermes-send-integration', {
   restApi: restApi.id,
   resourceId: sendResource.id,
   httpMethod: 'POST',
@@ -110,9 +110,10 @@ const deployment = new aws.apigateway.Deployment('hermes-deployment', {
     redeployment: pulumi.all([
       authIntegration.id,
       apiIntegration.id,
+      sendIntegration.id,
     ]).apply(ids => ids.join(',')),
   },
-}, { dependsOn: [authIntegration, apiIntegration] })
+}, { dependsOn: [authIntegration, apiIntegration, sendIntegration] })
 
 const stage = new aws.apigateway.Stage('hermes-stage', {
   restApi: restApi.id,

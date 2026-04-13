@@ -2,6 +2,7 @@ import type { SQSEvent, SQSRecord } from 'aws-lambda'
 import { SESClient, SendRawEmailCommand } from '@aws-sdk/client-ses'
 import { getFylo, Collections } from '../shared/fylo'
 import type { DomainConfig, StoredEmail, RouteRule, InboxRule, RuleCondition } from '../shared/types'
+import { parseInboxRule } from '../shared/rules'
 
 const ses = new SESClient({})
 
@@ -131,11 +132,7 @@ async function applyInboxRules(
 
   const rules: InboxRule[] = Object.values(results)
     .filter(r => r.enabled)
-    .map(raw => ({
-      ...raw,
-      conditions: typeof raw.conditions === 'string' ? JSON.parse(raw.conditions) : (raw.conditions ?? []),
-      actions:    typeof raw.actions    === 'string' ? JSON.parse(raw.actions)    : (raw.actions    ?? []),
-    }))
+    .map(raw => parseInboxRule(raw) as InboxRule)
 
   for (const rule of rules) {
     if (!conditionsMatch(rule, email)) continue

@@ -1,45 +1,12 @@
 import type { APIGatewayProxyEvent, APIGatewayProxyResult } from 'aws-lambda'
-import { SecretsManagerClient, GetSecretValueCommand } from '@aws-sdk/client-secrets-manager'
 import { randomBytes } from 'node:crypto'
 import { getFylo, Collections } from '../shared/fylo'
 import { verifyJwt } from '../shared/jwt'
-import type { DomainConfig, RouteRule, StoredEmail, User, InboxRule } from '../shared/types'
-
-const sm = new SecretsManagerClient({ maxAttempts: 1 })
-
-let _secret: string | null = null
-async function getSecret(): Promise<string> {
-  if (_secret) return _secret
-  const res = await sm.send(new GetSecretValueCommand({ SecretId: process.env.JWT_SECRET_ARN }))
-  _secret = res.SecretString!
-  return _secret
-}
-
-const CORS = {
-  'Access-Control-Allow-Origin': '*',
-  'Access-Control-Allow-Headers': 'Content-Type,Authorization',
-  'Access-Control-Allow-Methods': 'GET,POST,PUT,DELETE,OPTIONS',
-}
-
-function ok(data: unknown): APIGatewayProxyResult {
-  return { statusCode: 200, headers: CORS, body: JSON.stringify(data) }
-}
-
-function badRequest(message: string): APIGatewayProxyResult {
-  return { statusCode: 400, headers: CORS, body: JSON.stringify({ error: message }) }
-}
-
-function notFound(message: string): APIGatewayProxyResult {
-  return { statusCode: 404, headers: CORS, body: JSON.stringify({ error: message }) }
-}
-
-function unauthorized(message = 'Unauthorized'): APIGatewayProxyResult {
-  return { statusCode: 401, headers: CORS, body: JSON.stringify({ error: message }) }
-}
-
-function forbidden(): APIGatewayProxyResult {
-  return { statusCode: 403, headers: CORS, body: JSON.stringify({ error: 'Forbidden' }) }
-}
+import { CORS, ok, badRequest, notFound, unauthorized, forbidden, getSecret } from '../shared/http'
+import { parseInboxRule } from '../shared/rules'
+import { generateTotpSecret, totpProvisionUri } from '../shared/totp'
+import { getUserPhones } from '../shared/types'
+import type { DomainConfig, RouteRule, StoredEmail, User, InboxRule, MfaDevice, SetupSession } from '../shared/types'
 
 export async function handler(event: APIGatewayProxyEvent): Promise<APIGatewayProxyResult> {
   if (event.httpMethod === 'OPTIONS') {
@@ -63,9 +30,8 @@ export async function handler(event: APIGatewayProxyEvent): Promise<APIGatewayPr
     for await (const doc of fylo.findDocs(Collections.EMAILS, { $ops: [] }).collect()) {
       Object.assign(results, doc)
     }
-    const emails = Object.entries(results)
-      .filter(([, e]) => claims.domains.includes(e.domain))
-      .map(([id, e]) => ({ id, ...e }))
+    const emails = Object.values(results)
+      .filter(e => claims.domains.includes(e.domain))
       .sort((a, b) => b.receivedAt.localeCompare(a.receivedAt))
     return ok(emails)
   }
@@ -82,9 +48,9 @@ export async function handler(event: APIGatewayProxyEvent): Promise<APIGatewayPr
     }
     const entry = Object.entries(results)[0]
     if (!entry) return notFound('Email not found')
-    const [docId, email] = entry
+    const [, email] = entry
     if (!claims.domains.includes(email.domain)) return forbidden()
-    return ok({ id: docId, ...email })
+    return ok(email)
   }
 
   // DELETE /inbox/:id
@@ -104,7 +70,7 @@ export async function handler(event: APIGatewayProxyEvent): Promise<APIGatewayPr
     return ok({ deleted: id })
   }
 
-  // ── Domains (admin only) ────────────────────────────────────────────────
+  // ── Domains ─────────────────────────────────────────────────────────────
 
   if (httpMethod === 'GET' && path === '/domains') {
     const results: Record<string, any> = {}
@@ -169,18 +135,24 @@ export async function handler(event: APIGatewayProxyEvent): Promise<APIGatewayPr
 
   if (httpMethod === 'GET' && path === '/users') {
     if (claims.role !== 'admin') return forbidden()
-    const results: Record<string, User> = {}
+    const results: Record<string, any> = {}
     for await (const doc of fylo.findDocs(Collections.USERS, { $ops: [] }).collect()) {
       Object.assign(results, doc)
     }
-    return ok(Object.entries(results).map(([id, u]) => ({ id, email: u.email, phone: u.phone, domains: u.domains, role: u.role })))
+    return ok(Object.entries(results).map(([id, u]) => ({
+      id,
+      email: u.email,
+      phones: getUserPhones(u),
+      domains: u.domains,
+      role: u.role,
+    })))
   }
 
   if (httpMethod === 'POST' && path === '/users') {
     if (claims.role !== 'admin') return forbidden()
     if (!body) return badRequest('Missing body')
     const user: User = JSON.parse(body)
-    if (!user.email || !user.phone || !user.domains?.length) return badRequest('email, phone, and domains required')
+    if (!user.email || !user.phones?.length || !user.domains?.length) return badRequest('email, phones, and domains required')
     const id = await fylo.putData(Collections.USERS, { ...user, email: user.email.toLowerCase() })
     return ok({ id })
   }
@@ -193,7 +165,7 @@ export async function handler(event: APIGatewayProxyEvent): Promise<APIGatewayPr
     return ok({ deleted: id })
   }
 
-  // ── Inbox rules ─────────────────────────────────────────────────────────────
+  // ── Inbox rules ─────────────────────────────────────────────────────────
 
   if (httpMethod === 'GET' && path === '/rules') {
     const results: Record<string, any> = {}
@@ -284,7 +256,58 @@ export async function handler(event: APIGatewayProxyEvent): Promise<APIGatewayPr
     return ok({ removed: address })
   }
 
-  return { statusCode: 404, headers: CORS, body: JSON.stringify({ error: 'Not found' }) }
+  // ── MFA device management ────────────────────────────────────────────────
+  // Authenticated users manage their own devices; admins see only their own.
+
+  if (httpMethod === 'GET' && path === '/mfa/devices') {
+    const results: Record<string, MfaDevice> = {}
+    for await (const doc of fylo.findDocs(Collections.MFA_DEVICES, {
+      $ops: [{ userEmail: { $eq: claims.email } }],
+    }).collect()) {
+      Object.assign(results, doc)
+    }
+    const devices = Object.entries(results).map(([id, d]) => ({
+      id,
+      name: d.name,
+      createdAt: d.createdAt,
+    }))
+    return ok(devices)
+  }
+
+  // POST /mfa/provision — generate a setup session for adding a new device.
+  // Returns the TOTP secret and provisioning URI; the client then calls
+  // POST /auth/mfa/setup (auth Lambda) with the setupToken to register.
+  if (httpMethod === 'POST' && path === '/mfa/provision') {
+    const totpSecret = generateTotpSecret()
+    const totpUri = totpProvisionUri(claims.email, totpSecret)
+    const setupToken = randomBytes(32).toString('hex')
+    await fylo.putData(Collections.SETUP_SESSIONS, {
+      id: setupToken,
+      email: claims.email,
+      totpSecret,
+      expiresAt: new Date(Date.now() + 15 * 60 * 1000).toISOString(),
+    } satisfies SetupSession)
+    return ok({ setupToken, totpSecret, totpUri })
+  }
+
+  const mfaDeviceMatch = path.match(/^\/mfa\/devices\/([^/]+)$/)
+  if (httpMethod === 'DELETE' && mfaDeviceMatch) {
+    const deviceId = decodeURIComponent(mfaDeviceMatch[1])
+    const results: Record<string, MfaDevice> = {}
+    for await (const doc of fylo.findDocs(Collections.MFA_DEVICES, {
+      $ops: [{ id: { $eq: deviceId } }],
+    }).collect()) {
+      Object.assign(results, doc)
+    }
+    const entry = Object.entries(results)[0]
+    if (!entry) return notFound('Device not found')
+    const [docId, device] = entry
+    if (device.userEmail !== claims.email) return forbidden()
+    await fylo.delDoc(Collections.MFA_DEVICES, docId)
+    return ok({ deleted: deviceId })
+  }
+
+  return notFound('Not found')
 }
 
 async function getDomain(fylo: Awaited<ReturnType<typeof getFylo>>, domain: string): Promise<DomainConfig | null> {
@@ -304,14 +327,6 @@ async function getDomainEntry(fylo: Awaited<ReturnType<typeof getFylo>>, domain:
   const [id, raw] = entries[0]
   const config: DomainConfig = { ...raw, routes: typeof raw.routes === 'string' ? JSON.parse(raw.routes) : (raw.routes ?? []) }
   return [id, config]
-}
-
-function parseInboxRule(raw: any): Omit<InboxRule, 'id'> {
-  return {
-    ...raw,
-    conditions: typeof raw.conditions === 'string' ? JSON.parse(raw.conditions) : (raw.conditions ?? []),
-    actions:    typeof raw.actions    === 'string' ? JSON.parse(raw.actions)    : (raw.actions    ?? []),
-  }
 }
 
 async function getRuleEntry(fylo: Awaited<ReturnType<typeof getFylo>>, ruleId: string): Promise<[string | null, InboxRule | null]> {

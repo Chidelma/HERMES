@@ -43,11 +43,18 @@ export interface SuppressedAddress {
 
 export interface User {
   email: string
-  /** E.164 format, e.g. +14165551234 */
-  phone: string
+  /** E.164 phone numbers. Supports multiple for backup/reset. */
+  phones: string[]
   /** Domains this user may access */
   domains: string[]
   role: 'admin' | 'viewer'
+}
+
+/** Returns the phone numbers for a user, handling the legacy single-phone field. */
+export function getUserPhones(user: Pick<User, 'phones'> & { phone?: string }): string[] {
+  if (Array.isArray(user.phones) && user.phones.length > 0) return user.phones
+  if (typeof user.phone === 'string' && user.phone) return [user.phone]
+  return []
 }
 
 export interface OtpSession {
@@ -57,6 +64,32 @@ export interface OtpSession {
   /** SHA-256 hex of the 6-digit code */
   codeHash: string
   expiresAt: string
+}
+
+/** An active TOTP challenge — created by POST /auth/mfa/request. */
+export interface MfaSession {
+  id: string
+  email: string
+  expiresAt: string
+}
+
+/** Holds the TOTP secret for a pending device registration. */
+export interface SetupSession {
+  id: string
+  email: string
+  /** Base32-encoded TOTP secret. */
+  totpSecret: string
+  expiresAt: string
+}
+
+/** A registered TOTP authenticator device. */
+export interface MfaDevice {
+  id: string
+  userEmail: string
+  name: string
+  /** Base32-encoded TOTP secret. */
+  secret: string
+  createdAt: string
 }
 
 export interface SendRequest {
