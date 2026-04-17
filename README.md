@@ -84,6 +84,7 @@ The runtime image is built on `oven/bun:<version>-distroless` for a minimal atta
 - No shell, no package manager, no coreutils — attackers who land in a running container have very little to work with.
 - Runs as non-root user `65532:65532`.
 - Base images are pinned to SHA digests in the Dockerfile for reproducible builds.
+- Test-only routes under `routes/test/**` are omitted from the production image.
 
 Trade-offs: `docker exec -it <container> sh` will not work, and the image is not intended for interactive debugging. For troubleshooting, reproduce the failure locally with `hermes:local` built from the repo, or run a sidecar built on a full Bun image.
 
