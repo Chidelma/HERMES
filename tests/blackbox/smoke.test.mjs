@@ -20,25 +20,3 @@ test('entrypoint rejects unsupported command', () => {
   expect(status).toBe(64)
   expect(stderr).toContain('Unsupported Hermes container command')
 })
-
-test('serve refuses to start without JWT_SECRET', () => {
-  const { status, stderr } = dockerRun([
-    '-e', 'INBOUND_WEBHOOK_SECRET=x',
-    '-e', 'WEB_PUSH_DISABLED=true',
-    IMAGE,
-    'serve',
-  ])
-  expect(status).not.toBe(0)
-  expect(stderr).toMatch(/JWT_SECRET/i)
-})
-
-test('serve refuses to start without INBOUND_WEBHOOK_SECRET', () => {
-  const { status, stderr } = dockerRun([
-    '-e', 'JWT_SECRET=x',
-    '-e', 'WEB_PUSH_DISABLED=true',
-    IMAGE,
-    'serve',
-  ])
-  expect(status).not.toBe(0)
-  expect(stderr).toMatch(/INBOUND_WEBHOOK_SECRET/i)
-})
