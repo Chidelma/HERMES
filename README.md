@@ -59,7 +59,7 @@ docker run --rm \
   -e WEB_PUSH_DISABLED=true \
   -e FYLO_ROOT=/data \
   -v hermes-data:/data \
-  chidelma/hermes:latest
+  d3lma/hermes:latest
 ```
 
 The container serves the API on `PORT` and stores data under `FYLO_ROOT`. Build the frontend separately with `bun run bundle` when distributing it through a CDN.
@@ -92,7 +92,7 @@ Trade-offs: `docker exec -it <container> sh` will not work, and the image is not
 Because the runtime base is distroless, downstream Dockerfiles can add files and configuration but cannot run shell commands. This works:
 
 ```dockerfile
-FROM chidelma/hermes:0.2.0
+FROM d3lma/hermes:0.2.0
 
 COPY --chown=65532:65532 my-routes/   /app/routes/custom/
 COPY --chown=65532:65532 my-config.json /app/config.json
@@ -101,7 +101,7 @@ ENV CUSTOM_FLAG=true
 
 Files placed under `/app/routes/` are picked up automatically by Tachyon's file-system router. Static assets, components, and configuration work the same way.
 
-`RUN` commands that require a shell will not work (`bun install`, `apt-get`, shell scripts). To add new npm dependencies, do a multi-stage build yourself: run `bun install` in a full Bun image and copy `node_modules` into a layer on top of `chidelma/hermes`.
+`RUN` commands that require a shell will not work (`bun install`, `apt-get`, shell scripts). To add new npm dependencies, do a multi-stage build yourself: run `bun install` in a full Bun image and copy `node_modules` into a layer on top of `d3lma/hermes`.
 
 Bind-mounting at runtime is always an option for ad-hoc additions:
 
@@ -114,7 +114,7 @@ docker run --rm \
   -e FYLO_ROOT=/data \
   -v hermes-data:/data \
   -v $(pwd)/my-routes:/app/routes/custom:ro \
-  chidelma/hermes:latest
+  d3lma/hermes:latest
 ```
 
 Bind-mount sources should be owned by uid `65532` on the host (or world-readable) to satisfy the non-root container user.
@@ -148,7 +148,7 @@ For the hardened Docker image, run the same bootstrap as an explicit one-shot co
 ```sh
 docker run --rm \
   -v hermes-data:/data \
-  chidelma/hermes:latest \
+  d3lma/hermes:latest \
   admin:create --email=admin@example.com --phone=+14165550100 --domain=example.com
 ```
 
