@@ -1,0 +1,37 @@
+#!/usr/bin/env bun
+import { handle } from '../../../src/shared/handler.ts'
+import { r400 } from '../../../src/shared/respond.ts'
+import { createDb } from '../../../src/db/index.ts'
+import { upsertPushSubscription } from '../../../src/db/push.ts'
+import { isAuthError, requireClaims } from '../../../src/shared/notifications.ts'
+
+handle(async ({ body, context, headers }) => {
+  const claims = requireClaims(context)
+  if (isAuthError(claims)) return claims
+
+  const subscription = body as {
+    endpoint?: string
+    keys?: {
+      p256dh?: string
+      auth?: string
+    }
+  }
+
+  if (!subscription?.endpoint || !subscription.keys?.p256dh || !subscription.keys.auth) {
+    return r400('endpoint, p256dh, and auth are required')
+  }
+
+  const fylo = await createDb()
+  const record = await upsertPushSubscription(fylo, {
+    userEmail: claims.email,
+    endpoint: subscription.endpoint,
+    keys: {
+      p256dh: subscription.keys.p256dh,
+      auth: subscription.keys.auth,
+    },
+    userAgent: headers?.['user-agent'] ?? headers?.['User-Agent'],
+  })
+
+  const { keys, ...safeRecord } = record
+  return safeRecord
+})

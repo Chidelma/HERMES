@@ -1,0 +1,8 @@
+{
+  "DELETE": {
+    "200": { "removed": "" },
+    "400": { "error": "" },
+    "401": { "error": "", "unauthorized": true },
+    "403": { "error": "", "forbidden": true }
+  }
+}

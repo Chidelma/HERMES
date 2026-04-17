@@ -1,0 +1,33 @@
+{
+  "GET": {
+    "401": { "error": "", "unauthorized": true },
+    "403": { "error": "", "forbidden": true },
+    "404": { "error": "", "notFound": true }
+  },
+  "PUT": {
+    "200": {
+      "id": "",
+      "domain": "",
+      "recipient": "",
+      "sender": "",
+      "subject": "",
+      "body": "",
+      "folder": "",
+      "read": true,
+      "starred": true,
+      "receivedAt": "",
+      "processed": true,
+      "attachments": []
+    },
+    "400": { "error": "" },
+    "401": { "error": "", "unauthorized": true },
+    "403": { "error": "", "forbidden": true },
+    "404": { "error": "", "notFound": true }
+  },
+  "DELETE": {
+    "200": { "deleted": "" },
+    "401": { "error": "", "unauthorized": true },
+    "403": { "error": "", "forbidden": true },
+    "404": { "error": "", "notFound": true }
+  }
+}

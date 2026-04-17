@@ -1,0 +1,6 @@
+{
+  "POST": {
+    "200": { "setupToken": "", "totpSecret": "", "totpUri": "" },
+    "401": { "error": "", "unauthorized": true }
+  }
+}

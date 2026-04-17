@@ -1,0 +1,55 @@
+#!/usr/bin/env bun
+import { createHash } from 'node:crypto'
+import { randomBytes } from 'node:crypto'
+import { handle } from '../../../../src/shared/handler.ts'
+import { r400, r401 } from '../../../../src/shared/respond.ts'
+import { signJwt, getJwtSecret } from '../../../../src/shared/auth.ts'
+import { generateTotpSecret, totpProvisionUri } from '../../../../src/shared/totp.ts'
+import { createDb } from '../../../../src/db/index.ts'
+import { findUserByEmail } from '../../../../src/db/users.ts'
+import { findOtpSession, deleteOtpSession } from '../../../../src/db/otp.ts'
+import { listDevices } from '../../../../src/db/mfa.ts'
+import { putSetupSession } from '../../../../src/db/mfa.ts'
+
+handle(async ({ body }) => {
+  const { sessionId, code } = (body ?? {}) as Record<string, string>
+  if (!sessionId || !code) return r400('sessionId and code required')
+
+  const fylo = await createDb()
+  const [docId, session] = await findOtpSession(fylo, sessionId)
+  if (!session || !docId) return r401('Invalid or expired session')
+  if (new Date(session.expiresAt) < new Date()) {
+    await deleteOtpSession(fylo, docId)
+    return r401('Code has expired')
+  }
+  if (createHash('sha256').update(code).digest('hex') !== session.codeHash) {
+    return r401('Invalid code')
+  }
+
+  await deleteOtpSession(fylo, docId)
+
+  const [, user] = await findUserByEmail(fylo, session.email)
+  if (!user) return r401('Account not found')
+
+  const devices = await listDevices(fylo, session.email)
+
+  if (devices.length === 0) {
+    const totpSecret = generateTotpSecret()
+    const setupToken = randomBytes(32).toString('hex')
+    await putSetupSession(fylo, {
+      id: setupToken,
+      email: session.email,
+      totpSecret,
+      expiresAt: new Date(Date.now() + 15 * 60 * 1000).toISOString(),
+    })
+    return {
+      requiresSetup: true,
+      setupToken,
+      totpSecret,
+      totpUri: totpProvisionUri(session.email, totpSecret),
+    }
+  }
+
+  const token = signJwt({ email: user.email, domains: user.domains, role: user.role }, getJwtSecret())
+  return { token, email: user.email, domains: user.domains, role: user.role }
+})

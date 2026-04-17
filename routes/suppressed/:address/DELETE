@@ -1,0 +1,19 @@
+#!/usr/bin/env bun
+import { handle } from '../../../src/shared/handler.ts'
+import { r400, r401, r403 } from '../../../src/shared/respond.ts'
+import { verifyJwt, getJwtSecret } from '../../../src/shared/auth.ts'
+import { createDb } from '../../../src/db/index.ts'
+import { deleteSuppressed } from '../../../src/db/suppressed.ts'
+
+handle(async ({ paths, context }) => {
+  const claims = verifyJwt(context.bearer?.token ?? '', getJwtSecret())
+  if (!claims) return r401('Authentication required')
+  if (claims.role !== 'admin') return r403('Admin access required')
+
+  const address = paths?.address
+  if (!address) return r400('address required')
+
+  const fylo = await createDb()
+  await deleteSuppressed(fylo, address)
+  return { removed: address }
+})

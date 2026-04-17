@@ -1,0 +1,217 @@
+<script>
+  // step: 'start' | 'mfa' | 'phone-input' | 'phone-code' | 'mfa-setup'
+  let step = 'start'
+  let email = '', phone = '', otpCode = '', totpCode = '', deviceCode = '', deviceName = ''
+  let mfaSessionId = '', otpSessionId = '', setupToken = '', totpSecret = '', totpUri = ''
+  let loading = false, error = ''
+
+  const _api = () => window.HERMES_CONFIG?.apiUrl || ''
+
+  // ── Step: start ─────────────────────────────────────────────────────────────
+  // Ask the server whether the user has MFA devices registered.
+  async function requestMfa() {
+    if (!email) { error = 'Email is required.'; return }
+    loading = true; error = ''
+    try {
+      const res = await fetch(`${_api()}/auth/mfa/request`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email }),
+      })
+      const data = await res.json()
+      if (!res.ok) { error = data.error || 'Unable to sign in.'; return }
+      if (data.requiresSetup) {
+        // No MFA registered — user must verify via phone first
+        step = 'phone-input'
+      } else {
+        mfaSessionId = data.mfaSessionId
+        step = 'mfa'
+      }
+    } catch { error = 'Network error. Check your connection.' }
+    finally { loading = false; window.__ty_rerender?.() }
+  }
+
+  // ── Step: mfa ───────────────────────────────────────────────────────────────
+  async function confirmMfa() {
+    if (!totpCode || totpCode.length !== 6) { error = 'Enter the 6-digit code from your authenticator.'; return }
+    loading = true; error = ''
+    try {
+      const res = await fetch(`${_api()}/auth/mfa/confirm`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ mfaSessionId, code: totpCode }),
+      })
+      const data = await res.json()
+      if (!res.ok) { error = data.error || 'Invalid code.'; return }
+      window.dispatchEvent(new CustomEvent('hermes:login', { detail: data }))
+    } catch { error = 'Network error. Check your connection.' }
+    finally { loading = false; window.__ty_rerender?.() }
+  }
+
+  // ── Step: phone-input ────────────────────────────────────────────────────────
+  async function requestSms() {
+    if (!phone) { error = 'Phone number is required.'; return }
+    loading = true; error = ''
+    try {
+      const res = await fetch(`${_api()}/auth/sms/request`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email, phone }),
+      })
+      const data = await res.json()
+      if (!res.ok) { error = data.error || 'Unable to send code.'; return }
+      otpSessionId = data.sessionId
+      step = 'phone-code'
+    } catch { error = 'Network error. Check your connection.' }
+    finally { loading = false; window.__ty_rerender?.() }
+  }
+
+  // ── Step: phone-code ─────────────────────────────────────────────────────────
+  async function confirmSms() {
+    if (!otpCode || otpCode.length !== 6) { error = 'Enter the 6-digit code from your SMS.'; return }
+    loading = true; error = ''
+    try {
+      const res = await fetch(`${_api()}/auth/sms/confirm`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ sessionId: otpSessionId, code: otpCode }),
+      })
+      const data = await res.json()
+      if (!res.ok) { error = data.error || 'Invalid code.'; return }
+      if (data.requiresSetup) {
+        setupToken = data.setupToken
+        totpSecret = data.totpSecret
+        totpUri    = data.totpUri
+        step = 'mfa-setup'
+      } else {
+        window.dispatchEvent(new CustomEvent('hermes:login', { detail: data }))
+      }
+    } catch { error = 'Network error. Check your connection.' }
+    finally { loading = false; window.__ty_rerender?.() }
+  }
+
+  // ── Step: mfa-setup ──────────────────────────────────────────────────────────
+  async function confirmSetup() {
+    if (!deviceCode || deviceCode.length !== 6) { error = 'Enter the 6-digit code from your authenticator.'; return }
+    loading = true; error = ''
+    try {
+      const res = await fetch(`${_api()}/auth/mfa/setup`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ setupToken, code: deviceCode, name: deviceName.trim() || 'Authenticator' }),
+      })
+      const data = await res.json()
+      if (!res.ok) { error = data.error || 'Invalid code — make sure your device clock is correct.'; return }
+      window.dispatchEvent(new CustomEvent('hermes:login', { detail: data }))
+    } catch { error = 'Network error. Check your connection.' }
+    finally { loading = false; window.__ty_rerender?.() }
+  }
+
+  function usePhoneBackup() {
+    phone = ''; otpCode = ''; error = ''
+    step = 'phone-input'
+  }
+
+  function back() {
+    error = ''
+    if (step === 'mfa')        { totpCode = ''; step = 'start' }
+    else if (step === 'phone-input') { phone = ''; step = 'start' }
+    else if (step === 'phone-code')  { otpCode = ''; step = 'phone-input' }
+  }
+</script>
+
+<div class="login-card">
+  <div class="login-logo">HERMES</div>
+
+  <!-- ── Start: email + Continue ────────────────────────────────────────── -->
+  <logic :if="step === 'start'">
+    <p class="login-title">Sign in</p>
+    <p class="login-subtitle">Enter your email to continue.</p>
+    <div class="form-group">
+      <label class="form-label">Email</label>
+      <input type="email" :value="email" placeholder="you@example.com" autocomplete="email" />
+    </div>
+    <logic :if="error"><p class="login-error">{error}</p></logic>
+    <button class="btn-primary" :disabled="loading" @click="requestMfa()">
+      {loading ? 'Checking…' : 'Continue'}
+    </button>
+  </logic>
+
+  <!-- ── MFA: enter authenticator code ─────────────────────────────────── -->
+  <logic :if="step === 'mfa'">
+    <p class="login-title">Authenticator code</p>
+    <p class="login-subtitle">Enter the 6-digit code from your authenticator app.</p>
+    <div class="form-group">
+      <label class="form-label">Code</label>
+      <input type="text" :value="totpCode" inputmode="numeric" maxlength="6" placeholder="000000" autocomplete="one-time-code" />
+    </div>
+    <logic :if="error"><p class="login-error">{error}</p></logic>
+    <button class="btn-primary" :disabled="loading" @click="confirmMfa()">
+      {loading ? 'Verifying…' : 'Verify'}
+    </button>
+    <div style="display:flex;justify-content:space-between;margin-top:0.75rem;">
+      <button class="btn-ghost" @click="back()" style="font-size:13px;">← Back</button>
+      <button class="btn-ghost" @click="usePhoneBackup()" style="font-size:13px;">Use phone backup</button>
+    </div>
+  </logic>
+
+  <!-- ── Phone input: enter phone number ───────────────────────────────── -->
+  <logic :if="step === 'phone-input'">
+    <p class="login-title">Phone verification</p>
+    <p class="login-subtitle">Enter a phone number linked to your account to receive a code.</p>
+    <div class="form-group">
+      <label class="form-label">Phone</label>
+      <input type="tel" :value="phone" placeholder="+1 416 555 0100" autocomplete="tel" />
+    </div>
+    <logic :if="error"><p class="login-error">{error}</p></logic>
+    <button class="btn-primary" :disabled="loading" @click="requestSms()">
+      {loading ? 'Sending…' : 'Send code'}
+    </button>
+    <button class="btn-ghost" @click="back()" style="display:block;margin-top:0.75rem;width:100%;text-align:center;font-size:13px;">← Back</button>
+  </logic>
+
+  <!-- ── Phone code: enter SMS OTP ─────────────────────────────────────── -->
+  <logic :if="step === 'phone-code'">
+    <p class="login-title">Enter your code</p>
+    <p class="login-subtitle">We sent a 6-digit code to your phone.</p>
+    <div class="form-group">
+      <label class="form-label">Verification code</label>
+      <input type="text" :value="otpCode" aria-label="Verification code" inputmode="numeric" maxlength="6" placeholder="000000" autocomplete="one-time-code" />
+    </div>
+    <logic :if="error"><p class="login-error">{error}</p></logic>
+    <button class="btn-primary" :disabled="loading" @click="confirmSms()">
+      {loading ? 'Verifying…' : 'Verify'}
+    </button>
+    <button class="btn-ghost" @click="back()" style="display:block;margin-top:0.75rem;width:100%;text-align:center;font-size:13px;">← Back</button>
+  </logic>
+
+  <!-- ── MFA setup: register first/new authenticator ────────────────────── -->
+  <logic :if="step === 'mfa-setup'">
+    <p class="login-title">Set up authenticator</p>
+    <p class="login-subtitle">Add the key below to your authenticator app (Google Authenticator, Authy, 1Password, etc.), then enter the code it generates.</p>
+
+    <div class="form-group">
+      <label class="form-label">Secret key</label>
+      <textarea aria-label="Secret key" readonly rows="2" style="font-family:monospace;font-size:13px;letter-spacing:0.05em;resize:none;">{totpSecret}</textarea>
+    </div>
+
+    <p style="font-size:12px;margin:0 0 0.75rem;">
+      On mobile? <a :href="totpUri" style="color:var(--accent);">Open in authenticator app</a>
+    </p>
+
+    <div class="form-group">
+      <label class="form-label">Device name <span style="color:var(--muted);font-weight:400;">(optional)</span></label>
+      <input type="text" :value="deviceName" aria-label="Device name" placeholder="e.g. iPhone 15" />
+    </div>
+
+    <div class="form-group">
+      <label class="form-label">Confirmation code</label>
+      <input type="text" :value="deviceCode" aria-label="Confirmation code" inputmode="numeric" maxlength="6" placeholder="000000" autocomplete="one-time-code" />
+    </div>
+
+    <logic :if="error"><p class="login-error">{error}</p></logic>
+    <button class="btn-primary" :disabled="loading" @click="confirmSetup()">
+      {loading ? 'Saving…' : 'Activate'}
+    </button>
+  </logic>
+</div>

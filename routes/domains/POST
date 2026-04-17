@@ -1,0 +1,25 @@
+#!/usr/bin/env bun
+import { handle } from '../../src/shared/handler.ts'
+import { r400, r401, r403 } from '../../src/shared/respond.ts'
+import { verifyJwt, getJwtSecret } from '../../src/shared/auth.ts'
+import { createDb } from '../../src/db/index.ts'
+import { putDomain } from '../../src/db/domains.ts'
+import type { DomainConfig } from '../../src/types.ts'
+
+handle(async ({ body, context }) => {
+  const claims = verifyJwt(context.bearer?.token ?? '', getJwtSecret())
+  if (!claims) return r401('Authentication required')
+  if (claims.role !== 'admin') return r403('Admin access required')
+
+  const config = body as Partial<DomainConfig>
+  if (!config?.domain) return r400('domain required')
+
+  const fylo = await createDb()
+  await putDomain(fylo, {
+    domain: config.domain,
+    routes: config.routes ?? [],
+    inboundEnabled: config.inboundEnabled ?? false,
+  })
+
+  return { domain: config.domain }
+})

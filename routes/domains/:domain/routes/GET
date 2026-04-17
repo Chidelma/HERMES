@@ -1,0 +1,21 @@
+#!/usr/bin/env bun
+import { handle } from '../../../../src/shared/handler.ts'
+import { r401, r403, r404 } from '../../../../src/shared/respond.ts'
+import { verifyJwt, getJwtSecret } from '../../../../src/shared/auth.ts'
+import { createDb } from '../../../../src/db/index.ts'
+import { findDomainEntry } from '../../../../src/db/domains.ts'
+
+handle(async ({ paths, context }) => {
+  const claims = verifyJwt(context.bearer?.token ?? '', getJwtSecret())
+  if (!claims) return r401('Authentication required')
+
+  const domain = paths?.domain
+  if (!domain) return r404('Domain not found')
+  if (!claims.domains.includes(domain)) return r403('Access denied')
+
+  const fylo = await createDb()
+  const [, config] = await findDomainEntry(fylo, domain)
+  if (!config) return r404('Domain not found')
+
+  return config.routes
+})

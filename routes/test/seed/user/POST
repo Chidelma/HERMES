@@ -1,0 +1,23 @@
+#!/usr/bin/env bun
+import { handle } from '../../../../src/shared/handler.ts'
+import { r400, r403 } from '../../../../src/shared/respond.ts'
+import { createDb } from '../../../../src/db/index.ts'
+import { putUser } from '../../../../src/db/users.ts'
+import type { User } from '../../../../src/types.ts'
+
+/**
+ * POST /test/seed/user
+ * Only available in NODE_ENV=test. Creates a user for E2E test isolation.
+ */
+handle(async ({ body }) => {
+  if (process.env.NODE_ENV !== 'test') return r403('Only available in test mode')
+
+  const user = body as Partial<User>
+  if (!user?.email || !user.phones?.length || !user.domains?.length || !user.role) {
+    return r400('email, phones, domains, and role required')
+  }
+
+  const fylo = await createDb()
+  await putUser(fylo, user as User)
+  return { email: user.email.toLowerCase() }
+})

@@ -1,0 +1,33 @@
+#!/usr/bin/env bun
+import { randomBytes } from 'node:crypto'
+import { handle } from '../../../../src/shared/handler.ts'
+import { r400, r403 } from '../../../../src/shared/respond.ts'
+import { generateTotpSecret, totpProvisionUri } from '../../../../src/shared/totp.ts'
+import { createDb } from '../../../../src/db/index.ts'
+import { putDevice } from '../../../../src/db/mfa.ts'
+
+/**
+ * POST /test/seed/device
+ * Only available in NODE_ENV=test. Creates a TOTP device and returns the secret
+ * so tests can generate valid codes.
+ */
+handle(async ({ body }) => {
+  if (process.env.NODE_ENV !== 'test') return r403('Only available in test mode')
+
+  const { email, name } = (body ?? {}) as { email?: string; name?: string }
+  if (!email) return r400('email required')
+
+  const deviceId = randomBytes(16).toString('hex')
+  const secret = generateTotpSecret()
+
+  const fylo = await createDb()
+  await putDevice(fylo, {
+    id: deviceId,
+    userEmail: email.toLowerCase(),
+    name: name?.trim() || 'Test Device',
+    secret,
+    createdAt: new Date().toISOString(),
+  })
+
+  return { deviceId, secret, totpUri: totpProvisionUri(email, secret) }
+})

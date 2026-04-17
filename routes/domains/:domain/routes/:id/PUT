@@ -1,0 +1,31 @@
+#!/usr/bin/env bun
+import { handle } from '../../../../../src/shared/handler.ts'
+import { r400, r401, r403, r404 } from '../../../../../src/shared/respond.ts'
+import { verifyJwt, getJwtSecret } from '../../../../../src/shared/auth.ts'
+import { createDb } from '../../../../../src/db/index.ts'
+import { findDomainEntry, updateDomainRoutes } from '../../../../../src/db/domains.ts'
+import type { RouteRule } from '../../../../../src/types.ts'
+
+handle(async ({ paths, body, context }) => {
+  const claims = verifyJwt(context.bearer?.token ?? '', getJwtSecret())
+  if (!claims) return r401('Authentication required')
+  if (claims.role !== 'admin') return r403('Admin access required')
+
+  const { domain, id: ruleId } = paths ?? {}
+  if (!domain || !ruleId) return r400('domain and route id required')
+  if (!claims.domains.includes(domain)) return r403('Access denied')
+  if (!body) return r400('Missing body')
+
+  const fylo = await createDb()
+  const [docId, config] = await findDomainEntry(fylo, domain)
+  if (!docId || !config) return r404('Domain not found')
+
+  const rule = body as RouteRule
+  const updatedRoutes = [
+    ...config.routes.filter(r => r.id !== ruleId),
+    { ...rule, id: ruleId },
+  ]
+  await updateDomainRoutes(fylo, docId, updatedRoutes)
+
+  return { updated: ruleId }
+})

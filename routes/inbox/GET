@@ -1,0 +1,67 @@
+#!/usr/bin/env bun
+import { handle } from '../../src/shared/handler.ts'
+import { r400, r401 } from '../../src/shared/respond.ts'
+import { verifyJwt, getJwtSecret } from '../../src/shared/auth.ts'
+import { createDb } from '../../src/db/index.ts'
+import { listEmails, type EmailListFilters } from '../../src/db/emails.ts'
+
+handle(async ({ context, query }) => {
+  const claims = verifyJwt(context.bearer?.token ?? '', getJwtSecret())
+  if (!claims) return r401('Authentication required')
+
+  const filters = parseFilters(query ?? {})
+  if (filters instanceof Error) return r400(filters.message)
+
+  const fylo = await createDb()
+  return await listEmails(fylo, claims.domains, filters)
+})
+
+function parseFilters(query: Record<string, unknown>): EmailListFilters | Error {
+  const filters: EmailListFilters = {}
+
+  const q = readString(query.q ?? query.search)
+  if (q) filters.query = q
+
+  const folder = readString(query.folder)
+  if (folder) filters.folder = folder
+
+  const read = readBoolean(query.read)
+  if (read instanceof Error) return read
+  if (read != null) filters.read = read
+
+  const starred = readBoolean(query.starred)
+  if (starred instanceof Error) return starred
+  if (starred != null) filters.starred = starred
+
+  const hasAttachment = readBoolean(query.hasAttachment ?? query.attachments)
+  if (hasAttachment instanceof Error) return hasAttachment
+  if (hasAttachment != null) filters.hasAttachment = hasAttachment
+
+  const limit = readNumber(query.limit, 'limit')
+  if (limit instanceof Error) return limit
+  if (limit != null) filters.limit = limit
+
+  const offset = readNumber(query.offset, 'offset')
+  if (offset instanceof Error) return offset
+  if (offset != null) filters.offset = offset
+
+  return filters
+}
+
+function readString(value: unknown): string | undefined {
+  return typeof value === 'string' && value.trim() ? value.trim() : undefined
+}
+
+function readBoolean(value: unknown): boolean | undefined | Error {
+  if (value == null || value === '') return undefined
+  if (value === true || value === 'true' || value === '1') return true
+  if (value === false || value === 'false' || value === '0') return false
+  return new Error('Invalid boolean query parameter')
+}
+
+function readNumber(value: unknown, name: string): number | undefined | Error {
+  if (value == null || value === '') return undefined
+  const parsed = Number(value)
+  if (!Number.isInteger(parsed) || parsed < 0) return new Error(`Invalid ${name} query parameter`)
+  return parsed
+}

@@ -1,0 +1,23 @@
+#!/usr/bin/env bun
+import { handle } from '../../../src/shared/handler.ts'
+import { r400, r404 } from '../../../src/shared/respond.ts'
+import { createDb } from '../../../src/db/index.ts'
+import { deletePushSubscriptionDoc, findPushSubscriptionById, pushSubscriptionId } from '../../../src/db/push.ts'
+import { isAuthError, requireClaims } from '../../../src/shared/notifications.ts'
+
+handle(async ({ body, context }) => {
+  const claims = requireClaims(context)
+  if (isAuthError(claims)) return claims
+
+  const request = body as { endpoint?: string }
+  if (!request?.endpoint) return r400('endpoint required')
+
+  const fylo = await createDb()
+  const [docId, subscription] = await findPushSubscriptionById(fylo, pushSubscriptionId(request.endpoint))
+  if (!docId || !subscription || subscription.userEmail !== claims.email.toLowerCase()) {
+    return r404('Subscription not found')
+  }
+
+  await deletePushSubscriptionDoc(fylo, docId)
+  return { deleted: subscription.id }
+})

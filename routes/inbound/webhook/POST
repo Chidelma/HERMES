@@ -1,0 +1,89 @@
+#!/usr/bin/env bun
+import { randomBytes } from 'node:crypto'
+import { handle } from '../../../src/shared/handler.ts'
+import { r400, r401 } from '../../../src/shared/respond.ts'
+import { createDb } from '../../../src/db/index.ts'
+import { Collections } from '../../../src/db/index.ts'
+import { findDomainEntry } from '../../../src/db/domains.ts'
+import { findEmailById } from '../../../src/db/emails.ts'
+import { saveEmailAttachments } from '../../../src/db/attachments.ts'
+import { matchRoute, applyRouteAction, applyInboxRules, parseInboundMessage } from '../../../src/shared/inbound.ts'
+import { sendEmailNotification } from '../../../src/shared/push.ts'
+import type { StoredEmail } from '../../../src/types.ts'
+
+/**
+ * POST /inbound/webhook
+ *
+ * Accepts inbound email from an external SMTP relay (Postfix, Haraka, Postmark, etc.)
+ * as a JSON payload. Authenticates via a shared secret in the X-Webhook-Secret header.
+ *
+ * Expected body:
+ * {
+ *   recipient: string,   // e.g. "alice@example.com"
+ *   sender: string,      // envelope from
+ *   subject: string,
+ *   body?: string,       // plain text body or raw MIME (parsed if MIME)
+ *   messageId?: string,
+ * }
+ */
+handle(async ({ headers, body }) => {
+  const webhookSecret = process.env.INBOUND_WEBHOOK_SECRET
+  if (webhookSecret) {
+    const provided = headers?.['x-webhook-secret'] ?? headers?.['X-Webhook-Secret']
+    if (provided !== webhookSecret) return r401('Invalid webhook secret')
+  }
+
+  const msg = body as {
+    recipient?: string
+    sender?: string
+    subject?: string
+    body?: string
+    messageId?: string
+  }
+
+  if (!msg?.recipient || !msg.sender) return r400('recipient and sender required')
+
+  const recipient = msg.recipient.toLowerCase()
+  const sender = msg.sender.toLowerCase()
+  const subject = msg.subject ?? '(no subject)'
+  const messageId = msg.messageId ?? randomBytes(16).toString('hex')
+  const parsedMessage = await parseInboundMessage(msg.body ?? '')
+
+  const domain = recipient.split('@')[1]
+  if (!domain) return r400('Invalid recipient address')
+
+  const fylo = await createDb()
+  const [, domainConfig] = await findDomainEntry(fylo, domain)
+  if (!domainConfig || !domainConfig.inboundEnabled) {
+    return { accepted: false, reason: 'domain not configured' }
+  }
+
+  const rule = matchRoute(domainConfig.routes, recipient)
+  if (!rule || rule.action.type === 'drop') {
+    return { accepted: false, reason: 'dropped by route rule' }
+  }
+
+  await saveEmailAttachments(fylo, messageId, domain, parsedMessage.attachments)
+  await fylo.putData(Collections.EMAILS, {
+    id: messageId,
+    domain,
+    recipient,
+    sender,
+    subject,
+    body: parsedMessage.text,
+    folder: 'inbox',
+    read: false,
+    starred: false,
+    receivedAt: new Date().toISOString(),
+    processed: false,
+  } satisfies StoredEmail)
+
+  await applyRouteAction(fylo, rule, messageId, sender, recipient, subject)
+  await applyInboxRules(fylo, messageId, domain, { sender, recipient, subject })
+  const [, deliveredEmail] = await findEmailById(fylo, messageId)
+  if (deliveredEmail) {
+    await sendEmailNotification(fylo, deliveredEmail)
+  }
+
+  return { accepted: true, emailId: messageId }
+})

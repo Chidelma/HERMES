@@ -1,0 +1,33 @@
+#!/usr/bin/env bun
+import { handle } from '../../../../src/shared/handler.ts'
+import { r400, r401 } from '../../../../src/shared/respond.ts'
+import { signJwt, getJwtSecret } from '../../../../src/shared/auth.ts'
+import { verifyTotp } from '../../../../src/shared/totp.ts'
+import { createDb } from '../../../../src/db/index.ts'
+import { findUserByEmail } from '../../../../src/db/users.ts'
+import { findMfaSession, deleteMfaSession, listDevices } from '../../../../src/db/mfa.ts'
+
+handle(async ({ body }) => {
+  const { mfaSessionId, code } = (body ?? {}) as Record<string, string>
+  if (!mfaSessionId || !code) return r400('mfaSessionId and code required')
+
+  const fylo = await createDb()
+  const [docId, session] = await findMfaSession(fylo, mfaSessionId)
+  if (!session || !docId) return r401('Invalid or expired session')
+  if (new Date(session.expiresAt) < new Date()) {
+    await deleteMfaSession(fylo, docId)
+    return r401('Session expired')
+  }
+
+  const devices = await listDevices(fylo, session.email)
+  const valid = devices.some(d => verifyTotp(d.secret, code))
+  if (!valid) return r401('Invalid code')
+
+  await deleteMfaSession(fylo, docId)
+
+  const [, user] = await findUserByEmail(fylo, session.email)
+  if (!user) return r401('Account not found')
+
+  const token = signJwt({ email: user.email, domains: user.domains, role: user.role }, getJwtSecret())
+  return { token, email: user.email, domains: user.domains, role: user.role }
+})

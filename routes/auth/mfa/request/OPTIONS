@@ -1,0 +1,7 @@
+{
+  "POST": {
+    "200": { "mfaSessionId?": "", "requiresSetup?": true },
+    "400": { "error": "" },
+    "404": { "error": "", "notFound": true }
+  }
+}

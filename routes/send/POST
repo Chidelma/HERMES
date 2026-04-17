@@ -1,0 +1,28 @@
+#!/usr/bin/env bun
+import { handle } from '../../src/shared/handler.ts'
+import { r400, r401, r422 } from '../../src/shared/respond.ts'
+import { verifyJwt, getJwtSecret } from '../../src/shared/auth.ts'
+import { getSmtpAdapter } from '../../src/shared/smtp.ts'
+import { createDb } from '../../src/db/index.ts'
+import { getSuppressedSet } from '../../src/db/suppressed.ts'
+import type { SendRequest } from '../../src/types.ts'
+
+handle(async ({ body, context }) => {
+  // From address comes from the JWT — auth is required
+  const claims = verifyJwt(context.bearer?.token ?? '', getJwtSecret())
+  if (!claims) return r401('Authentication required')
+
+  const req = body as Partial<SendRequest>
+  if (!req?.to?.length) return r400('to required')
+  if (!req.subject) return r400('subject required')
+  if (req.text == null && req.html == null) return r400('text or html required')
+
+  const fylo = await createDb()
+  const suppressed = await getSuppressedSet(fylo)
+  const blocked = req.to.filter(addr => suppressed.has(addr))
+  if (blocked.length > 0) return r422('Recipients are suppressed', blocked)
+
+  const smtp = getSmtpAdapter()
+  const result = await smtp.sendEmail(claims.email, req as SendRequest)
+  return { messageId: result.messageId }
+})

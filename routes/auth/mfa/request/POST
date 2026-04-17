@@ -1,0 +1,29 @@
+#!/usr/bin/env bun
+import { randomBytes } from 'node:crypto'
+import { handle } from '../../../../src/shared/handler.ts'
+import { r400, r404 } from '../../../../src/shared/respond.ts'
+import { createDb } from '../../../../src/db/index.ts'
+import { findUserByEmail } from '../../../../src/db/users.ts'
+import { listDevices, putMfaSession, purgeExpiredMfaSessions } from '../../../../src/db/mfa.ts'
+
+handle(async ({ body }) => {
+  const { email } = (body ?? {}) as Record<string, string>
+  if (!email) return r400('email required')
+
+  const fylo = await createDb()
+  const [, user] = await findUserByEmail(fylo, email.toLowerCase())
+  if (!user) return r404('No account found')
+
+  const devices = await listDevices(fylo, email.toLowerCase())
+  if (devices.length === 0) return { requiresSetup: true }
+
+  await purgeExpiredMfaSessions(fylo, email.toLowerCase())
+  const mfaSessionId = randomBytes(32).toString('hex')
+  await putMfaSession(fylo, {
+    id: mfaSessionId,
+    email: email.toLowerCase(),
+    expiresAt: new Date(Date.now() + 5 * 60 * 1000).toISOString(),
+  })
+
+  return { mfaSessionId }
+})

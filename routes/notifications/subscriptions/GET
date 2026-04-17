@@ -1,0 +1,14 @@
+#!/usr/bin/env bun
+import { handle } from '../../../src/shared/handler.ts'
+import { createDb } from '../../../src/db/index.ts'
+import { listPushSubscriptions } from '../../../src/db/push.ts'
+import { isAuthError, requireClaims } from '../../../src/shared/notifications.ts'
+
+handle(async ({ context }) => {
+  const claims = requireClaims(context)
+  if (isAuthError(claims)) return claims
+
+  const fylo = await createDb()
+  const subscriptions = await listPushSubscriptions(fylo, claims.email)
+  return subscriptions.map(({ docId, keys, ...subscription }) => subscription)
+})
