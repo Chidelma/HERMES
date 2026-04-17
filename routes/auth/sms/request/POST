@@ -1,0 +1,41 @@
+#!/usr/bin/env bun
+import { createHash, randomBytes, randomInt } from 'node:crypto'
+import { handle } from '../../../../src/shared/handler.ts'
+import { r400, r404 } from '../../../../src/shared/respond.ts'
+import { getSmsAdapter } from '../../../../src/shared/sms.ts'
+import { createDb } from '../../../../src/db/index.ts'
+import { findUserByEmailAndPhone } from '../../../../src/db/users.ts'
+import { putOtpSession, purgeExpiredOtpSessions, findValidOtpSession } from '../../../../src/db/otp.ts'
+
+handle(async ({ body }) => {
+  const { email, phone } = (body ?? {}) as Record<string, string>
+  if (!email || !phone) return r400('email and phone required')
+
+  const fylo = await createDb()
+  const [, user] = await findUserByEmailAndPhone(fylo, email.toLowerCase(), phone)
+  if (!user) return r404('No account found for these credentials')
+
+  await purgeExpiredOtpSessions(fylo, email.toLowerCase())
+
+  // Reuse an existing valid session (e.g. seeded in tests, or a recent re-request)
+  const existing = await findValidOtpSession(fylo, email.toLowerCase(), phone)
+  if (existing) {
+    return { sessionId: existing.id }
+  }
+
+  const code = String(randomInt(100000, 1000000)).padStart(6, '0')
+  const sessionId = randomBytes(32).toString('hex')
+  const expiresAt = new Date(Date.now() + 5 * 60 * 1000).toISOString()
+
+  await putOtpSession(fylo, {
+    id: sessionId,
+    email: email.toLowerCase(),
+    phone,
+    codeHash: createHash('sha256').update(code).digest('hex'),
+    expiresAt,
+  })
+
+  await getSmsAdapter().send(phone, `Your HERMES code: ${code}. Expires in 5 minutes.`)
+
+  return { sessionId }
+})

@@ -1,0 +1,42 @@
+#!/usr/bin/env bun
+import { randomBytes } from 'node:crypto'
+import { handle } from '../../../../src/shared/handler.ts'
+import { r400, r401 } from '../../../../src/shared/respond.ts'
+import { signJwt, getJwtSecret } from '../../../../src/shared/auth.ts'
+import { verifyTotp } from '../../../../src/shared/totp.ts'
+import { createDb } from '../../../../src/db/index.ts'
+import { findUserByEmail } from '../../../../src/db/users.ts'
+import { findSetupSession, deleteSetupSession, putDevice } from '../../../../src/db/mfa.ts'
+
+handle(async ({ body }) => {
+  const { setupToken, code, name } = (body ?? {}) as Record<string, string>
+  if (!setupToken || !code) return r400('setupToken and code required')
+
+  const fylo = await createDb()
+  const [docId, session] = await findSetupSession(fylo, setupToken)
+  if (!session || !docId) return r401('Invalid or expired setup session')
+  if (new Date(session.expiresAt) < new Date()) {
+    await deleteSetupSession(fylo, docId)
+    return r401('Setup session expired')
+  }
+  if (!verifyTotp(session.totpSecret, code)) {
+    return r400('Invalid code — ensure your device clock is correct')
+  }
+
+  await deleteSetupSession(fylo, docId)
+
+  const deviceId = randomBytes(16).toString('hex')
+  await putDevice(fylo, {
+    id: deviceId,
+    userEmail: session.email,
+    name: (name?.trim()) || 'Authenticator',
+    secret: session.totpSecret,
+    createdAt: new Date().toISOString(),
+  })
+
+  const [, user] = await findUserByEmail(fylo, session.email)
+  if (!user) return r401('Account not found')
+
+  const token = signJwt({ email: user.email, domains: user.domains, role: user.role }, getJwtSecret())
+  return { token, email: user.email, domains: user.domains, role: user.role }
+})

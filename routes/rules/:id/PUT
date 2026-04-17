@@ -1,0 +1,26 @@
+#!/usr/bin/env bun
+import { handle } from '../../../src/shared/handler.ts'
+import { r400, r401, r403, r404 } from '../../../src/shared/respond.ts'
+import { verifyJwt, getJwtSecret } from '../../../src/shared/auth.ts'
+import { createDb } from '../../../src/db/index.ts'
+import { findRuleById, updateRule } from '../../../src/db/rules.ts'
+import type { InboxRule } from '../../../src/types.ts'
+
+handle(async ({ paths, body, context }) => {
+  const claims = verifyJwt(context.bearer?.token ?? '', getJwtSecret())
+  if (!claims) return r401('Authentication required')
+  if (claims.role !== 'admin') return r403('Admin access required')
+
+  const ruleId = paths?.id
+  if (!ruleId || !body) return r400('rule id and body required')
+
+  const fylo = await createDb()
+  const [docId, existing] = await findRuleById(fylo, ruleId)
+  if (!docId || !existing) return r404('Rule not found')
+  if (!claims.domains.includes(existing.domain)) return r403('Domain access denied')
+
+  const input = body as Partial<InboxRule>
+  await updateRule(fylo, docId, input)
+
+  return { updated: ruleId }
+})

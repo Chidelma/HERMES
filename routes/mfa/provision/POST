@@ -1,0 +1,27 @@
+#!/usr/bin/env bun
+import { randomBytes } from 'node:crypto'
+import { handle } from '../../../src/shared/handler.ts'
+import { r401 } from '../../../src/shared/respond.ts'
+import { verifyJwt, getJwtSecret } from '../../../src/shared/auth.ts'
+import { generateTotpSecret, totpProvisionUri } from '../../../src/shared/totp.ts'
+import { createDb } from '../../../src/db/index.ts'
+import { putSetupSession } from '../../../src/db/mfa.ts'
+
+handle(async ({ context }) => {
+  const claims = verifyJwt(context.bearer?.token ?? '', getJwtSecret())
+  if (!claims) return r401('Authentication required')
+
+  const totpSecret = generateTotpSecret()
+  const totpUri = totpProvisionUri(claims.email, totpSecret)
+  const setupToken = randomBytes(32).toString('hex')
+
+  const fylo = await createDb()
+  await putSetupSession(fylo, {
+    id: setupToken,
+    email: claims.email,
+    totpSecret,
+    expiresAt: new Date(Date.now() + 15 * 60 * 1000).toISOString(),
+  })
+
+  return { setupToken, totpSecret, totpUri }
+})

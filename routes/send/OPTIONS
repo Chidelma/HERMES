@@ -1,0 +1,8 @@
+{
+  "POST": {
+    "200": { "messageId": "" },
+    "400": { "error": "" },
+    "401": { "error": "", "unauthorized": true },
+    "422": { "error": "", "blocked": [""] }
+  }
+}

@@ -1,0 +1,25 @@
+#!/usr/bin/env bun
+import { handle } from '../../../src/shared/handler.ts'
+import { r403 } from '../../../src/shared/respond.ts'
+import { createDb, Collections } from '../../../src/db/index.ts'
+
+/**
+ * DELETE /test/reset
+ * Only available in NODE_ENV=test. Wipes all data from every collection.
+ */
+handle(async () => {
+  if (process.env.NODE_ENV !== 'test') return r403('Only available in test mode')
+
+  const fylo = await createDb()
+  for (const collection of Object.values(Collections)) {
+    const docs: Record<string, unknown> = {}
+    for await (const doc of fylo.findDocs(collection, { $ops: [] }).collect()) {
+      Object.assign(docs, doc)
+    }
+    for (const docId of Object.keys(docs)) {
+      await fylo.delDoc(collection, docId)
+    }
+  }
+
+  return { reset: true }
+})

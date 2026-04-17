@@ -1,0 +1,178 @@
+<script>
+  let allEmails = [], loading = true, selectedFolder = 'inbox', search = '', statusFilter = 'all'
+  let folder, email
+
+  function initials(addr) {
+    return (addr.split('@')[0] || '?').slice(0, 2).toUpperCase()
+  }
+
+  function formatDate(iso) {
+    const d = new Date(iso), now = new Date()
+    if (d.toDateString() === now.toDateString())
+      return d.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+    return d.toLocaleDateString([], { month: 'short', day: 'numeric' })
+  }
+
+  function folders() {
+    const fs = new Set(allEmails.map(e => e.folder || 'inbox'))
+    return ['inbox', 'archive', 'trash', ...Array.from(fs).filter(f => !['inbox', 'archive', 'trash'].includes(f)).sort()]
+  }
+
+  function emails() {
+    return allEmails.filter(e => (e.folder || 'inbox') === selectedFolder)
+  }
+
+  function unreadCount() {
+    return allEmails.filter(e => !e.read && (e.folder || 'inbox') !== 'trash').length
+  }
+
+  function folderCount(name) {
+    return allEmails.filter(e => (e.folder || 'inbox') === name).length
+  }
+
+  async function load() {
+    loading = true
+    const apiFetch = window._hermes?.apiFetch
+    if (!apiFetch) { loading = false; return }
+    const params = new URLSearchParams()
+    if (search.trim()) params.set('q', search.trim())
+    if (statusFilter === 'unread') params.set('read', 'false')
+    if (statusFilter === 'starred') params.set('starred', 'true')
+    const suffix = params.toString() ? `?${params.toString()}` : ''
+    const res = await apiFetch(`/inbox${suffix}`)
+    allEmails = res?.ok ? await res.json() : []
+    loading = false
+    window.__ty_rerender?.()
+  }
+
+  async function updateEmail(email, patch) {
+    const apiFetch = window._hermes?.apiFetch
+    if (!apiFetch) return email
+    const res = await apiFetch(`/inbox/${email.id}`, {
+      method: 'PUT',
+      body: JSON.stringify(patch),
+    })
+    if (!res?.ok) return email
+    const updated = await res.json()
+    allEmails = allEmails.map(item => item.id === updated.id ? updated : item)
+    window.__ty_rerender?.()
+    return updated
+  }
+
+  function openEmail(email) {
+    const selected = { ...email, read: true }
+    if (!email.read) {
+      allEmails = allEmails.map(item => item.id === email.id ? selected : item)
+      updateEmail(email, { read: true })
+    }
+    setTimeout(() => {
+      window._hermes?.openEmail(selected)
+    }, 0)
+  }
+
+  async function clearSearch() {
+    search = ''
+    statusFilter = 'all'
+    await load()
+  }
+
+  if (typeof window !== 'undefined' && typeof document !== 'undefined') {
+    if (window._hermesInboxRowHandler) {
+      document.removeEventListener('click', window._hermesInboxRowHandler)
+    }
+    if (window._hermesInboxIdHandler) {
+      window.removeEventListener('hermes:open-email-id', window._hermesInboxIdHandler)
+    }
+    window._hermesInboxRowHandler = (event) => {
+      const row = event.target?.closest?.('[data-email-id]')
+      if (!row) return
+      const selected = allEmails.find(item => item.id === row.dataset.emailId)
+      if (selected) openEmail(selected)
+    }
+    window._hermesInboxIdHandler = (event) => {
+      const selected = allEmails.find(item => item.id === event.detail)
+      if (selected) openEmail(selected)
+    }
+    document.addEventListener('click', window._hermesInboxRowHandler)
+    window.addEventListener('hermes:open-email-id', window._hermesInboxIdHandler)
+  }
+
+  await load()
+
+  window.addEventListener('hermes:refresh-inbox', load)
+</script>
+
+<div class="inbox-toolbar">
+  <span class="inbox-title">Inbox</span>
+  <span class="inbox-count">{unreadCount()} unread</span>
+  <button class="btn-secondary" style="margin-left:auto;" @click="load()">Refresh</button>
+</div>
+
+<div class="inbox-search">
+  <input
+    class="search-input"
+    type="search"
+    :value="search"
+    aria-label="Search mail"
+    placeholder="Search from, to, subject, body, filename:invoice, has:attachment" />
+  <button class="btn-primary" @click="load()">Search</button>
+  <button class="btn-secondary" @click="clearSearch()">Clear</button>
+</div>
+
+<div class="filter-strip">
+  <button
+    :class="'btn-' + (statusFilter === 'all' ? 'primary' : 'secondary')"
+    @click="statusFilter = 'all'; load()">
+    All
+  </button>
+  <button
+    :class="'btn-' + (statusFilter === 'unread' ? 'primary' : 'secondary')"
+    @click="statusFilter = 'unread'; load()">
+    Unread
+  </button>
+  <button
+    :class="'btn-' + (statusFilter === 'starred' ? 'primary' : 'secondary')"
+    @click="statusFilter = 'starred'; load()">
+    Starred
+  </button>
+</div>
+
+<div class="folder-tabs">
+  <loop :for="folder of folders()">
+    <button
+      :class="'btn-' + (selectedFolder === folder ? 'primary' : 'secondary')"
+      @click="selectedFolder = folder">
+      {folder} <span>{folderCount(folder)}</span>
+    </button>
+  </loop>
+</div>
+
+<div class="inbox-list">
+  <logic :if="loading">
+    <div class="inbox-empty"><div class="spinner"></div><span>Loading…</span></div>
+  </logic>
+
+  <logic :if="!loading && emails().length === 0">
+    <div class="inbox-empty">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+        <path d="M22 12h-6l-2 3h-4l-2-3H2"/>
+        <path d="M5.45 5.11L2 12v6a2 2 0 002 2h16a2 2 0 002-2v-6l-3.45-6.89A2 2 0 0016.76 4H7.24a2 2 0 00-1.79 1.11z"/>
+      </svg>
+      <span>{search ? 'No matching mail in ' + selectedFolder : 'No emails in ' + selectedFolder}</span>
+    </div>
+  </logic>
+
+  <loop :for="email of emails()">
+    <a
+      :class="'email-row ' + (!email.read ? 'unread' : 'read')"
+      :data-email-id="email.id"
+      :href="'#email=' + encodeURIComponent(email.id)">
+      <div class="email-avatar" @click="openEmail(email)">{initials(email.sender)}</div>
+      <div class="email-meta" @click="openEmail(email)">
+        <div class="email-sender" @click="openEmail(email)">{email.starred ? '★ ' : ''}{email.sender}</div>
+        <div class="email-subject" @click="openEmail(email)">{email.subject}</div>
+      </div>
+      <span class="email-time" @click="openEmail(email)">{formatDate(email.receivedAt)}</span>
+    </a>
+  </loop>
+</div>

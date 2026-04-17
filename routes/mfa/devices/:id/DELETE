@@ -1,0 +1,22 @@
+#!/usr/bin/env bun
+import { handle } from '../../../../src/shared/handler.ts'
+import { r400, r401, r403, r404 } from '../../../../src/shared/respond.ts'
+import { verifyJwt, getJwtSecret } from '../../../../src/shared/auth.ts'
+import { createDb } from '../../../../src/db/index.ts'
+import { findDeviceById, deleteDevice } from '../../../../src/db/mfa.ts'
+
+handle(async ({ paths, context }) => {
+  const claims = verifyJwt(context.bearer?.token ?? '', getJwtSecret())
+  if (!claims) return r401('Authentication required')
+
+  const deviceId = paths?.id
+  if (!deviceId) return r400('device id required')
+
+  const fylo = await createDb()
+  const [docId, device] = await findDeviceById(fylo, deviceId)
+  if (!docId || !device) return r404('Device not found')
+  if (device.userEmail !== claims.email) return r403('Access denied')
+
+  await deleteDevice(fylo, docId)
+  return { deleted: deviceId }
+})

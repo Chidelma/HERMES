@@ -1,0 +1,34 @@
+#!/usr/bin/env bun
+import { randomBytes, randomInt, createHash } from 'node:crypto'
+import { handle } from '../../../../src/shared/handler.ts'
+import { r400, r403 } from '../../../../src/shared/respond.ts'
+import { createDb } from '../../../../src/db/index.ts'
+import { putOtpSession } from '../../../../src/db/otp.ts'
+
+/**
+ * POST /test/seed/otp
+ * Only available in NODE_ENV=test. Creates an OTP session with a known code
+ * (no SMS sent) so E2E tests can skip the phone-send step.
+ * Returns { sessionId, code }.
+ */
+handle(async ({ body }) => {
+  if (process.env.NODE_ENV !== 'test') return r403('Only available in test mode')
+
+  const { email, phone } = (body ?? {}) as Record<string, string>
+  if (!email || !phone) return r400('email and phone required')
+
+  const code = String(randomInt(100000, 1000000)).padStart(6, '0')
+  const sessionId = randomBytes(32).toString('hex')
+  const codeHash = createHash('sha256').update(code).digest('hex')
+
+  const fylo = await createDb()
+  await putOtpSession(fylo, {
+    id: sessionId,
+    email: email.toLowerCase(),
+    phone,
+    codeHash,
+    expiresAt: new Date(Date.now() + 5 * 60 * 1000).toISOString(),
+  })
+
+  return { sessionId, code }
+})

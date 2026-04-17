@@ -1,0 +1,7 @@
+{
+  "POST": {
+    "200": { "token?": "", "email?": "", "domains?": [""], "role?": "", "requiresSetup?": true, "setupToken?": "", "totpSecret?": "", "totpUri?": "" },
+    "400": { "error": "" },
+    "401": { "error": "", "unauthorized": true }
+  }
+}

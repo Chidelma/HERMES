@@ -1,0 +1,22 @@
+#!/usr/bin/env bun
+import { handle } from '../../../src/shared/handler.ts'
+import { r400, r401, r403, r404 } from '../../../src/shared/respond.ts'
+import { verifyJwt, getJwtSecret } from '../../../src/shared/auth.ts'
+import { createDb } from '../../../src/db/index.ts'
+import { findUserByEmail, deleteUser } from '../../../src/db/users.ts'
+
+handle(async ({ paths, context }) => {
+  const claims = verifyJwt(context.bearer?.token ?? '', getJwtSecret())
+  if (!claims) return r401('Authentication required')
+  if (claims.role !== 'admin') return r403('Admin access required')
+
+  const email = paths?.id
+  if (!email) return r400('email required')
+
+  const fylo = await createDb()
+  const [docId] = await findUserByEmail(fylo, email)
+  if (!docId) return r404('User not found')
+
+  await deleteUser(fylo, docId)
+  return { deleted: email }
+})

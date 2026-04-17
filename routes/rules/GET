@@ -1,0 +1,14 @@
+#!/usr/bin/env bun
+import { handle } from '../../src/shared/handler.ts'
+import { r401 } from '../../src/shared/respond.ts'
+import { verifyJwt, getJwtSecret } from '../../src/shared/auth.ts'
+import { createDb } from '../../src/db/index.ts'
+import { listRules } from '../../src/db/rules.ts'
+
+handle(async ({ context }) => {
+  const claims = verifyJwt(context.bearer?.token ?? '', getJwtSecret())
+  if (!claims) return r401('Authentication required')
+
+  const fylo = await createDb()
+  return await listRules(fylo, claims.domains)
+})

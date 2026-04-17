@@ -1,0 +1,6 @@
+{
+  "GET": {
+    "401": { "error": "", "unauthorized": true },
+    "403": { "error": "", "forbidden": true }
+  }
+}

@@ -1,0 +1,22 @@
+#!/usr/bin/env bun
+import { handle } from '../../../src/shared/handler.ts'
+import { r401, r403, r404 } from '../../../src/shared/respond.ts'
+import { verifyJwt, getJwtSecret } from '../../../src/shared/auth.ts'
+import { createDb } from '../../../src/db/index.ts'
+import { findEmailById, deleteEmail } from '../../../src/db/emails.ts'
+
+handle(async ({ paths, context }) => {
+  const claims = verifyJwt(context.bearer?.token ?? '', getJwtSecret())
+  if (!claims) return r401('Authentication required')
+
+  const id = paths?.id
+  if (!id) return r404('Email not found')
+
+  const fylo = await createDb()
+  const [docId, email] = await findEmailById(fylo, id)
+  if (!docId || !email) return r404('Email not found')
+  if (!claims.domains.includes(email.domain)) return r403('Access denied')
+
+  await deleteEmail(fylo, docId, id)
+  return { deleted: id }
+})

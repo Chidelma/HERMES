@@ -1,0 +1,12 @@
+{
+  "GET": {
+    "401": { "error": "", "unauthorized": true },
+    "403": { "error": "", "forbidden": true }
+  },
+  "POST": {
+    "200": { "email": "" },
+    "400": { "error": "" },
+    "401": { "error": "", "unauthorized": true },
+    "403": { "error": "", "forbidden": true }
+  }
+}

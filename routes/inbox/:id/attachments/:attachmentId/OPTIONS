@@ -1,0 +1,14 @@
+{
+  "GET": {
+    "200": {
+      "id": "",
+      "filename": "",
+      "contentType": "",
+      "size": 0,
+      "contentBase64": ""
+    },
+    "401": { "error": "", "unauthorized": true },
+    "403": { "error": "", "forbidden": true },
+    "404": { "error": "", "notFound": true }
+  }
+}

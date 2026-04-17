@@ -1,0 +1,146 @@
+<script>
+  let email = props.email || (props.emailId ? { id: props.emailId } : null)
+  let attachment
+
+  async function loadEmail() {
+    if (!email?.id) return
+    const apiFetch = window._hermes?.apiFetch
+    if (!apiFetch) return
+    const res = await apiFetch(`/inbox/${email.id}`)
+    if (res?.ok) email = await res.json()
+    if (email && !email.read) {
+      email = { ...email, read: true }
+      await apiFetch(`/inbox/${email.id}`, {
+        method: 'PUT',
+        body: JSON.stringify({ read: true }),
+      })
+      window.dispatchEvent(new Event('hermes:refresh-inbox'))
+    }
+  }
+
+  await loadEmail()
+
+  function initials(addr) {
+    return (addr.split('@')[0] || '?').slice(0, 2).toUpperCase()
+  }
+
+  function bytesLabel(size) {
+    if (size < 1024) return `${size} B`
+    if (size < 1024 * 1024) return `${(size / 1024).toFixed(1)} KB`
+    return `${(size / 1024 / 1024).toFixed(1)} MB`
+  }
+
+  async function deleteEmail() {
+    if (!email || !confirm('Delete this message forever?')) return
+    const apiFetch = window._hermes?.apiFetch
+    if (!apiFetch) return
+    const res = await apiFetch(`/inbox/${email.id}`, { method: 'DELETE' })
+    if (res?.ok) {
+      window._hermes?.toast('Message deleted.')
+      window.dispatchEvent(new Event('hermes:refresh-inbox'))
+      window._hermes?.navigate('inbox')
+      email = null
+    } else {
+      window._hermes?.toast('Delete failed.')
+    }
+    window.__ty_rerender?.()
+  }
+
+  async function updateEmail(patch, message) {
+    if (!email) return
+    const apiFetch = window._hermes?.apiFetch
+    if (!apiFetch) return
+    const res = await apiFetch(`/inbox/${email.id}`, {
+      method: 'PUT',
+      body: JSON.stringify(patch),
+    })
+    if (res?.ok) {
+      email = await res.json()
+      window.dispatchEvent(new Event('hermes:refresh-inbox'))
+      if (message) window._hermes?.toast(message)
+    } else {
+      window._hermes?.toast('Update failed.')
+    }
+    window.__ty_rerender?.()
+  }
+
+  function reply() {
+    if (!email) return
+    window.dispatchEvent(new CustomEvent('hermes:compose', {
+      detail: { to: email.sender, subject: `Re: ${email.subject}` },
+    }))
+  }
+
+  async function downloadAttachment(attachment) {
+    const apiFetch = window._hermes?.apiFetch
+    if (!apiFetch || !email?.id) return
+    const res = await apiFetch(`/inbox/${email.id}/attachments/${attachment.id}`)
+    if (!res?.ok) {
+      window._hermes?.toast('Attachment download failed.')
+      return
+    }
+
+    const data = await res.json()
+    const bytes = Uint8Array.from(atob(data.contentBase64), char => char.charCodeAt(0))
+    const blob = new Blob([bytes], { type: data.contentType || 'application/octet-stream' })
+    const url = URL.createObjectURL(blob)
+    const link = document.createElement('a')
+    link.href = url
+    link.download = data.filename || attachment.filename || 'attachment'
+    document.body.appendChild(link)
+    link.click()
+    link.remove()
+    URL.revokeObjectURL(url)
+  }
+</script>
+
+<div class="inbox-toolbar">
+  <button class="btn-secondary" @click="window._hermes?.navigate('inbox')">← Inbox</button>
+  <div class="email-action-bar">
+    <button class="btn-secondary" @click="email && updateEmail({ read: !email.read }, email.read ? 'Marked unread.' : 'Marked read.')">
+      {email && email.read ? 'Mark unread' : 'Mark read'}
+    </button>
+    <button class="btn-secondary" @click="email && updateEmail({ starred: !email.starred }, email.starred ? 'Star removed.' : 'Starred.')">
+      {email && email.starred ? 'Unstar' : 'Star'}
+    </button>
+    <logic :if="email && email.folder !== 'archive' && email.folder !== 'trash'">
+      <button class="btn-secondary" @click="updateEmail({ folder: 'archive' }, 'Archived.')">Archive</button>
+    </logic>
+    <logic :if="email && email.folder !== 'inbox'">
+      <button class="btn-secondary" @click="updateEmail({ folder: 'inbox' }, 'Moved to inbox.')">Move to inbox</button>
+    </logic>
+    <logic :if="email && email.folder !== 'trash'">
+      <button class="btn-secondary" @click="updateEmail({ folder: 'trash' }, 'Moved to trash.')">Trash</button>
+    </logic>
+    <button class="btn-secondary" @click="reply()">Reply</button>
+    <logic :if="email && email.folder === 'trash'">
+      <button class="btn-danger" @click="deleteEmail()">Delete forever</button>
+    </logic>
+  </div>
+</div>
+
+<logic :if="email">
+  <div class="email-detail-header">
+    <h2 class="email-detail-subject">{email.subject}</h2>
+    <div class="email-detail-meta">
+      <div class="email-detail-avatar">{initials(email.sender)}</div>
+      <div>
+        <div class="email-detail-from">{email.sender}</div>
+        <div class="email-detail-to">To: {email.recipient}</div>
+      </div>
+      <span class="email-detail-date">{new Date(email.receivedAt).toLocaleString()}</span>
+    </div>
+  </div>
+  <logic :if="email.attachments && email.attachments.length > 0">
+    <div class="email-attachments">
+      <p class="email-attachments-title">Attachments</p>
+      <loop :for="attachment of email.attachments">
+        <button class="attachment-chip" @click="downloadAttachment(attachment)">
+          <span>{attachment.filename}</span>
+          <span>{bytesLabel(attachment.size)}</span>
+        </button>
+      </loop>
+    </div>
+  </logic>
+  <div class="email-detail-body">{email.body || '(No body)'}</div>
+</logic>

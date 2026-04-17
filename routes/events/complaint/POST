@@ -1,0 +1,31 @@
+#!/usr/bin/env bun
+import { handle } from '../../../src/shared/handler.ts'
+import { r400, r401 } from '../../../src/shared/respond.ts'
+import { createDb } from '../../../src/db/index.ts'
+import { suppressAddress } from '../../../src/db/suppressed.ts'
+
+/**
+ * POST /events/complaint
+ *
+ * Records a complaint suppression for one or more email addresses.
+ * Authenticated by EVENTS_WEBHOOK_SECRET header (if configured).
+ * Body: { address: string } or { addresses: string[] }
+ */
+handle(async ({ headers, body }) => {
+  const secret = process.env.EVENTS_WEBHOOK_SECRET
+  if (secret) {
+    const provided = headers?.['x-webhook-secret'] ?? headers?.['X-Webhook-Secret']
+    if (provided !== secret) return r401('Invalid webhook secret')
+  }
+
+  const { address, addresses } = (body ?? {}) as { address?: string; addresses?: string[] }
+  const targets = addresses ?? (address ? [address] : [])
+  if (targets.length === 0) return r400('address or addresses required')
+
+  const fylo = await createDb()
+  for (const addr of targets) {
+    await suppressAddress(fylo, addr, 'complaint')
+  }
+
+  return { suppressed: targets }
+})
