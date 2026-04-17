@@ -14,6 +14,7 @@ export const Collections = {
   MFA_SESSIONS:   'mfa-sessions',
   SETUP_SESSIONS: 'setup-sessions',
   PUSH_SUBSCRIPTIONS: 'push-subscriptions',
+  RATE_LIMITS:    'rate-limits',
 } as const
 
 /**

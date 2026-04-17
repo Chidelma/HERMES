@@ -86,6 +86,7 @@ export interface MfaSession {
   id: string
   email: string
   expiresAt: string
+  failedAttempts?: number
 }
 
 /** Pending TOTP device registration session */

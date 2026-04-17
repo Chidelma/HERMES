@@ -9,6 +9,7 @@ import { findEmailById } from '../../../src/db/emails.ts'
 import { saveEmailAttachments } from '../../../src/db/attachments.ts'
 import { matchRoute, applyRouteAction, applyInboxRules, parseInboundMessage } from '../../../src/shared/inbound.ts'
 import { sendEmailNotification } from '../../../src/shared/push.ts'
+import { headerValue, jsonSigningPayload, requireEnv, verifyHmacSha256Hex } from '../../../src/shared/security.ts'
 import type { StoredEmail } from '../../../src/types.ts'
 
 /**
@@ -27,10 +28,10 @@ import type { StoredEmail } from '../../../src/types.ts'
  * }
  */
 handle(async ({ headers, body }) => {
-  const webhookSecret = process.env.INBOUND_WEBHOOK_SECRET
-  if (webhookSecret) {
-    const provided = headers?.['x-webhook-secret'] ?? headers?.['X-Webhook-Secret']
-    if (provided !== webhookSecret) return r401('Invalid webhook secret')
+  const webhookSecret = requireEnv('INBOUND_WEBHOOK_SECRET')
+  const signature = headerValue(headers, 'x-hermes-signature')
+  if (!verifyHmacSha256Hex(signature, webhookSecret, jsonSigningPayload(body))) {
+    return r401('Invalid webhook signature')
   }
 
   const msg = body as {

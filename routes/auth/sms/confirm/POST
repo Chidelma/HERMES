@@ -1,8 +1,7 @@
 #!/usr/bin/env bun
-import { createHash } from 'node:crypto'
 import { randomBytes } from 'node:crypto'
 import { handle } from '../../../../src/shared/handler.ts'
-import { r400, r401 } from '../../../../src/shared/respond.ts'
+import { r400, r401, r429 } from '../../../../src/shared/respond.ts'
 import { signJwt, getJwtSecret } from '../../../../src/shared/auth.ts'
 import { generateTotpSecret, totpProvisionUri } from '../../../../src/shared/totp.ts'
 import { createDb } from '../../../../src/db/index.ts'
@@ -10,19 +9,24 @@ import { findUserByEmail } from '../../../../src/db/users.ts'
 import { findOtpSession, deleteOtpSession } from '../../../../src/db/otp.ts'
 import { listDevices } from '../../../../src/db/mfa.ts'
 import { putSetupSession } from '../../../../src/db/mfa.ts'
+import { checkRateLimit } from '../../../../src/shared/rate-limit.ts'
+import { sha256Hex, timingSafeStringEqual } from '../../../../src/shared/security.ts'
 
-handle(async ({ body }) => {
+handle(async ({ body, context }) => {
   const { sessionId, code } = (body ?? {}) as Record<string, string>
   if (!sessionId || !code) return r400('sessionId and code required')
 
   const fylo = await createDb()
+  const limit = await checkRateLimit(fylo, ['sms-confirm', sessionId, context.ipAddress], 12, 5 * 60 * 1000)
+  if (!limit.allowed) return r429('Too many code attempts', limit.retryAfterSeconds)
+
   const [docId, session] = await findOtpSession(fylo, sessionId)
   if (!session || !docId) return r401('Invalid or expired session')
   if (new Date(session.expiresAt) < new Date()) {
     await deleteOtpSession(fylo, docId)
     return r401('Code has expired')
   }
-  if (createHash('sha256').update(code).digest('hex') !== session.codeHash) {
+  if (!/^\d{6}$/.test(code) || !timingSafeStringEqual(sha256Hex(code), session.codeHash, 'ascii')) {
     return r401('Invalid code')
   }
 

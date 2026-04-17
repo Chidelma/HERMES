@@ -4,6 +4,7 @@ import { handle } from '../../../../src/shared/handler.ts'
 import { r400, r403 } from '../../../../src/shared/respond.ts'
 import { createDb } from '../../../../src/db/index.ts'
 import { putOtpSession } from '../../../../src/db/otp.ts'
+import { isTestRoutesEnabled } from '../../../../src/shared/security.ts'
 
 /**
  * POST /test/seed/otp
@@ -12,7 +13,7 @@ import { putOtpSession } from '../../../../src/db/otp.ts'
  * Returns { sessionId, code }.
  */
 handle(async ({ body }) => {
-  if (process.env.NODE_ENV !== 'test') return r403('Only available in test mode')
+  if (!isTestRoutesEnabled()) return r403('Only available in test mode')
 
   const { email, phone } = (body ?? {}) as Record<string, string>
   if (!email || !phone) return r400('email and phone required')

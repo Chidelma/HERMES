@@ -97,6 +97,36 @@ describe('POST /auth/mfa/confirm', () => {
     const r = await s.post('/auth/mfa/confirm', { mfaSessionId, code: '000000' })
     expect(r.status).toBe(401)
   })
+
+  it('invalidates an MFA session after repeated wrong codes', async () => {
+    await seedUser('mfa-lockout@example.com')
+    await seedDevice('mfa-lockout@example.com')
+
+    const reqRes = await s.post('/auth/mfa/request', { email: 'mfa-lockout@example.com' })
+    const { mfaSessionId } = await reqRes.json()
+
+    for (let i = 0; i < 5; i += 1) {
+      const r = await s.post('/auth/mfa/confirm', { mfaSessionId, code: '000000' })
+      expect(r.status).toBe(401)
+    }
+
+    const after = await s.post('/auth/mfa/confirm', { mfaSessionId, code: '000000' })
+    expect(after.status).toBe(401)
+    const body = await after.json() as { error: string }
+    expect(body.error).toMatch(/Invalid or expired/)
+  })
+})
+
+// ── POST /auth/sms/request ─────────────────────────────────────────────────────
+
+describe('POST /auth/sms/request', () => {
+  it('returns the same success envelope for an unknown email and phone', async () => {
+    const r = await s.post('/auth/sms/request', { email: 'unknown@example.com', phone: '+15550000000' })
+    expect(r.status).toBe(200)
+    const body = await r.json() as { sent: boolean; sessionId?: string }
+    expect(body.sent).toBe(true)
+    expect(body.sessionId).toBeUndefined()
+  })
 })
 
 // ── POST /auth/mfa/setup ───────────────────────────────────────────────────────

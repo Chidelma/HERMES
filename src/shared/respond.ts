@@ -17,5 +17,8 @@ export const r403 = (error: string) =>
 export const r404 = (error: string) =>
   ({ error, notFound: true as const })
 
+export const r429 = (error: string, retryAfterSeconds: number) =>
+  ({ error, retryAfterSeconds, rateLimited: true as const })
+
 export const r422 = (error: string, blocked: string[]) =>
   ({ error, blocked })

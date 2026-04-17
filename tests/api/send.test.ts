@@ -31,6 +31,25 @@ describe('POST /send', () => {
     expect(r.status).toBe(400)
   })
 
+  it('rejects header injection in subject', async () => {
+    const r = await s.post('/send', {
+      to: ['bob@example.com'],
+      subject: 'Hello\r\nBcc: attacker@example.com',
+      text: 'Test',
+    }, { token })
+    expect(r.status).toBe(400)
+  })
+
+  it('rejects oversized recipient lists', async () => {
+    const recipients = Array.from({ length: 51 }, (_, i) => `user${i}@example.com`)
+    const r = await s.post('/send', {
+      to: recipients,
+      subject: 'Hello',
+      text: 'Test',
+    }, { token })
+    expect(r.status).toBe(400)
+  })
+
   it('sends email (console adapter) and returns messageId', async () => {
     const r = await s.post('/send', {
       to: ['bob@example.com'],

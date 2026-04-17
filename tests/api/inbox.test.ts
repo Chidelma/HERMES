@@ -34,6 +34,19 @@ async function setupDomain() {
 // ── GET /inbox ─────────────────────────────────────────────────────────────────
 
 describe('GET /inbox', () => {
+  it('rejects unsigned inbound webhook requests', async () => {
+    const r = await fetch(`${s.url}/inbound/webhook`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        recipient: 'alice@example.com',
+        sender: 'sender@other.com',
+        subject: 'Unsigned',
+      }),
+    })
+    expect(r.status).toBe(401)
+  })
+
   it('returns 401 without token', async () => {
     const r = await s.get('/inbox')
     expect(r.status).toBe(401)

@@ -13,12 +13,12 @@ export interface ParsedAttachment {
   contentId?: string
 }
 
-const DEFAULT_ATTACHMENT_DIR = '/mnt/hermes/attachments'
-
 export function attachmentRoot(): string {
-  return process.env.ATTACHMENT_ROOT
-    ?? join(process.env.FYLO_ROOT ?? '/mnt/hermes', 'attachments')
-    ?? DEFAULT_ATTACHMENT_DIR
+  if (process.env.ATTACHMENT_ROOT) return process.env.ATTACHMENT_ROOT
+  if (process.env.NODE_ENV === 'production') {
+    throw new Error('ATTACHMENT_ROOT is required in production')
+  }
+  return join(process.env.FYLO_ROOT ?? '/mnt/hermes', 'attachments')
 }
 
 export function toAttachmentSummary(attachment: EmailAttachmentRecord): EmailAttachmentSummary {

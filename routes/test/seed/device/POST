@@ -5,6 +5,7 @@ import { r400, r403 } from '../../../../src/shared/respond.ts'
 import { generateTotpSecret, totpProvisionUri } from '../../../../src/shared/totp.ts'
 import { createDb } from '../../../../src/db/index.ts'
 import { putDevice } from '../../../../src/db/mfa.ts'
+import { isTestRoutesEnabled } from '../../../../src/shared/security.ts'
 
 /**
  * POST /test/seed/device
@@ -12,7 +13,7 @@ import { putDevice } from '../../../../src/db/mfa.ts'
  * so tests can generate valid codes.
  */
 handle(async ({ body }) => {
-  if (process.env.NODE_ENV !== 'test') return r403('Only available in test mode')
+  if (!isTestRoutesEnabled()) return r403('Only available in test mode')
 
   const { email, name } = (body ?? {}) as { email?: string; name?: string }
   if (!email) return r400('email required')

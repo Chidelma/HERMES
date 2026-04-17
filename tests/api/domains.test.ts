@@ -56,6 +56,24 @@ describe('POST /domains', () => {
     expect(body.domain).toBe('example.com')
   })
 
+  it('rejects domains outside admin claims', async () => {
+    const r = await s.post('/domains', {
+      domain: 'other.com',
+      routes: [],
+      inboundEnabled: false,
+    }, { token: admin })
+    expect(r.status).toBe(403)
+  })
+
+  it('rejects unsafe webhook routes', async () => {
+    const r = await s.post('/domains', {
+      domain: 'example.com',
+      routes: [{ id: 'webhook-ssrf', match: '*@example.com', action: { type: 'webhook', url: 'http://127.0.0.1:9999', secret: 'secret' }, enabled: true }],
+      inboundEnabled: true,
+    }, { token: admin })
+    expect(r.status).toBe(400)
+  })
+
   it('lists created domain', async () => {
     const r = await s.get('/domains', { token: admin })
     expect(r.status).toBe(200)

@@ -19,7 +19,10 @@ bun run test:e2e
 Run the API server:
 
 ```sh
-FYLO_ROOT=.data JWT_SECRET=dev-secret-change-me bun run serve
+FYLO_ROOT=.data \
+JWT_SECRET=dev-secret-change-me \
+INBOUND_WEBHOOK_SECRET=dev-inbound-secret \
+bun run serve
 ```
 
 Build the frontend for CDN/static hosting:
@@ -44,7 +47,7 @@ The existing web manifest provides standalone display metadata, theme colors, sh
 
 ## Docker
 
-Published images are available on Docker Hub at [`chidelma/hermes`](https://hub.docker.com/r/chidelma/hermes). Every push to `main` builds and publishes an image tagged with the `package.json` version (for example `0.1.0`) and `latest`. Images are multi-arch (`linux/amd64`, `linux/arm64`).
+Published images are available on Docker Hub at [`d3lma/hermes`](https://hub.docker.com/r/d3lma/hermes). Every push to `main` builds and publishes an image tagged with the `package.json` version (for example `0.2.0`) and `latest`. Images are multi-arch (`linux/amd64`, `linux/arm64`).
 
 ### Run the published image
 
@@ -52,12 +55,21 @@ Published images are available on Docker Hub at [`chidelma/hermes`](https://hub.
 docker run --rm \
   -p 8080:8080 \
   -e JWT_SECRET=change-me \
+  -e INBOUND_WEBHOOK_SECRET=change-me-too \
+  -e WEB_PUSH_DISABLED=true \
   -e FYLO_ROOT=/data \
   -v hermes-data:/data \
   chidelma/hermes:latest
 ```
 
 The container serves the API on `PORT` and stores data under `FYLO_ROOT`. Build the frontend separately with `bun run bundle` when distributing it through a CDN.
+
+The image uses a narrow entrypoint. By default it only accepts these commands:
+
+- `serve`: start Hermes
+- `admin:create`: create the first admin for a domain
+
+Any other command is rejected by the default entrypoint unless an operator deliberately overrides the container entrypoint.
 
 ### Build locally
 
@@ -80,7 +92,7 @@ Trade-offs: `docker exec -it <container> sh` will not work, and the image is not
 Because the runtime base is distroless, downstream Dockerfiles can add files and configuration but cannot run shell commands. This works:
 
 ```dockerfile
-FROM chidelma/hermes:0.1.0
+FROM chidelma/hermes:0.2.0
 
 COPY --chown=65532:65532 my-routes/   /app/routes/custom/
 COPY --chown=65532:65532 my-config.json /app/config.json
@@ -97,6 +109,8 @@ Bind-mounting at runtime is always an option for ad-hoc additions:
 docker run --rm \
   -p 8080:8080 \
   -e JWT_SECRET=change-me \
+  -e INBOUND_WEBHOOK_SECRET=change-me-too \
+  -e WEB_PUSH_DISABLED=true \
   -e FYLO_ROOT=/data \
   -v hermes-data:/data \
   -v $(pwd)/my-routes:/app/routes/custom:ro \
@@ -107,7 +121,7 @@ Bind-mount sources should be owned by uid `65532` on the host (or world-readable
 
 ## Attachments
 
-Inbound MIME attachments are parsed from raw message bodies and stored as files on the local filesystem. Attachment metadata is stored in Fylo, while file bytes are written under `ATTACHMENT_ROOT` or, by default, under `${FYLO_ROOT}/attachments`.
+Inbound MIME attachments are parsed from raw message bodies and stored as files on the local filesystem. Attachment metadata is stored in Fylo, while file bytes are written under `ATTACHMENT_ROOT`. Local development falls back to `${FYLO_ROOT}/attachments`; production must set `ATTACHMENT_ROOT` explicitly. The Docker image defaults it to `/data/attachments`.
 
 The inbox API returns attachment metadata with message details, and authenticated clients can fetch attachment content from the attachment endpoint.
 
@@ -119,17 +133,39 @@ Hermes can notify installed desktop and mobile PWA users when new mail is delive
 bun node_modules/.bin/web-push generate-vapid-keys
 ```
 
-Set `VAPID_PUBLIC_KEY`, `VAPID_PRIVATE_KEY`, and `VAPID_SUBJECT` in the API environment. Local development falls back to an in-memory VAPID keypair, which is convenient for testing but not stable across restarts.
+Set `VAPID_PUBLIC_KEY`, `VAPID_PRIVATE_KEY`, and `VAPID_SUBJECT` in the API environment. Local development falls back to an in-memory VAPID keypair, which is convenient for testing but not stable across restarts. Production requires VAPID keys unless `WEB_PUSH_DISABLED=true`.
+
+## Admin Bootstrap
+
+Create the first admin for a new domain from a trusted shell with access to the Fylo data directory:
+
+```sh
+FYLO_ROOT=.data bun run admin:create --email=admin@example.com --phone=+14165550100 --domain=example.com
+```
+
+For the hardened Docker image, run the same bootstrap as an explicit one-shot container command against the same data volume:
+
+```sh
+docker run --rm \
+  -v hermes-data:/data \
+  chidelma/hermes:latest \
+  admin:create --email=admin@example.com --phone=+14165550100 --domain=example.com
+```
+
+Run this before starting the API container, or stop the API container briefly while bootstrapping the first account against an existing volume. The command creates the domain with a default `*@domain` store route if it does not already exist, then creates an admin user scoped to that domain. After the first admin exists, use the Settings screen or `POST /users` to add more users for domains that admin is allowed to manage.
+
+Inbound relay integrations must sign the exact JSON payload with HMAC-SHA256 using `INBOUND_WEBHOOK_SECRET` and send it as `X-Hermes-Signature`.
 
 ## Environment
 
 - `HOST`: bind address, default `0.0.0.0` in Docker
 - `PORT`: HTTP port, default `8080` in Docker
 - `FYLO_ROOT`: Fylo data directory, default `/data` in Docker
-- `ATTACHMENT_ROOT`: attachment file directory, default `${FYLO_ROOT}/attachments`
-- `JWT_SECRET`: signing key for session tokens
-- `VAPID_PUBLIC_KEY`: public VAPID key for Web Push subscriptions
-- `VAPID_PRIVATE_KEY`: private VAPID key for Web Push delivery
+- `ATTACHMENT_ROOT`: attachment file directory, required in production
+- `JWT_SECRET`: signing key for session tokens, required
+- `INBOUND_WEBHOOK_SECRET`: HMAC key required by `/inbound/webhook`
+- `VAPID_PUBLIC_KEY`: public VAPID key for Web Push subscriptions, required in production unless push is disabled
+- `VAPID_PRIVATE_KEY`: private VAPID key for Web Push delivery, required in production unless push is disabled
 - `VAPID_SUBJECT`: contact URI for Web Push, for example `mailto:admin@example.com`
 - `WEB_PUSH_DISABLED`: set to `true` to skip delivery attempts in controlled environments
 - `SMS_ADAPTER`: SMS provider selector, currently defaults to `console`

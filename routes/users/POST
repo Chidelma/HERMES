@@ -4,6 +4,7 @@ import { r400, r401, r403 } from '../../src/shared/respond.ts'
 import { verifyJwt, getJwtSecret } from '../../src/shared/auth.ts'
 import { createDb } from '../../src/db/index.ts'
 import { putUser } from '../../src/db/users.ts'
+import { hasControlChars, hasDomainClaim, normalizeDomain, normalizeEmailAddress } from '../../src/shared/security.ts'
 import type { User } from '../../src/types.ts'
 
 handle(async ({ body, context }) => {
@@ -16,8 +17,18 @@ handle(async ({ body, context }) => {
   if (!user.phones?.length) return r400('phones required')
   if (!user.domains?.length) return r400('domains required')
   if (!user.role) return r400('role required')
+  if (user.role !== 'admin' && user.role !== 'viewer') return r400('role invalid')
+
+  const email = normalizeEmailAddress(user.email)
+  if (!email) return r400('email invalid')
+  const domains = user.domains.map(domain => normalizeDomain(domain))
+  if (domains.some(domain => !domain)) return r400('domains invalid')
+  if (!domains.every(domain => hasDomainClaim(claims.domains, domain!))) {
+    return r403('Domain access denied')
+  }
+  if (user.phones.some(phone => !phone || hasControlChars(phone))) return r400('phones invalid')
 
   const fylo = await createDb()
-  await putUser(fylo, user as User)
-  return { email: user.email.toLowerCase() }
+  await putUser(fylo, { email, phones: user.phones, domains: domains as string[], role: user.role })
+  return { email }
 })

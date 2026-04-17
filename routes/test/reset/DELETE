@@ -2,13 +2,14 @@
 import { handle } from '../../../src/shared/handler.ts'
 import { r403 } from '../../../src/shared/respond.ts'
 import { createDb, Collections } from '../../../src/db/index.ts'
+import { isTestRoutesEnabled } from '../../../src/shared/security.ts'
 
 /**
  * DELETE /test/reset
  * Only available in NODE_ENV=test. Wipes all data from every collection.
  */
 handle(async () => {
-  if (process.env.NODE_ENV !== 'test') return r403('Only available in test mode')
+  if (!isTestRoutesEnabled()) return r403('Only available in test mode')
 
   const fylo = await createDb()
   for (const collection of Object.values(Collections)) {

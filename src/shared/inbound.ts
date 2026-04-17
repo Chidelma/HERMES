@@ -2,7 +2,9 @@ import type Fylo from '@delma/fylo'
 import { Collections, collect } from '../db/index.ts'
 import { deleteEmail, findEmailById } from '../db/emails.ts'
 import { listEnabledRulesForDomain } from '../db/rules.ts'
+import { getSuppressedSet } from '../db/suppressed.ts'
 import { getSmtpAdapter } from './smtp.ts'
+import { assertSafeWebhookUrl, hmacSha256Hex, normalizeEmailAddress } from './security.ts'
 import type { RouteRule, InboxRule, RuleCondition } from '../types.ts'
 import type { ParsedAttachment } from '../db/attachments.ts'
 
@@ -38,15 +40,12 @@ export async function applyRouteAction(
 
   if (rule.action.type === 'webhook') {
     const { url, secret } = rule.action
+    if (!secret) throw new Error('Webhook action secret is required')
+    await assertSafeWebhookUrl(url)
     const payload = JSON.stringify({ emailId: logicalId, sender, recipient, subject })
-    const headers: Record<string, string> = { 'Content-Type': 'application/json' }
-    if (secret) {
-      const enc = new TextEncoder()
-      const key = await crypto.subtle.importKey(
-        'raw', enc.encode(secret), { name: 'HMAC', hash: 'SHA-256' }, false, ['sign'],
-      )
-      const sig = await crypto.subtle.sign('HMAC', key, enc.encode(payload))
-      headers['X-Hermes-Signature'] = Buffer.from(sig).toString('hex')
+    const headers: Record<string, string> = {
+      'Content-Type': 'application/json',
+      'X-Hermes-Signature': hmacSha256Hex(secret, payload),
     }
     await fetch(url, { method: 'POST', headers, body: payload })
     const [docId] = await findEmailById(fylo, logicalId)
@@ -55,7 +54,9 @@ export async function applyRouteAction(
   }
 
   if (rule.action.type === 'forward') {
-    await smtp.forwardEmail(sender, rule.action.to, subject)
+    if (await canForwardTo(fylo, rule.action.to)) {
+      await smtp.forwardEmail(sender, rule.action.to, subject)
+    }
     const [docId] = await findEmailById(fylo, logicalId)
     if (docId) await fylo.patchDoc(Collections.EMAILS, { [docId]: { processed: true } })
   }
@@ -80,7 +81,9 @@ export async function applyInboxRules(
         const [docId] = await findEmailById(fylo, logicalId)
         if (docId) await fylo.patchDoc(Collections.EMAILS, { [docId]: { folder: action.folder } })
       } else if (action.type === 'forward') {
-        await smtp.forwardEmail(email.sender, action.to, email.subject)
+        if (await canForwardTo(fylo, action.to)) {
+          await smtp.forwardEmail(email.sender, action.to, email.subject)
+        }
       } else if (action.type === 'delete') {
         const [docId] = await findEmailById(fylo, logicalId)
         if (docId) await deleteEmail(fylo, docId, logicalId)
@@ -88,6 +91,13 @@ export async function applyInboxRules(
       }
     }
   }
+}
+
+async function canForwardTo(fylo: Fylo, address: string): Promise<boolean> {
+  const normalized = normalizeEmailAddress(address)
+  if (!normalized) return false
+  const suppressed = await getSuppressedSet(fylo)
+  return !suppressed.has(normalized)
 }
 
 function conditionsMatch(

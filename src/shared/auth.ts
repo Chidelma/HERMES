@@ -1,4 +1,5 @@
 import { createHmac, timingSafeEqual } from 'node:crypto'
+import { requireEnv } from './security.ts'
 
 export interface JwtClaims {
   email: string
@@ -19,7 +20,7 @@ function fromB64url(s: string): Buffer {
 export function signJwt(
   payload: Omit<JwtClaims, 'iat' | 'exp'>,
   secret: string,
-  ttlSeconds = 28800,
+  ttlSeconds = 3600,
 ): string {
   const header = b64url(Buffer.from(JSON.stringify({ alg: 'HS256', typ: 'JWT' })))
   const now = Math.floor(Date.now() / 1000)
@@ -44,5 +45,5 @@ export function verifyJwt(token: string, secret: string): JwtClaims | null {
 }
 
 export function getJwtSecret(): string {
-  return process.env.JWT_SECRET ?? 'dev-secret-change-in-production'
+  return requireEnv('JWT_SECRET')
 }
