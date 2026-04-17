@@ -1,4 +1,5 @@
 import { createHmac, randomBytes } from 'node:crypto'
+import { timingSafeStringEqual } from './security.ts'
 
 // ── Base32 (RFC 4648) ────────────────────────────────────────────────────────
 
@@ -70,9 +71,10 @@ export function getTotpCode(secret: string): string {
  * Allows ±drift 30-second windows to tolerate clock skew.
  */
 export function verifyTotp(secret: string, code: string, drift = 1): boolean {
+  if (!/^\d{6}$/.test(code)) return false
   const counter = Math.floor(Date.now() / 1000 / 30)
   for (let d = -drift; d <= drift; d++) {
-    if (hotpCode(secret, counter + d) === code) return true
+    if (timingSafeStringEqual(hotpCode(secret, counter + d), code, 'ascii')) return true
   }
   return false
 }

@@ -133,7 +133,7 @@ test('"Use phone backup" from TOTP step goes to phone-input', async ({ page }) =
   await expect(page.getByText('Phone verification')).toBeVisible()
 })
 
-test('shows error for phone not linked to account', async ({ page }) => {
+test('does not reveal whether a phone is linked to an account', async ({ page }) => {
   const email = uniqueEmail()
   await seedUser(email)  // default phone: +14165550100
 
@@ -143,7 +143,7 @@ test('shows error for phone not linked to account', async ({ page }) => {
   await page.getByRole('button', { name: 'Continue' }).click()
   await page.getByPlaceholder('+1 416 555 0100').fill('+19995550000')
   await page.getByRole('button', { name: 'Send code' }).click()
-  await expect(page.getByText(/No account found/)).toBeVisible()
+  await expect(page.getByText('Enter your code')).toBeVisible()
 })
 
 test('sends SMS and shows phone-code step', async ({ page }) => {

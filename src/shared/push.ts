@@ -41,6 +41,9 @@ function getVapidKeys(webPush: WebPushModule): VapidKeys {
   const publicKey = process.env.VAPID_PUBLIC_KEY
   const privateKey = process.env.VAPID_PRIVATE_KEY
   if (publicKey && privateKey) return { publicKey, privateKey }
+  if (process.env.NODE_ENV === 'production' && process.env.WEB_PUSH_DISABLED !== 'true') {
+    throw new Error('VAPID_PUBLIC_KEY and VAPID_PRIVATE_KEY are required in production')
+  }
 
   devVapidKeys ??= webPush.generateVAPIDKeys()
   return devVapidKeys

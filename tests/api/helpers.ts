@@ -1,11 +1,13 @@
 import { mkdtempSync, rmSync } from 'node:fs'
 import { join } from 'node:path'
 import { tmpdir } from 'node:os'
+import { createHmac } from 'node:crypto'
 import { signJwt } from '../../src/shared/auth.ts'
 
 const HERMES_ROOT = join(import.meta.dir, '..', '..')
 const TACH_SERVE  = join(HERMES_ROOT, 'node_modules', '.bin', 'tach.serve')
 const JWT_SECRET  = 'test-secret'
+const INBOUND_WEBHOOK_SECRET = 'test-inbound-secret'
 const PORT_BASE   = 19000
 
 let portCounter = 0
@@ -39,6 +41,8 @@ export async function startTestServer(): Promise<TestServer> {
         HOST:      '127.0.0.1',
         FYLO_ROOT: testRoot,
         JWT_SECRET,
+        INBOUND_WEBHOOK_SECRET,
+        HERMES_ENABLE_TEST_ROUTES: 'true',
         NODE_ENV:  'test',
         SMS_ADAPTER:  'console',
         SMTP_ADAPTER: 'console',
@@ -71,10 +75,11 @@ export async function startTestServer(): Promise<TestServer> {
     rmSync(testRoot, { recursive: true, force: true })
   }
 
-  const makeHeaders = (opts?: { token?: string; secret?: string }) => {
+  const makeHeaders = (body?: unknown, opts?: { token?: string; secret?: string }) => {
     const h: Record<string, string> = { 'Content-Type': 'application/json' }
     if (opts?.token) h['Authorization'] = `Bearer ${opts.token}`
     if (opts?.secret) h['X-Webhook-Secret'] = opts.secret
+    if (opts?.secret) h['X-Hermes-Signature'] = createHmac('sha256', opts.secret).update(JSON.stringify(body ?? {})).digest('hex')
     return h
   }
 
@@ -83,12 +88,16 @@ export async function startTestServer(): Promise<TestServer> {
     testRoot,
     stop,
     token: (claims) => signJwt(claims, JWT_SECRET),
-    get:    (path, opts) => fetch(`${url}${path}`, { headers: makeHeaders(opts) }),
-    post:   (path, body, opts) => fetch(`${url}${path}`, { method: 'POST', headers: makeHeaders(opts), body: JSON.stringify(body) }),
-    put:    (path, body, opts) => fetch(`${url}${path}`, { method: 'PUT',  headers: makeHeaders(opts), body: JSON.stringify(body) }),
+    get:    (path, opts) => fetch(`${url}${path}`, { headers: makeHeaders(undefined, opts) }),
+    post:   (path, body, opts) => fetch(`${url}${path}`, {
+      method: 'POST',
+      headers: makeHeaders(body, { ...opts, secret: opts?.secret ?? (path === '/inbound/webhook' ? INBOUND_WEBHOOK_SECRET : undefined) }),
+      body: JSON.stringify(body),
+    }),
+    put:    (path, body, opts) => fetch(`${url}${path}`, { method: 'PUT',  headers: makeHeaders(body, opts), body: JSON.stringify(body) }),
     delete: (path, opts) => fetch(`${url}${path}`, {
       method: 'DELETE',
-      headers: makeHeaders(opts),
+      headers: makeHeaders(opts?.body, opts),
       body: opts?.body ? JSON.stringify(opts.body) : undefined,
     }),
   }

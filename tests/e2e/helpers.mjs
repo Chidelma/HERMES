@@ -5,6 +5,7 @@
 import { createHmac } from 'node:crypto'
 
 export const API = 'http://localhost:9876'
+const INBOUND_WEBHOOK_SECRET = 'hermes-e2e-inbound-secret'
 
 // ── TOTP (RFC 6238) ───────────────────────────────────────────────────────────
 
@@ -53,9 +54,13 @@ export function uniqueEmail() {
 // ── Test server seed helpers ──────────────────────────────────────────────────
 
 async function post(path, data) {
+  const headers = { 'Content-Type': 'application/json' }
+  if (path === '/inbound/webhook') {
+    headers['X-Hermes-Signature'] = createHmac('sha256', INBOUND_WEBHOOK_SECRET).update(JSON.stringify(data ?? {})).digest('hex')
+  }
   const res = await fetch(`${API}${path}`, {
     method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
+    headers,
     body: JSON.stringify(data),
   })
   if (!res.ok) throw new Error(`Seed ${path} failed: ${await res.text()}`)

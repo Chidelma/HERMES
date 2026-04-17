@@ -3,6 +3,7 @@ import { handle } from '../../../../src/shared/handler.ts'
 import { r400, r403 } from '../../../../src/shared/respond.ts'
 import { createDb } from '../../../../src/db/index.ts'
 import { putUser } from '../../../../src/db/users.ts'
+import { isTestRoutesEnabled } from '../../../../src/shared/security.ts'
 import type { User } from '../../../../src/types.ts'
 
 /**
@@ -10,7 +11,7 @@ import type { User } from '../../../../src/types.ts'
  * Only available in NODE_ENV=test. Creates a user for E2E test isolation.
  */
 handle(async ({ body }) => {
-  if (process.env.NODE_ENV !== 'test') return r403('Only available in test mode')
+  if (!isTestRoutesEnabled()) return r403('Only available in test mode')
 
   const user = body as Partial<User>
   if (!user?.email || !user.phones?.length || !user.domains?.length || !user.role) {

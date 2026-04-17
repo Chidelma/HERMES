@@ -4,6 +4,7 @@ import { r400, r401, r403, r404 } from '../../../../../src/shared/respond.ts'
 import { verifyJwt, getJwtSecret } from '../../../../../src/shared/auth.ts'
 import { createDb } from '../../../../../src/db/index.ts'
 import { findDomainEntry, updateDomainRoutes } from '../../../../../src/db/domains.ts'
+import { validateRouteAction } from '../../../../../src/shared/rule-validation.ts'
 import type { RouteRule } from '../../../../../src/types.ts'
 
 handle(async ({ paths, body, context }) => {
@@ -21,6 +22,8 @@ handle(async ({ paths, body, context }) => {
   if (!docId || !config) return r404('Domain not found')
 
   const rule = body as RouteRule
+  const routeError = await validateRouteAction(rule.action)
+  if (routeError) return r400(routeError)
   const updatedRoutes = [
     ...config.routes.filter(r => r.id !== ruleId),
     { ...rule, id: ruleId },

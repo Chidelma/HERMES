@@ -1,17 +1,23 @@
 #!/usr/bin/env bun
 import { handle } from '../../../../src/shared/handler.ts'
-import { r400, r401 } from '../../../../src/shared/respond.ts'
+import { r400, r401, r429 } from '../../../../src/shared/respond.ts'
 import { signJwt, getJwtSecret } from '../../../../src/shared/auth.ts'
 import { verifyTotp } from '../../../../src/shared/totp.ts'
-import { createDb } from '../../../../src/db/index.ts'
+import { createDb, Collections } from '../../../../src/db/index.ts'
 import { findUserByEmail } from '../../../../src/db/users.ts'
 import { findMfaSession, deleteMfaSession, listDevices } from '../../../../src/db/mfa.ts'
+import { checkRateLimit } from '../../../../src/shared/rate-limit.ts'
 
-handle(async ({ body }) => {
+const MAX_FAILED_ATTEMPTS = 5
+
+handle(async ({ body, context }) => {
   const { mfaSessionId, code } = (body ?? {}) as Record<string, string>
   if (!mfaSessionId || !code) return r400('mfaSessionId and code required')
 
   const fylo = await createDb()
+  const limit = await checkRateLimit(fylo, ['mfa-confirm', mfaSessionId, context.ipAddress], 12, 5 * 60 * 1000)
+  if (!limit.allowed) return r429('Too many code attempts', limit.retryAfterSeconds)
+
   const [docId, session] = await findMfaSession(fylo, mfaSessionId)
   if (!session || !docId) return r401('Invalid or expired session')
   if (new Date(session.expiresAt) < new Date()) {
@@ -21,7 +27,15 @@ handle(async ({ body }) => {
 
   const devices = await listDevices(fylo, session.email)
   const valid = devices.some(d => verifyTotp(d.secret, code))
-  if (!valid) return r401('Invalid code')
+  if (!valid) {
+    const failedAttempts = (session.failedAttempts ?? 0) + 1
+    if (failedAttempts >= MAX_FAILED_ATTEMPTS) {
+      await deleteMfaSession(fylo, docId)
+    } else {
+      await fylo.patchDoc(Collections.MFA_SESSIONS, { [docId]: { failedAttempts } })
+    }
+    return r401('Invalid code')
+  }
 
   await deleteMfaSession(fylo, docId)
 

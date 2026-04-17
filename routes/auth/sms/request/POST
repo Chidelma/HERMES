@@ -1,26 +1,31 @@
 #!/usr/bin/env bun
 import { createHash, randomBytes, randomInt } from 'node:crypto'
 import { handle } from '../../../../src/shared/handler.ts'
-import { r400, r404 } from '../../../../src/shared/respond.ts'
+import { r400, r429 } from '../../../../src/shared/respond.ts'
 import { getSmsAdapter } from '../../../../src/shared/sms.ts'
 import { createDb } from '../../../../src/db/index.ts'
 import { findUserByEmailAndPhone } from '../../../../src/db/users.ts'
 import { putOtpSession, purgeExpiredOtpSessions, findValidOtpSession } from '../../../../src/db/otp.ts'
+import { checkRateLimit } from '../../../../src/shared/rate-limit.ts'
 
-handle(async ({ body }) => {
+handle(async ({ body, context }) => {
   const { email, phone } = (body ?? {}) as Record<string, string>
   if (!email || !phone) return r400('email and phone required')
 
   const fylo = await createDb()
-  const [, user] = await findUserByEmailAndPhone(fylo, email.toLowerCase(), phone)
-  if (!user) return r404('No account found for these credentials')
+  const normalizedEmail = email.toLowerCase()
+  const limit = await checkRateLimit(fylo, ['sms-request', normalizedEmail, context.ipAddress], 8, 15 * 60 * 1000)
+  if (!limit.allowed) return r429('Too many code requests', limit.retryAfterSeconds)
 
-  await purgeExpiredOtpSessions(fylo, email.toLowerCase())
+  const [, user] = await findUserByEmailAndPhone(fylo, email.toLowerCase(), phone)
+  if (!user) return { sent: true }
+
+  await purgeExpiredOtpSessions(fylo, normalizedEmail)
 
   // Reuse an existing valid session (e.g. seeded in tests, or a recent re-request)
-  const existing = await findValidOtpSession(fylo, email.toLowerCase(), phone)
+  const existing = await findValidOtpSession(fylo, normalizedEmail, phone)
   if (existing) {
-    return { sessionId: existing.id }
+    return { sent: true, sessionId: existing.id }
   }
 
   const code = String(randomInt(100000, 1000000)).padStart(6, '0')
@@ -29,7 +34,7 @@ handle(async ({ body }) => {
 
   await putOtpSession(fylo, {
     id: sessionId,
-    email: email.toLowerCase(),
+    email: normalizedEmail,
     phone,
     codeHash: createHash('sha256').update(code).digest('hex'),
     expiresAt,
@@ -37,5 +42,5 @@ handle(async ({ body }) => {
 
   await getSmsAdapter().send(phone, `Your HERMES code: ${code}. Expires in 5 minutes.`)
 
-  return { sessionId }
+  return { sent: true, sessionId }
 })

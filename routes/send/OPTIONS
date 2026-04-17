@@ -3,6 +3,7 @@
     "200": { "messageId": "" },
     "400": { "error": "" },
     "401": { "error": "", "unauthorized": true },
+    "429": { "error": "", "retryAfterSeconds": 0, "rateLimited": true },
     "422": { "error": "", "blocked": [""] }
   }
 }
