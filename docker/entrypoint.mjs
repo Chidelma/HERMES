@@ -13,8 +13,8 @@ if (command === 'help' || command === '--help' || command === '-h') {
     '  admin:create  Create the first admin for a domain',
     '',
     'Examples:',
-    '  docker run chidelma/hermes:latest',
-    '  docker run -v hermes-data:/data chidelma/hermes:latest admin:create --email=admin@example.com --phone=+14165550100 --domain=example.com',
+    '  docker run d3lma/hermes:latest',
+    '  docker run -v hermes-data:/data d3lma/hermes:latest admin:create --email=admin@example.com --phone=+14165550100 --domain=example.com',
   ].join('\n'))
   process.exit(0)
 }
