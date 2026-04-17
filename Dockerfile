@@ -16,7 +16,8 @@ COPY scripts/create-admin.mjs ./scripts/create-admin.mjs
 COPY src ./src
 COPY tsconfig.json ./tsconfig.json
 
-RUN find routes -type f -exec sed -i '1s|^#!/usr/bin/env bun|#!/usr/local/bin/bun|' {} + \
+RUN rm -rf routes/test \
+    && find routes -type f -exec sed -i '1s|^#!/usr/bin/env bun|#!/usr/local/bin/bun|' {} + \
     && find routes -type f -exec chmod 755 {} + \
     && mkdir -p /data-empty
 

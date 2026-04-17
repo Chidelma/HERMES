@@ -79,6 +79,20 @@ test('POST /domains requires authentication', async () => {
   expect(res.status).toBe(401)
 })
 
+test('test/reset is not present in the production image', async () => {
+  const res = await request('/test/reset', { method: 'DELETE' })
+  expect(res.status).toBe(404)
+})
+
+test('test/seed/otp is not present in the production image', async () => {
+  const res = await request('/test/seed/otp', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ email: 'x@test.com', phone: '+15551234567' }),
+  })
+  expect(res.status).toBe(404)
+})
+
 test('requests with a forged JWT are rejected', async () => {
   const forged = 'eyJhbGciOiJIUzI1NiJ9.eyJlbWFpbCI6ImF0dGFja2VyQGV2aWwudGVzdCIsInJvbGUiOiJhZG1pbiIsImV4cCI6OTk5OTk5OTk5OX0.invalid'
   const res = await request('/inbox', {
