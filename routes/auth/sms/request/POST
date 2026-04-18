@@ -20,10 +20,10 @@ handle(async ({ body, context }) => {
   const [, user] = await findUserByEmailAndPhone(fylo, email.toLowerCase(), phone)
   if (!user) return { sent: true }
 
-  await purgeExpiredOtpSessions(fylo, normalizedEmail)
+  await purgeExpiredOtpSessions(fylo, user.email)
 
   // Reuse an existing valid session (e.g. seeded in tests, or a recent re-request)
-  const existing = await findValidOtpSession(fylo, normalizedEmail, phone)
+  const existing = await findValidOtpSession(fylo, user.email, phone)
   if (existing) {
     return { sent: true, sessionId: existing.id }
   }
@@ -34,7 +34,7 @@ handle(async ({ body, context }) => {
 
   await putOtpSession(fylo, {
     id: sessionId,
-    email: normalizedEmail,
+    email: user.email,
     phone,
     codeHash: createHash('sha256').update(code).digest('hex'),
     expiresAt,

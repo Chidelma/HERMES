@@ -13,6 +13,7 @@ COPY docker ./docker
 COPY main.js ./main.js
 COPY routes ./routes
 COPY scripts/create-admin.mjs ./scripts/create-admin.mjs
+COPY scripts/migrate-domain.mjs ./scripts/migrate-domain.mjs
 COPY src ./src
 COPY tsconfig.json ./tsconfig.json
 

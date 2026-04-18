@@ -12,6 +12,7 @@
     "start": "bun run serve",
     "serve": "tach.serve",
     "admin:create": "bun scripts/create-admin.mjs",
+    "domain:migrate": "bun scripts/migrate-domain.mjs",
     "bundle": "bun ./scripts/bundle.mjs",
     "bundle:watch": "bun ./scripts/bundle.mjs --watch",
     "preview": "bun ./scripts/preview.mjs",

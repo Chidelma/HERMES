@@ -27,6 +27,7 @@ afterEach(() => {
 
 const alice: User = {
   email: 'alice@example.com',
+  aliases: [],
   phones: ['+15551234567'],
   domains: ['example.com'],
   role: 'admin',
@@ -34,6 +35,7 @@ const alice: User = {
 
 const bob: User = {
   email: 'bob@example.com',
+  aliases: [],
   phones: ['+15559876543'],
   domains: ['example.com'],
   role: 'viewer',
@@ -84,12 +86,26 @@ describe('findUserByEmail', () => {
     const [, user] = await findUserByEmail(fylo, 'ALICE@EXAMPLE.COM')
     expect(user).not.toBeNull()
   })
+
+  it('finds user by alias', async () => {
+    await putUser(fylo, { ...alice, aliases: ['alice@old.example.com'] })
+    const [, user] = await findUserByEmail(fylo, 'ALICE@OLD.EXAMPLE.COM')
+    expect(user).not.toBeNull()
+    expect(user!.email).toBe('alice@example.com')
+  })
 })
 
 describe('findUserByEmailAndPhone', () => {
   it('finds user matching both email and phone', async () => {
     await putUser(fylo, alice)
     const [docId, user] = await findUserByEmailAndPhone(fylo, alice.email, alice.phones[0])
+    expect(docId).not.toBeNull()
+    expect(user!.email).toBe('alice@example.com')
+  })
+
+  it('finds user matching both alias and phone', async () => {
+    await putUser(fylo, { ...alice, aliases: ['alice@old.example.com'] })
+    const [docId, user] = await findUserByEmailAndPhone(fylo, 'alice@old.example.com', alice.phones[0])
     expect(docId).not.toBeNull()
     expect(user!.email).toBe('alice@example.com')
   })

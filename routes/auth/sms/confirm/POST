@@ -50,7 +50,7 @@ handle(async ({ body, context }) => {
       requiresSetup: true,
       setupToken,
       totpSecret,
-      totpUri: totpProvisionUri(session.email, totpSecret),
+      totpUri: totpProvisionUri(user.email, totpSecret),
     }
   }
 

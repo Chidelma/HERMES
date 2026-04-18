@@ -4,6 +4,7 @@ import { handle } from '../../../../src/shared/handler.ts'
 import { r400, r403 } from '../../../../src/shared/respond.ts'
 import { generateTotpSecret, totpProvisionUri } from '../../../../src/shared/totp.ts'
 import { createDb } from '../../../../src/db/index.ts'
+import { findUserByEmail } from '../../../../src/db/users.ts'
 import { putDevice } from '../../../../src/db/mfa.ts'
 import { isTestRoutesEnabled } from '../../../../src/shared/security.ts'
 
@@ -22,13 +23,15 @@ handle(async ({ body }) => {
   const secret = generateTotpSecret()
 
   const fylo = await createDb()
+  const [, user] = await findUserByEmail(fylo, email.toLowerCase())
+  const userEmail = user?.email ?? email.toLowerCase()
   await putDevice(fylo, {
     id: deviceId,
-    userEmail: email.toLowerCase(),
+    userEmail,
     name: name?.trim() || 'Test Device',
     secret,
     createdAt: new Date().toISOString(),
   })
 
-  return { deviceId, secret, totpUri: totpProvisionUri(email, secret) }
+  return { deviceId, secret, totpUri: totpProvisionUri(userEmail, secret) }
 })

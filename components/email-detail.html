@@ -127,6 +127,9 @@
       <div>
         <div class="email-detail-from">{email.sender}</div>
         <div class="email-detail-to">To: {email.recipient}</div>
+        <logic :if="email.originalRecipient && email.originalRecipient !== email.recipient">
+          <div class="email-detail-to">Originally delivered to: {email.originalRecipient}</div>
+        </logic>
       </div>
       <span class="email-detail-date">{new Date(email.receivedAt).toLocaleString()}</span>
     </div>

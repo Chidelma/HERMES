@@ -21,6 +21,8 @@ handle(async ({ body, context }) => {
 
   const email = normalizeEmailAddress(user.email)
   if (!email) return r400('email invalid')
+  const aliases = (user.aliases ?? []).map(alias => normalizeEmailAddress(alias))
+  if (aliases.some(alias => !alias)) return r400('aliases invalid')
   const domains = user.domains.map(domain => normalizeDomain(domain))
   if (domains.some(domain => !domain)) return r400('domains invalid')
   if (!domains.every(domain => hasDomainClaim(claims.domains, domain!))) {
@@ -29,6 +31,12 @@ handle(async ({ body, context }) => {
   if (user.phones.some(phone => !phone || hasControlChars(phone))) return r400('phones invalid')
 
   const fylo = await createDb()
-  await putUser(fylo, { email, phones: user.phones, domains: domains as string[], role: user.role })
+  await putUser(fylo, {
+    email,
+    aliases: aliases.filter((alias): alias is string => Boolean(alias)),
+    phones: user.phones,
+    domains: domains as string[],
+    role: user.role,
+  })
   return { email }
 })

@@ -19,6 +19,19 @@ async function seedUser(email = 'alice@example.com', phone = '+15551234567') {
   expect(r.status).toBe(200)
 }
 
+async function seedAliasedUser(primaryEmail: string, alias: string, phone = '+15551234567') {
+  const domain = primaryEmail.split('@')[1]
+  const aliasDomain = alias.split('@')[1]
+  const r = await s.post('/test/seed/user', {
+    email: primaryEmail,
+    aliases: [alias],
+    phones: [phone],
+    domains: [domain, aliasDomain],
+    role: 'admin',
+  })
+  expect(r.status).toBe(200)
+}
+
 async function seedDevice(email = 'alice@example.com') {
   const r = await s.post('/test/seed/device', { email })
   expect(r.status).toBe(200)
@@ -54,6 +67,23 @@ describe('POST /auth/mfa/request', () => {
     const body = await r.json()
     expect(typeof body.mfaSessionId).toBe('string')
     expect(body.mfaSessionId.length).toBeGreaterThan(0)
+  })
+
+  it('resolves an old email alias to the primary account for MFA', async () => {
+    await seedAliasedUser('alias-primary@example.com', 'alias-old@old.example.com')
+    const { secret } = await seedDevice('alias-primary@example.com')
+
+    const reqRes = await s.post('/auth/mfa/request', { email: 'alias-old@old.example.com' })
+    expect(reqRes.status).toBe(200)
+    const { mfaSessionId } = await reqRes.json()
+    const code = getTotpCode(secret)
+
+    const confirm = await s.post('/auth/mfa/confirm', { mfaSessionId, code })
+    expect(confirm.status).toBe(200)
+    const body = await confirm.json()
+    expect(body.email).toBe('alias-primary@example.com')
+    expect(body.domains).toContain('example.com')
+    expect(body.domains).toContain('old.example.com')
   })
 })
 
