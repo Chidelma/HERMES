@@ -5,6 +5,7 @@ import { verifyJwt, getJwtSecret } from '../../../src/shared/auth.ts'
 import { createDb } from '../../../src/db/index.ts'
 import { findEmailById } from '../../../src/db/emails.ts'
 import { listAttachmentSummaries } from '../../../src/db/attachments.ts'
+import { presentEmailForDomainMigrations } from '../../../src/shared/domain-migration.ts'
 
 handle(async ({ paths, context }) => {
   const claims = verifyJwt(context.bearer?.token ?? '', getJwtSecret())
@@ -18,5 +19,5 @@ handle(async ({ paths, context }) => {
   if (!email) return r404('Email not found')
   if (!claims.domains.includes(email.domain)) return r403('Access denied')
 
-  return { ...email, attachments: await listAttachmentSummaries(fylo, id) }
+  return { ...(await presentEmailForDomainMigrations(fylo, email)), attachments: await listAttachmentSummaries(fylo, id) }
 })

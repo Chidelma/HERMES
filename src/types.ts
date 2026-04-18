@@ -6,6 +6,16 @@ export interface DomainConfig {
   inboundEnabled: boolean
 }
 
+export interface DomainMigration {
+  id: string
+  fromDomain: string
+  toDomain: string
+  mode: 'alias' | 'cutover'
+  localPartStrategy: 'preserve'
+  createdAt: string
+  appliedAt?: string
+}
+
 export interface RouteRule {
   id: string
   /** Recipient match: exact address, wildcard prefix (e.g. "*@example.com"), or catchall "*" */
@@ -26,6 +36,7 @@ export interface StoredEmail {
   id: string
   domain: string
   recipient: string
+  originalRecipient?: string
   sender: string
   subject: string
   body: string
@@ -63,7 +74,9 @@ export interface SuppressedAddress {
 // ── Users ─────────────────────────────────────────────────────────────────────
 
 export interface User {
+  id?: string
   email: string
+  aliases?: string[]
   phones: string[]
   domains: string[]
   role: 'admin' | 'viewer'

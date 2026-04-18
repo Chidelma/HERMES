@@ -68,6 +68,7 @@ The image uses a narrow entrypoint. By default it only accepts these commands:
 
 - `serve`: start Hermes
 - `admin:create`: create the first admin for a domain
+- `domain:migrate`: promote users from one domain suffix to another
 
 Any other command is rejected by the default entrypoint unless an operator deliberately overrides the container entrypoint.
 
@@ -167,6 +168,33 @@ docker run --rm \
 Run this before starting the API container, or stop the API container briefly while bootstrapping the first account against an existing volume. The command creates the domain with a default `*@domain` store route if it does not already exist, then creates an admin user scoped to that domain. After the first admin exists, use the Settings screen or `POST /users` to add more users for domains that admin is allowed to manage.
 
 Inbound relay integrations must sign the exact JSON payload with HMAC-SHA256 using `INBOUND_WEBHOOK_SECRET` and send it as `X-Hermes-Signature`.
+
+## Domain Migration
+
+Use `domain:migrate` when a mailbox domain is changing but users should keep the same local part and mailbox history, for example `alice@old.example` becoming `alice@new.example`.
+
+Dry-run the migration first:
+
+```sh
+FYLO_ROOT=.data bun run domain:migrate --from=old.example --to=new.example
+```
+
+Apply it after reviewing the plan:
+
+```sh
+FYLO_ROOT=.data bun run domain:migrate --from=old.example --to=new.example --apply
+```
+
+For Docker:
+
+```sh
+docker run --rm \
+  -v hermes-data:/data \
+  d3lma/hermes:latest \
+  domain:migrate --from=old.example --to=new.example --apply
+```
+
+The command clones the source domain config when the destination domain does not exist, copies inbox rules to the new domain, promotes `local@old` users to `local@new`, records `local@old` as an alias, keeps both domains in the user's access claims, and rewrites user-owned MFA, OTP, setup-session, and push-subscription records to the new primary email. Stored historical email records are not rewritten; API responses present migrated recipients with the new suffix and include `originalRecipient` for audit/detail views.
 
 ## Environment
 

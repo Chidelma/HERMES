@@ -4,6 +4,7 @@ import {
   deletePushSubscriptionDoc,
   listPushSubscriptionsForAddress,
 } from '../db/push.ts'
+import { findUserByEmail } from '../db/users.ts'
 
 type VapidKeys = {
   publicKey: string
@@ -71,7 +72,8 @@ export async function sendEmailNotification(
 
   const webPush = await configureWebPush()
 
-  const subscriptions = await listPushSubscriptionsForAddress(fylo, email.recipient)
+  const [, recipientUser] = await findUserByEmail(fylo, email.recipient)
+  const subscriptions = await listPushSubscriptionsForAddress(fylo, recipientUser?.email ?? email.recipient)
   const payload = JSON.stringify({
     type: 'email.received',
     emailId: email.id,

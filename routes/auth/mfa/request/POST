@@ -18,14 +18,14 @@ handle(async ({ body, context }) => {
   const [, user] = await findUserByEmail(fylo, email.toLowerCase())
   if (!user) return r404('No account found')
 
-  const devices = await listDevices(fylo, email.toLowerCase())
+  const devices = await listDevices(fylo, user.email)
   if (devices.length === 0) return { requiresSetup: true }
 
-  await purgeExpiredMfaSessions(fylo, email.toLowerCase())
+  await purgeExpiredMfaSessions(fylo, user.email)
   const mfaSessionId = randomBytes(32).toString('hex')
   await putMfaSession(fylo, {
     id: mfaSessionId,
-    email: email.toLowerCase(),
+    email: user.email,
     expiresAt: new Date(Date.now() + 5 * 60 * 1000).toISOString(),
     failedAttempts: 0,
   })

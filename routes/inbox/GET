@@ -4,6 +4,7 @@ import { r400, r401 } from '../../src/shared/respond.ts'
 import { verifyJwt, getJwtSecret } from '../../src/shared/auth.ts'
 import { createDb } from '../../src/db/index.ts'
 import { listEmails, type EmailListFilters } from '../../src/db/emails.ts'
+import { presentEmailsForDomainMigrations } from '../../src/shared/domain-migration.ts'
 
 handle(async ({ context, query }) => {
   const claims = verifyJwt(context.bearer?.token ?? '', getJwtSecret())
@@ -13,7 +14,7 @@ handle(async ({ context, query }) => {
   if (filters instanceof Error) return r400(filters.message)
 
   const fylo = await createDb()
-  return await listEmails(fylo, claims.domains, filters)
+  return await presentEmailsForDomainMigrations(fylo, await listEmails(fylo, claims.domains, filters))
 })
 
 function parseFilters(query: Record<string, unknown>): EmailListFilters | Error {

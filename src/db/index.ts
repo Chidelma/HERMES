@@ -4,6 +4,7 @@ export type { default as Fylo } from '@delma/fylo'
 
 export const Collections = {
   DOMAINS:        'domains',
+  DOMAIN_MIGRATIONS: 'domain-migrations',
   EMAILS:         'emails',
   ATTACHMENTS:    'attachments',
   SUPPRESSED:     'suppressed',

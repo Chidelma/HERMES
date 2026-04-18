@@ -4,17 +4,20 @@ const args = process.argv.slice(3)
 const commands = new Map([
   ['serve', ['node_modules/.bin/tach.serve']],
   ['admin:create', ['scripts/create-admin.mjs']],
+  ['domain:migrate', ['scripts/migrate-domain.mjs']],
 ])
 
 if (command === 'help' || command === '--help' || command === '-h') {
   console.log([
     'Hermes container commands:',
-    '  serve         Start the Hermes API and frontend server',
-    '  admin:create  Create the first admin for a domain',
+    '  serve           Start the Hermes API and frontend server',
+    '  admin:create    Create the first admin for a domain',
+    '  domain:migrate  Promote users from one domain suffix to another',
     '',
     'Examples:',
     '  docker run d3lma/hermes:latest',
     '  docker run -v hermes-data:/data d3lma/hermes:latest admin:create --email=admin@example.com --phone=+14165550100 --domain=example.com',
+    '  docker run -v hermes-data:/data d3lma/hermes:latest domain:migrate --from=old.example --to=new.example --apply',
   ].join('\n'))
   process.exit(0)
 }
@@ -23,7 +26,7 @@ const target = commands.get(command)
 
 if (!target) {
   console.error(`Unsupported Hermes container command: ${command}`)
-  console.error('Allowed commands: serve, admin:create')
+  console.error('Allowed commands: serve, admin:create, domain:migrate')
   process.exit(64)
 }
 

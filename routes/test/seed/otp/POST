@@ -3,6 +3,7 @@ import { randomBytes, randomInt, createHash } from 'node:crypto'
 import { handle } from '../../../../src/shared/handler.ts'
 import { r400, r403 } from '../../../../src/shared/respond.ts'
 import { createDb } from '../../../../src/db/index.ts'
+import { findUserByEmail } from '../../../../src/db/users.ts'
 import { putOtpSession } from '../../../../src/db/otp.ts'
 import { isTestRoutesEnabled } from '../../../../src/shared/security.ts'
 
@@ -23,9 +24,10 @@ handle(async ({ body }) => {
   const codeHash = createHash('sha256').update(code).digest('hex')
 
   const fylo = await createDb()
+  const [, user] = await findUserByEmail(fylo, email.toLowerCase())
   await putOtpSession(fylo, {
     id: sessionId,
-    email: email.toLowerCase(),
+    email: user?.email ?? email.toLowerCase(),
     phone,
     codeHash,
     expiresAt: new Date(Date.now() + 5 * 60 * 1000).toISOString(),
