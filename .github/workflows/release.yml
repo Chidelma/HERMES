@@ -44,9 +44,102 @@ jobs:
             test-results/
           retention-days: 7
 
+  image-blackbox:
+    name: Image blackbox tests
+    runs-on: ubuntu-latest
+    env:
+      HERMES_IMAGE: hermes:blackbox
+      HERMES_URL: http://127.0.0.1:18080
+      INBOUND_WEBHOOK_SECRET: blackbox-webhook-secret
+    steps:
+      - uses: actions/checkout@v4
+      - uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: latest
+      - run: bun install --frozen-lockfile
+
+      - name: Require private blackbox credentials
+        env:
+          BLACKBOX_REPOSITORY: ${{ vars.HERMES_BLACKBOX_REPOSITORY || secrets.HERMES_BLACKBOX_REPOSITORY }}
+          BLACKBOX_SSH_KEY: ${{ secrets.HERMES_BLACKBOX_SSH_KEY }}
+        run: |
+          if [ -z "$BLACKBOX_REPOSITORY" ]; then
+            echo "::error::Missing HERMES_BLACKBOX_REPOSITORY variable or secret"
+            exit 1
+          fi
+          if [ -z "$BLACKBOX_SSH_KEY" ]; then
+            echo "::error::Missing HERMES_BLACKBOX_SSH_KEY secret"
+            exit 1
+          fi
+
+      - name: Checkout private blackbox suite
+        uses: actions/checkout@v4
+        with:
+          repository: ${{ vars.HERMES_BLACKBOX_REPOSITORY || secrets.HERMES_BLACKBOX_REPOSITORY }}
+          ssh-key: ${{ secrets.HERMES_BLACKBOX_SSH_KEY }}
+          ref: ${{ vars.HERMES_BLACKBOX_REF || 'main' }}
+          path: .blackbox-tests
+
+      - uses: docker/setup-buildx-action@v3
+      - name: Build image under test
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          tags: ${{ env.HERMES_IMAGE }}
+          load: true
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+
+      - name: Start container
+        run: |
+          docker run -d --name hermes-blackbox \
+            -p 18080:8080 \
+            -e JWT_SECRET=blackbox-jwt-secret \
+            -e INBOUND_WEBHOOK_SECRET=${{ env.INBOUND_WEBHOOK_SECRET }} \
+            -e WEB_PUSH_DISABLED=true \
+            "${{ env.HERMES_IMAGE }}"
+
+      - name: Wait for container to become healthy
+        run: |
+          for i in $(seq 1 60); do
+            if curl -fsS "${{ env.HERMES_URL }}/" >/dev/null 2>&1; then
+              echo "Container is responding on attempt $i"
+              exit 0
+            fi
+            sleep 1
+          done
+          echo "Container did not become healthy in time"
+          docker logs hermes-blackbox
+          exit 1
+
+      - name: Run blackbox tests
+        working-directory: .blackbox-tests
+        env:
+          HERMES_IMAGE: ${{ env.HERMES_IMAGE }}
+          HERMES_URL: ${{ env.HERMES_URL }}
+          INBOUND_WEBHOOK_SECRET: ${{ env.INBOUND_WEBHOOK_SECRET }}
+        run: |
+          if [ -f package.json ] || [ -f bun.lock ]; then
+            bun install --frozen-lockfile
+          fi
+
+          if [ -f package.json ] && jq -e '.scripts.blackbox' package.json >/dev/null; then
+            bun run blackbox
+          else
+            bun test . --timeout 120000
+          fi
+
+      - name: Container logs on failure
+        if: failure()
+        run: docker logs hermes-blackbox || true
+
+      - name: Stop container
+        if: always()
+        run: docker rm -f hermes-blackbox || true
+
   version:
     name: Read version
-    needs: [test, e2e]
+    needs: [test, e2e, image-blackbox]
     runs-on: ubuntu-latest
     outputs:
       version: ${{ steps.read.outputs.version }}
