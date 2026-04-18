@@ -93,7 +93,7 @@ Trade-offs: `docker exec -it <container> sh` will not work, and the image is not
 
 The CI workflow builds the production Docker image, starts it, and then checks out a private blackbox test suite into `.blackbox-tests/`. The test source is intentionally not committed to this repository. Configure these GitHub settings before requiring the `Image blackbox tests` check:
 
-- `HERMES_BLACKBOX_REPOSITORY` variable or secret: private repository name, for example `owner/hermes-blackbox`
+- `HERMES_BLACKBOX_REPOSITORY` variable or secret: private repository name, for example `Chidelma/NightJar`
 - `HERMES_BLACKBOX_TOKEN` secret: token with read access to that private repository
 - `HERMES_BLACKBOX_REF` variable: optional branch, tag, or SHA; defaults to `main`
 
