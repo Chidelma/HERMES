@@ -63,11 +63,11 @@ jobs:
 
       - name: Require private blackbox credentials
         env:
-          BLACKBOX_REPOSITORY: ${{ secrets.HERMES_BLACKBOX_REPOSITORY }}
+          BLACKBOX_REPOSITORY: ${{ vars.HERMES_BLACKBOX_REPOSITORY || secrets.HERMES_BLACKBOX_REPOSITORY }}
           BLACKBOX_TOKEN: ${{ secrets.HERMES_BLACKBOX_TOKEN }}
         run: |
           if [ -z "$BLACKBOX_REPOSITORY" ]; then
-            echo "::error::Missing HERMES_BLACKBOX_REPOSITORY secret"
+            echo "::error::Missing HERMES_BLACKBOX_REPOSITORY variable or secret"
             exit 1
           fi
           if [ -z "$BLACKBOX_TOKEN" ]; then
@@ -78,7 +78,7 @@ jobs:
       - name: Checkout private blackbox suite
         uses: actions/checkout@v4
         with:
-          repository: ${{ secrets.HERMES_BLACKBOX_REPOSITORY }}
+          repository: ${{ vars.HERMES_BLACKBOX_REPOSITORY || secrets.HERMES_BLACKBOX_REPOSITORY }}
           token: ${{ secrets.HERMES_BLACKBOX_TOKEN }}
           ref: ${{ vars.HERMES_BLACKBOX_REF || 'main' }}
           path: .blackbox-tests
@@ -134,7 +134,7 @@ jobs:
 
       - name: Container logs on failure
         if: failure()
-        run: docker logs hermes-blackbox
+        run: docker logs hermes-blackbox || true
 
       - name: Stop container
         if: always()
