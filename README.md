@@ -85,8 +85,19 @@ The runtime image is built on `oven/bun:<version>-distroless` for a minimal atta
 - Runs as non-root user `65532:65532`.
 - Base images are pinned to SHA digests in the Dockerfile for reproducible builds.
 - Test-only routes under `routes/test/**` are omitted from the production image.
+- Merge-gating image blackbox tests are loaded from a private CI-only repository, not from this public source tree.
 
 Trade-offs: `docker exec -it <container> sh` will not work, and the image is not intended for interactive debugging. For troubleshooting, reproduce the failure locally with `hermes:local` built from the repo, or run a sidecar built on a full Bun image.
+
+### Private Blackbox Tests
+
+The CI workflow builds the production Docker image, starts it, and then checks out a private blackbox test suite into `.blackbox-tests/`. The test source is intentionally not committed to this repository. Configure these GitHub settings before requiring the `Image blackbox tests` check:
+
+- `HERMES_BLACKBOX_REPOSITORY` secret: private repository name, for example `owner/hermes-blackbox`
+- `HERMES_BLACKBOX_TOKEN` secret: token with read access to that private repository
+- `HERMES_BLACKBOX_REF` variable: optional branch, tag, or SHA; defaults to `main`
+
+The private suite receives `HERMES_IMAGE`, `HERMES_URL`, and `INBOUND_WEBHOOK_SECRET`. If its `package.json` defines a `blackbox` script, CI runs `bun run blackbox`; otherwise it runs `bun test . --timeout 120000`.
 
 ### Extending the image
 

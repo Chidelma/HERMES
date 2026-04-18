@@ -16,8 +16,7 @@
     "bundle:watch": "bun ./scripts/bundle.mjs --watch",
     "preview": "bun ./scripts/preview.mjs",
     "test:e2e": "bun run bundle && bun node_modules/.bin/playwright test",
-    "test:e2e:ui": "bun run bundle && bun node_modules/.bin/playwright test --ui",
-    "test:blackbox": "bun test tests/blackbox --timeout 120000"
+    "test:e2e:ui": "bun run bundle && bun node_modules/.bin/playwright test --ui"
   },
   "dependencies": {
     "@delma/fylo": "^2.1.1",
