@@ -64,14 +64,14 @@ jobs:
       - name: Require private blackbox credentials
         env:
           BLACKBOX_REPOSITORY: ${{ vars.HERMES_BLACKBOX_REPOSITORY || secrets.HERMES_BLACKBOX_REPOSITORY }}
-          BLACKBOX_TOKEN: ${{ secrets.HERMES_BLACKBOX_TOKEN }}
+          BLACKBOX_SSH_KEY: ${{ secrets.HERMES_BLACKBOX_SSH_KEY }}
         run: |
           if [ -z "$BLACKBOX_REPOSITORY" ]; then
             echo "::error::Missing HERMES_BLACKBOX_REPOSITORY variable or secret"
             exit 1
           fi
-          if [ -z "$BLACKBOX_TOKEN" ]; then
-            echo "::error::Missing HERMES_BLACKBOX_TOKEN secret"
+          if [ -z "$BLACKBOX_SSH_KEY" ]; then
+            echo "::error::Missing HERMES_BLACKBOX_SSH_KEY secret"
             exit 1
           fi
 
@@ -79,7 +79,7 @@ jobs:
         uses: actions/checkout@v4
         with:
           repository: ${{ vars.HERMES_BLACKBOX_REPOSITORY || secrets.HERMES_BLACKBOX_REPOSITORY }}
-          token: ${{ secrets.HERMES_BLACKBOX_TOKEN }}
+          ssh-key: ${{ secrets.HERMES_BLACKBOX_SSH_KEY }}
           ref: ${{ vars.HERMES_BLACKBOX_REF || 'main' }}
           path: .blackbox-tests
 
