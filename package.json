@@ -20,7 +20,7 @@
     "test:e2e:ui": "bun run bundle && bun node_modules/.bin/playwright test --ui"
   },
   "dependencies": {
-    "@delma/fylo": "^2.1.1",
+    "@delma/fylo": "^2.2.0",
     "@delma/tachyon": "^1.8.1"
   },
   "devDependencies": {
