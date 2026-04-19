@@ -143,9 +143,10 @@
   background: transparent;
   width: 100%;
   text-align: left;
+  text-decoration: none;
 }
 
-.nav-item:hover { background: var(--surface-raised); color: var(--text); opacity: 1; }
+.nav-item:hover { background: var(--surface-raised); color: var(--text); opacity: 1; text-decoration: none; }
 .nav-item.active { background: var(--accent-dim); color: var(--accent); }
 
 .nav-item svg { width: 16px; height: 16px; flex-shrink: 0; }
@@ -165,37 +166,7 @@
   flex-direction: column;
 }
 
-/* ── Login card ──────────────────────────────────────────────────────────── */
-
-.login-card {
-  background: var(--surface);
-  border: 1px solid var(--border);
-  border-radius: 8px;
-  padding: 2rem;
-  width: 100%;
-  max-width: 380px;
-}
-
-.login-logo {
-  font-size: 22px;
-  font-weight: 800;
-  letter-spacing: 0;
-  margin-bottom: 1.5rem;
-  color: var(--text);
-}
-
-.login-title {
-  font-size: 16px;
-  font-weight: 600;
-  margin: 0 0 0.35rem;
-  color: var(--text);
-}
-
-.login-subtitle {
-  font-size: 13px;
-  color: var(--muted);
-  margin: 0 0 1.25rem;
-}
+/* ── Forms (shared) ──────────────────────────────────────────────────────── */
 
 .form-group {
   display: flex;
@@ -236,13 +207,7 @@
   margin-top: 0.5rem;
 }
 
-.otp-hint {
-  font-size: 13px;
-  color: var(--muted);
-  margin-bottom: 1rem;
-}
-
-/* ── Inbox ───────────────────────────────────────────────────────────────── */
+/* ── Inbox toolbar (shared with email-detail) ────────────────────────────── */
 
 .inbox-toolbar {
   display: flex;
@@ -252,106 +217,6 @@
   border-bottom: 1px solid var(--border);
   flex-shrink: 0;
 }
-
-.inbox-title {
-  font-weight: 600;
-  font-size: 15px;
-}
-
-.inbox-count {
-  color: var(--muted);
-  font-size: 12px;
-}
-
-.inbox-search {
-  display: grid;
-  grid-template-columns: minmax(0, 1fr) auto auto;
-  gap: 0.5rem;
-  padding: 0.75rem 1.25rem 0.5rem;
-  border-bottom: 1px solid var(--border);
-}
-
-.search-input {
-  min-width: 0;
-  height: 34px;
-  border: 1px solid var(--border);
-  border-radius: 8px;
-  background: var(--surface);
-  color: var(--text);
-  padding: 0 0.75rem;
-  font-size: 13px;
-}
-
-.filter-strip,
-.folder-tabs {
-  display: flex;
-  gap: 0.25rem;
-  padding: 0.5rem 1.25rem;
-  flex-wrap: wrap;
-  border-bottom: 1px solid var(--border);
-}
-
-.filter-strip button,
-.folder-tabs button {
-  width: auto;
-  padding: 4px 12px;
-  font-size: 13px;
-}
-
-.inbox-search .btn-primary,
-.filter-strip .btn-primary,
-.folder-tabs .btn-primary {
-  width: auto;
-  margin-top: 0;
-}
-
-.folder-tabs span {
-  color: var(--muted);
-  margin-left: 0.25rem;
-}
-
-.inbox-list {
-  flex: 1;
-  overflow-y: auto;
-}
-
-.email-row {
-  display: grid;
-  grid-template-columns: auto 1fr auto;
-  align-items: center;
-  gap: 0.75rem;
-  width: 100%;
-  padding: 0.75rem 1.25rem;
-  border-bottom: 1px solid var(--border);
-  border-radius: 0;
-  background: transparent;
-  color: var(--text);
-  text-align: left;
-  cursor: pointer;
-  transition: background 0.1s;
-}
-
-.email-row:hover { background: var(--surface-raised); text-decoration: none; opacity: 1; }
-.email-row > * { pointer-events: none; }
-.email-row.unread .email-sender { font-weight: 600; color: var(--text); }
-.email-row.unread .email-subject { font-weight: 500; }
-.email-row.read .email-sender,
-.email-row.read .email-subject { color: var(--muted); }
-
-.email-avatar {
-  width: 34px; height: 34px;
-  border-radius: 50%;
-  background: var(--accent-dim);
-  color: var(--accent);
-  display: flex; align-items: center; justify-content: center;
-  font-size: 13px; font-weight: 600;
-  flex-shrink: 0;
-}
-
-.email-meta { overflow: hidden; }
-.email-sender { font-size: 13.5px; color: var(--muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-.email-subject { font-size: 13.5px; color: var(--text); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; margin-top: 1px; }
-.email-time { font-size: 12px; color: var(--muted); white-space: nowrap; flex-shrink: 0; }
 
 .inbox-empty {
   display: flex;
@@ -365,102 +230,7 @@
 
 .inbox-empty svg { width: 40px; height: 40px; opacity: 0.3; }
 
-/* ── Email detail ────────────────────────────────────────────────────────── */
-
-.email-detail-header {
-  padding: 1.25rem 1.5rem 1rem;
-  border-bottom: 1px solid var(--border);
-}
-
-.email-detail-subject {
-  font-size: 18px;
-  font-weight: 600;
-  margin: 0 0 0.75rem;
-}
-
-.email-detail-meta {
-  display: flex;
-  align-items: flex-start;
-  gap: 0.75rem;
-  font-size: 13px;
-}
-
-.email-detail-avatar {
-  width: 36px; height: 36px;
-  border-radius: 50%;
-  background: var(--accent-dim);
-  color: var(--accent);
-  display: flex; align-items: center; justify-content: center;
-  font-size: 13px; font-weight: 600;
-  flex-shrink: 0;
-}
-
-.email-detail-from { font-weight: 500; }
-.email-detail-to { color: var(--muted); }
-.email-detail-date { margin-left: auto; color: var(--muted); white-space: nowrap; }
-
-.email-action-bar {
-  margin-left: auto;
-  display: flex;
-  gap: 0.5rem;
-  flex-wrap: wrap;
-  justify-content: flex-end;
-}
-
-.email-detail-body {
-  padding: 1.5rem;
-  flex: 1;
-  white-space: pre-wrap;
-  word-break: break-word;
-  line-height: 1.7;
-  color: var(--text);
-}
-
-.email-attachments {
-  padding: 1rem 1.5rem 0;
-}
-
-.email-attachments-title {
-  color: var(--muted);
-  text-transform: uppercase;
-  letter-spacing: 0;
-  font-size: 12px;
-  font-weight: 600;
-  margin: 0 0 0.5rem;
-}
-
-.attachment-chip {
-  width: 100%;
-  background: var(--surface);
-  border: 1px solid var(--border);
-  color: var(--text);
-  border-radius: 8px;
-  padding: 0.65rem 0.8rem;
-  margin-bottom: 0.5rem;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 1rem;
-  font-size: 13px;
-}
-
-.attachment-chip span:first-child {
-  min-width: 0;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-}
-
-.attachment-chip span:last-child {
-  color: var(--muted);
-  white-space: nowrap;
-}
-
-.email-detail-actions {
-  display: flex;
-  gap: 0.5rem;
-  margin-top: 0.75rem;
-}
+/* ── Shared buttons ──────────────────────────────────────────────────────── */
 
 .btn-danger {
   background: rgba(255,94,94,0.12);
@@ -476,121 +246,6 @@
   font-size: 13px;
   padding: 6px 12px;
 }
-
-/* ── Compose ─────────────────────────────────────────────────────────────── */
-
-.compose-panel {
-  max-width: 700px;
-  width: 100%;
-  margin: 1.5rem auto;
-  padding: 0 1.25rem;
-}
-
-.compose-title {
-  font-size: 16px;
-  font-weight: 600;
-  margin-bottom: 1.25rem;
-}
-
-.compose-field {
-  display: flex;
-  align-items: center;
-  border-bottom: 1px solid var(--border);
-  padding: 0.5rem 0;
-  gap: 0.75rem;
-}
-
-.compose-label {
-  font-size: 12px;
-  color: var(--muted);
-  width: 36px;
-  flex-shrink: 0;
-  text-transform: uppercase;
-  letter-spacing: 0;
-}
-
-.compose-field input {
-  border: none;
-  background: transparent;
-  padding: 4px 0;
-  flex: 1;
-  border-radius: 0;
-}
-
-.compose-field input:focus { border-bottom: none; }
-
-.compose-body {
-  margin-top: 1rem;
-}
-
-.compose-body textarea {
-  min-height: 320px;
-  resize: vertical;
-  border-radius: 6px;
-  line-height: 1.6;
-}
-
-.compose-actions {
-  display: flex;
-  gap: 0.5rem;
-  margin-top: 1rem;
-}
-
-/* ── Settings ────────────────────────────────────────────────────────────── */
-
-.settings-panel {
-  max-width: 700px;
-  padding: 1.5rem;
-}
-
-.settings-section {
-  margin-bottom: 2rem;
-}
-
-.settings-section-title {
-  font-size: 12px;
-  font-weight: 600;
-  text-transform: uppercase;
-  letter-spacing: 0;
-  color: var(--muted);
-  margin-bottom: 0.75rem;
-}
-
-.settings-card {
-  background: var(--surface);
-  border: 1px solid var(--border);
-  border-radius: 8px;
-  overflow: hidden;
-}
-
-.settings-row {
-  display: flex;
-  align-items: center;
-  padding: 0.75rem 1rem;
-  border-bottom: 1px solid var(--border);
-  gap: 0.75rem;
-  font-size: 13.5px;
-}
-
-.settings-row:last-child { border-bottom: none; }
-
-.settings-row-label { flex: 1; }
-.settings-row-value { color: var(--muted); }
-
-.route-badge {
-  display: inline-block;
-  padding: 2px 7px;
-  border-radius: 4px;
-  font-size: 11px;
-  font-weight: 600;
-  text-transform: uppercase;
-  letter-spacing: 0;
-}
-
-.route-badge.store { background: rgba(79,158,255,0.12); color: var(--accent); }
-.route-badge.forward { background: rgba(76,204,110,0.12); color: var(--success); }
-.route-badge.webhook { background: rgba(255,200,0,0.1); color: #ffc800; }
-.route-badge.drop { background: rgba(255,94,94,0.1); color: var(--danger); }
 
 /* ── Spinner ─────────────────────────────────────────────────────────────── */
 
@@ -731,177 +386,9 @@
     padding: 0.7rem max(1rem, env(safe-area-inset-right)) 0.65rem max(1rem, env(safe-area-inset-left));
   }
 
-  .inbox-title {
-    font-size: 16px;
-  }
-
-  .inbox-search {
-    grid-template-columns: minmax(0, 1fr) auto auto;
-    gap: 0.4rem;
-    padding: 0.65rem max(1rem, env(safe-area-inset-right)) 0.55rem max(1rem, env(safe-area-inset-left));
-  }
-
-  .search-input {
-    height: 40px;
-    font-size: 14px;
-  }
-
-  .filter-strip,
-  .folder-tabs {
-    flex-wrap: nowrap;
-    overflow-x: auto;
-    scrollbar-width: none;
-    -webkit-overflow-scrolling: touch;
-    padding: 0.5rem max(1rem, env(safe-area-inset-right)) 0.55rem max(1rem, env(safe-area-inset-left));
-  }
-
-  .filter-strip::-webkit-scrollbar,
-  .folder-tabs::-webkit-scrollbar,
-  .email-action-bar::-webkit-scrollbar {
-    display: none;
-  }
-
-  .filter-strip button,
-  .folder-tabs button {
-    flex: 0 0 auto;
-    min-height: 36px;
-    white-space: nowrap;
-  }
-
-  .inbox-list {
-    min-height: 0;
-  }
-
-  .email-row {
-    min-height: 70px;
-    padding: 0.85rem max(1rem, env(safe-area-inset-right)) 0.85rem max(1rem, env(safe-area-inset-left));
-    gap: 0.7rem;
-  }
-
-  .email-avatar {
-    width: 38px;
-    height: 38px;
-  }
-
-  .email-sender,
-  .email-subject {
-    font-size: 14px;
-  }
-
-  .email-time {
-    align-self: start;
-    padding-top: 2px;
-  }
-
   .inbox-empty {
     min-height: 45vh;
     padding: 3rem 1.5rem;
-  }
-
-  .email-detail-header {
-    padding: 1rem max(1rem, env(safe-area-inset-right)) 0.85rem max(1rem, env(safe-area-inset-left));
-  }
-
-  .email-detail-subject {
-    font-size: 18px;
-  }
-
-  .email-detail-meta {
-    display: grid;
-    grid-template-columns: 38px minmax(0, 1fr);
-    gap: 0.7rem;
-  }
-
-  .email-detail-avatar {
-    width: 38px;
-    height: 38px;
-  }
-
-  .email-detail-from,
-  .email-detail-to,
-  .email-detail-date {
-    min-width: 0;
-    overflow-wrap: anywhere;
-  }
-
-  .email-detail-date {
-    grid-column: 2;
-    margin-left: 0;
-    white-space: normal;
-  }
-
-  .email-action-bar {
-    grid-column: 1 / -1;
-    margin-left: 0;
-    margin-top: 0.35rem;
-    overflow-x: auto;
-    flex-wrap: nowrap;
-    justify-content: flex-start;
-    padding-bottom: 0.1rem;
-    -webkit-overflow-scrolling: touch;
-  }
-
-  .email-action-bar button {
-    flex: 0 0 auto;
-    white-space: nowrap;
-  }
-
-  .email-detail-body,
-  .email-attachments {
-    padding-left: max(1rem, env(safe-area-inset-left));
-    padding-right: max(1rem, env(safe-area-inset-right));
-  }
-
-  .attachment-chip {
-    align-items: flex-start;
-  }
-
-  .compose-panel {
-    max-width: none;
-    margin: 0;
-    padding: 1rem max(1rem, env(safe-area-inset-right)) calc(1rem + env(safe-area-inset-bottom)) max(1rem, env(safe-area-inset-left));
-  }
-
-  .compose-title {
-    margin-bottom: 0.9rem;
-  }
-
-  .compose-field {
-    min-height: 48px;
-  }
-
-  .compose-label {
-    letter-spacing: 0;
-  }
-
-  .compose-body textarea {
-    min-height: 42dvh;
-  }
-
-  .compose-actions {
-    position: sticky;
-    bottom: calc(68px + env(safe-area-inset-bottom));
-    padding: 0.75rem 0 0.25rem;
-    background: var(--bg);
-  }
-
-  .compose-actions button {
-    flex: 1;
-  }
-
-  .settings-panel {
-    max-width: none;
-    padding: 1rem max(1rem, env(safe-area-inset-right)) calc(1rem + env(safe-area-inset-bottom)) max(1rem, env(safe-area-inset-left));
-  }
-
-  .settings-row {
-    min-height: 48px;
-    align-items: flex-start;
-    flex-wrap: wrap;
-  }
-
-  .settings-row-label {
-    min-width: 12rem;
   }
 
   .toast {

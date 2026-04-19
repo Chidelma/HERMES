@@ -1,23 +1,195 @@
-<!DOCTYPE html>
-<html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
-    <meta name="theme-color" content="#0d0d0d" />
-    <meta name="color-scheme" content="dark" />
-    <meta name="mobile-web-app-capable" content="yes" />
-    <meta name="apple-mobile-web-app-capable" content="yes" />
-    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
-    <meta name="apple-mobile-web-app-title" content="HERMES" />
-    <title>HERMES</title>
-    <link rel="manifest" href="/assets/manifest.webmanifest" />
-    <link rel="icon" href="/assets/favicon.svg" type="image/svg+xml" />
-    <link rel="apple-touch-icon" href="/assets/icon-192.png" />
-    <link rel="stylesheet" href="/assets/styles.css" />
-  </head>
-  <body>
-    <slot />
-    <script src="/assets/config.js"></script>
-    <script src="/main.js" defer></script>
-  </body>
-</html>
+<script>
+  const _ss = isBrowser ? sessionStorage : null
+
+  const auth = {
+    get token()   { return _ss?.getItem('hermes_token') ?? null },
+    get email()   { return _ss?.getItem('hermes_email') ?? null },
+    get role()    { return _ss?.getItem('hermes_role') ?? null },
+    get domains() {
+      try { return JSON.parse(_ss?.getItem('hermes_domains') || '[]') } catch { return [] }
+    },
+    save(data) {
+      _ss?.setItem('hermes_token',   data.token)
+      _ss?.setItem('hermes_email',   data.email)
+      _ss?.setItem('hermes_role',    data.role)
+      _ss?.setItem('hermes_domains', JSON.stringify(data.domains))
+    },
+    clear() {
+      ['hermes_token','hermes_email','hermes_role','hermes_domains'].forEach(k => _ss?.removeItem(k))
+    },
+    get isLoggedIn() { return !!this.token },
+  }
+
+  function isAuthenticated() {
+    return auth.isLoggedIn
+  }
+
+  function currentUserEmail() {
+    return auth.email || ''
+  }
+
+  function syncAuthState() {
+    return isAuthenticated()
+  }
+
+  async function apiFetch(path, options = {}) {
+    const headers = { 'Content-Type': 'application/json', ...options.headers }
+    if (auth.token) headers['Authorization'] = `Bearer ${auth.token}`
+    const apiUrl = isBrowser ? (window.HERMES_CONFIG?.apiUrl || '') : ''
+    const res = await fetch(apiUrl + path, { ...options, headers })
+    if (res.status === 401) {
+      auth.clear()
+      syncAuthState()
+      return null
+    }
+    return res
+  }
+
+  let _toastTimer
+  function toast(msg, duration = 2500) {
+    clearTimeout(_toastTimer)
+    let el = document.getElementById('hermes-toast')
+    if (!el) {
+      el = document.createElement('div')
+      el.id = 'hermes-toast'
+      el.className = 'toast'
+      document.body.appendChild(el)
+    }
+    el.textContent = msg
+    el.style.display = 'block'
+    _toastTimer = setTimeout(() => { el.style.display = 'none' }, duration)
+  }
+
+  function normaliseAppPath(target) {
+    const value = String(target || '/inbox')
+    return value.startsWith('/') ? value : `/${value}`
+  }
+
+  function navigate(target = '/inbox') {
+    if (typeof document === 'undefined') return
+    const link = document.createElement('a')
+    link.href = normaliseAppPath(target)
+    link.hidden = true
+    document.body.appendChild(link)
+    link.click()
+    link.remove()
+  }
+
+  function openEmail(email) {
+    const id = typeof email === 'string' ? email : email?.id
+    if (id) navigate(`/email/${encodeURIComponent(id)}`)
+  }
+
+  function openEmailId(id) {
+    openEmail(id)
+  }
+
+  function initials(addr) {
+    return (addr.split('@')[0] || '?').slice(0, 2).toUpperCase()
+  }
+
+  function bytesLabel(size) {
+    if (size < 1024) return `${size} B`
+    if (size < 1024 * 1024) return `${(size / 1024).toFixed(1)} KB`
+    return `${(size / 1024 / 1024).toFixed(1)} MB`
+  }
+
+  function formatDate(iso) {
+    const d = new Date(iso), now = new Date()
+    if (d.toDateString() === now.toDateString())
+      return d.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+    return d.toLocaleDateString([], { month: 'short', day: 'numeric' })
+  }
+
+  function compose(prefill = {}) {
+    if (Object.keys(prefill || {}).length > 0) {
+      _ss?.setItem('hermes_compose_prefill', JSON.stringify(prefill))
+    } else {
+      _ss?.removeItem('hermes_compose_prefill')
+    }
+    navigate('/compose')
+  }
+
+  function consumeComposePrefill() {
+    try {
+      const value = JSON.parse(_ss?.getItem('hermes_compose_prefill') || '{}')
+      _ss?.removeItem('hermes_compose_prefill')
+      return value
+    } catch {
+      _ss?.removeItem('hermes_compose_prefill')
+      return {}
+    }
+  }
+
+  function signOut() {
+    auth.clear()
+    syncAuthState()
+    history.replaceState({}, '', '/')
+  }
+
+  function handleLogin(data) {
+    auth.save(data)
+    syncAuthState()
+    location.replace('/inbox')
+  }
+
+  if (isBrowser) {
+    window._hermes = { auth, apiFetch, toast, navigate, openEmail, openEmailId, compose, consumeComposePrefill, handleLogin, initials, bytesLabel, formatDate }
+  }
+
+  onMount(() => {
+    if (window._hermesInitialised) return
+    window._hermesInitialised = true
+
+    window.addEventListener('hermes:logout', signOut)
+
+    window.addEventListener('hermes:open-email', (e) => {
+      window._hermes?.openEmail(e.detail)
+    })
+
+    window.addEventListener('hashchange', () => {
+      if (!location.hash.startsWith('#email=')) return
+      window._hermes?.openEmailId(decodeURIComponent(location.hash.slice('#email='.length)))
+    })
+
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'c' && !['INPUT', 'TEXTAREA'].includes(document.activeElement?.tagName)) {
+        window._hermes?.compose({})
+      }
+    })
+
+    document.addEventListener('click', (e) => {
+      if (!e.target?.closest?.('[data-sign-out]')) return
+      e.preventDefault()
+      signOut()
+    }, true)
+  })
+</script>
+
+<logic :if="isAuthenticated()">
+  <div class="app-screen">
+    <header class="app-header">
+      <span class="app-brand">HERMES</span>
+      <span class="app-user">{currentUserEmail()}</span>
+      <button data-sign-out class="btn-ghost" style="margin-left:0.5rem;">Sign out</button>
+    </header>
+
+    <div class="app-body">
+      <aside class="sidebar">
+        <app-nav_ />
+      </aside>
+
+      <main class="main-content">
+        <slot />
+      </main>
+    </div>
+
+    <nav class="mobile-bottom-nav" aria-label="Primary">
+      <app-nav_ />
+    </nav>
+  </div>
+</logic>
+
+<logic :if="!isAuthenticated()">
+  <slot />
+</logic>

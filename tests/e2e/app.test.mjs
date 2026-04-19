@@ -116,6 +116,42 @@ test('uses mobile bottom navigation at phone widths', async ({ page }) => {
   await expect(page.getByText(/No emails/)).toBeVisible()
 })
 
+test('loads app pages directly from Tachyon routes', async ({ page }) => {
+  await withAuth(page)
+
+  await page.goto('/compose')
+  await expect(page.getByPlaceholder('recipient@example.com')).toBeVisible()
+
+  await page.goto('/settings')
+  await expect(page.locator('.settings-panel .settings-section-title').filter({ hasText: 'Notifications' })).toBeVisible()
+
+  await page.goto('/inbox')
+  await expect(page.getByText(/No emails/)).toBeVisible()
+})
+
+test('loads an email detail page directly', async ({ page }) => {
+  const { email, token, domains } = await withAuth(page)
+  await seedDomain(token, domains[0])
+  const key = `direct-${Date.now()}`
+  const delivered = await deliverEmail({
+    recipient: email,
+    sender: 'news@example.com',
+    subject: `${key} Direct route`,
+    body: 'opened from a Tachyon page route',
+    messageId: `${key}-message`,
+  })
+
+  await page.goto(`/email/${encodeURIComponent(delivered.emailId)}`)
+  await expect(page.getByText(`${key} Direct route`)).toBeVisible()
+  await expect(page.getByText('opened from a Tachyon page route')).toBeVisible()
+})
+
+test('protected app routes show login when unauthenticated', async ({ page }) => {
+  await useTestApi(page)
+  await page.goto('/settings')
+  await expect(page.getByText('Sign in')).toBeVisible()
+})
+
 // ── Compose ───────────────────────────────────────────────────────────────────
 
 test('shows error when To or Subject is empty', async ({ page }) => {

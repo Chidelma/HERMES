@@ -1,5 +1,14 @@
 <script>
-  let email = props.email || (props.emailId ? { id: props.emailId } : null)
+  const routeEmailId = isBrowser
+    ? (
+      location.pathname.startsWith('/email/')
+        ? decodeURIComponent(location.pathname.slice('/email/'.length))
+        : new URLSearchParams(location.search).get('email') || new URLSearchParams(location.search).get('id') || ''
+    )
+    : ''
+  const incomingProps = props || {}
+  const propEmailId = incomingProps.emailId || incomingProps.emailid || routeEmailId
+  let email = incomingProps.email || (propEmailId ? { id: propEmailId } : null)
   let attachment
 
   async function loadEmail() {
@@ -20,16 +29,6 @@
 
   await loadEmail()
 
-  function initials(addr) {
-    return (addr.split('@')[0] || '?').slice(0, 2).toUpperCase()
-  }
-
-  function bytesLabel(size) {
-    if (size < 1024) return `${size} B`
-    if (size < 1024 * 1024) return `${(size / 1024).toFixed(1)} KB`
-    return `${(size / 1024 / 1024).toFixed(1)} MB`
-  }
-
   async function deleteEmail() {
     if (!email || !confirm('Delete this message forever?')) return
     const apiFetch = window._hermes?.apiFetch
@@ -43,7 +42,6 @@
     } else {
       window._hermes?.toast('Delete failed.')
     }
-    window.__ty_rerender?.()
   }
 
   async function updateEmail(patch, message) {
@@ -61,14 +59,11 @@
     } else {
       window._hermes?.toast('Update failed.')
     }
-    window.__ty_rerender?.()
   }
 
   function reply() {
     if (!email) return
-    window.dispatchEvent(new CustomEvent('hermes:compose', {
-      detail: { to: email.sender, subject: `Re: ${email.subject}` },
-    }))
+    emit('compose', { to: email.sender, subject: `Re: ${email.subject}` })
   }
 
   async function downloadAttachment(attachment) {
@@ -123,7 +118,7 @@
   <div class="email-detail-header">
     <h2 class="email-detail-subject">{email.subject}</h2>
     <div class="email-detail-meta">
-      <div class="email-detail-avatar">{initials(email.sender)}</div>
+      <div class="email-detail-avatar">{window._hermes.initials(email.sender)}</div>
       <div>
         <div class="email-detail-from">{email.sender}</div>
         <div class="email-detail-to">To: {email.recipient}</div>
@@ -140,10 +135,156 @@
       <loop :for="attachment of email.attachments">
         <button class="attachment-chip" @click="downloadAttachment(attachment)">
           <span>{attachment.filename}</span>
-          <span>{bytesLabel(attachment.size)}</span>
+          <span>{window._hermes.bytesLabel(attachment.size)}</span>
         </button>
       </loop>
     </div>
   </logic>
   <div class="email-detail-body">{email.body || '(No body)'}</div>
 </logic>
+
+<style>
+  .email-detail-header {
+    padding: 1.25rem 1.5rem 1rem;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .email-detail-subject {
+    font-size: 18px;
+    font-weight: 600;
+    margin: 0 0 0.75rem;
+  }
+
+  .email-detail-meta {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.75rem;
+    font-size: 13px;
+  }
+
+  .email-detail-avatar {
+    width: 36px; height: 36px;
+    border-radius: 50%;
+    background: var(--accent-dim);
+    color: var(--accent);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 13px; font-weight: 600;
+    flex-shrink: 0;
+  }
+
+  .email-detail-from { font-weight: 500; }
+  .email-detail-to { color: var(--muted); }
+  .email-detail-date { margin-left: auto; color: var(--muted); white-space: nowrap; }
+
+  .email-action-bar {
+    margin-left: auto;
+    display: flex;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+    justify-content: flex-end;
+  }
+
+  .email-detail-body {
+    padding: 1.5rem;
+    flex: 1;
+    white-space: pre-wrap;
+    word-break: break-word;
+    line-height: 1.7;
+    color: var(--text);
+  }
+
+  .email-attachments {
+    padding: 1rem 1.5rem 0;
+  }
+
+  .email-attachments-title {
+    color: var(--muted);
+    text-transform: uppercase;
+    letter-spacing: 0;
+    font-size: 12px;
+    font-weight: 600;
+    margin: 0 0 0.5rem;
+  }
+
+  .attachment-chip {
+    width: 100%;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    color: var(--text);
+    border-radius: 8px;
+    padding: 0.65rem 0.8rem;
+    margin-bottom: 0.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    font-size: 13px;
+  }
+
+  .attachment-chip span:first-child {
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .attachment-chip span:last-child {
+    color: var(--muted);
+    white-space: nowrap;
+  }
+
+  @media (max-width: 760px) {
+    .email-detail-header {
+      padding: 1rem max(1rem, env(safe-area-inset-right)) 0.85rem max(1rem, env(safe-area-inset-left));
+    }
+
+    .email-detail-subject { font-size: 18px; }
+
+    .email-detail-meta {
+      display: grid;
+      grid-template-columns: 38px minmax(0, 1fr);
+      gap: 0.7rem;
+    }
+
+    .email-detail-avatar { width: 38px; height: 38px; }
+
+    .email-detail-from,
+    .email-detail-to,
+    .email-detail-date {
+      min-width: 0;
+      overflow-wrap: anywhere;
+    }
+
+    .email-detail-date {
+      grid-column: 2;
+      margin-left: 0;
+      white-space: normal;
+    }
+
+    .email-action-bar {
+      grid-column: 1 / -1;
+      margin-left: 0;
+      margin-top: 0.35rem;
+      overflow-x: auto;
+      flex-wrap: nowrap;
+      justify-content: flex-start;
+      padding-bottom: 0.1rem;
+      -webkit-overflow-scrolling: touch;
+    }
+
+    .email-action-bar::-webkit-scrollbar { display: none; }
+
+    .email-action-bar button {
+      flex: 0 0 auto;
+      white-space: nowrap;
+    }
+
+    .email-detail-body,
+    .email-attachments {
+      padding-left: max(1rem, env(safe-area-inset-left));
+      padding-right: max(1rem, env(safe-area-inset-right));
+    }
+
+    .attachment-chip { align-items: flex-start; }
+  }
+</style>

@@ -129,6 +129,9 @@ export async function useTestApi(page) {
   await page.addInitScript(() => {
     window.__HERMES_DISABLE_SW = true
   })
+  await page.addInitScript(api => {
+    window.HERMES_CONFIG = { apiUrl: api }
+  }, API)
   await page.route('**/assets/config.js', route =>
     route.fulfill({
       status: 200,

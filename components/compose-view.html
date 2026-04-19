@@ -1,5 +1,6 @@
 <script>
-  const prefill = props.prefill || {}
+  const routePrefill = isBrowser ? window._hermes?.consumeComposePrefill?.() || {} : {}
+  const prefill = (props || {}).prefill || routePrefill
   let to = prefill.to || ''
   let cc = ''
   let subject = prefill.subject || ''
@@ -25,7 +26,7 @@
         error = data.error || 'Send failed.'
       }
     } catch { error = 'Network error.' }
-    finally { loading = false; window.__ty_rerender?.() }
+    finally { loading = false }
   }
 </script>
 
@@ -62,3 +63,84 @@
     <button class="btn-secondary" @click="window._hermes?.navigate('inbox')">Discard</button>
   </div>
 </div>
+
+<style>
+  .compose-panel {
+    max-width: 700px;
+    width: 100%;
+    margin: 1.5rem auto;
+    padding: 0 1.25rem;
+  }
+
+  .compose-title {
+    font-size: 16px;
+    font-weight: 600;
+    margin-bottom: 1.25rem;
+  }
+
+  .compose-field {
+    display: flex;
+    align-items: center;
+    border-bottom: 1px solid var(--border);
+    padding: 0.5rem 0;
+    gap: 0.75rem;
+  }
+
+  .compose-label {
+    font-size: 12px;
+    color: var(--muted);
+    width: 36px;
+    flex-shrink: 0;
+    text-transform: uppercase;
+    letter-spacing: 0;
+  }
+
+  .compose-field input {
+    border: none;
+    background: transparent;
+    padding: 4px 0;
+    flex: 1;
+    border-radius: 0;
+  }
+
+  .compose-field input:focus { border-bottom: none; }
+
+  .compose-body {
+    margin-top: 1rem;
+  }
+
+  .compose-body textarea {
+    min-height: 320px;
+    resize: vertical;
+    border-radius: 6px;
+    line-height: 1.6;
+  }
+
+  .compose-actions {
+    display: flex;
+    gap: 0.5rem;
+    margin-top: 1rem;
+  }
+
+  @media (max-width: 760px) {
+    .compose-panel {
+      max-width: none;
+      margin: 0;
+      padding: 1rem max(1rem, env(safe-area-inset-right)) calc(1rem + env(safe-area-inset-bottom)) max(1rem, env(safe-area-inset-left));
+    }
+
+    .compose-title { margin-bottom: 0.9rem; }
+    .compose-field { min-height: 48px; }
+    .compose-label { letter-spacing: 0; }
+    .compose-body textarea { min-height: 42dvh; }
+
+    .compose-actions {
+      position: sticky;
+      bottom: calc(68px + env(safe-area-inset-bottom));
+      padding: 0.75rem 0 0.25rem;
+      background: var(--bg);
+    }
+
+    .compose-actions button { flex: 1; }
+  }
+</style>
