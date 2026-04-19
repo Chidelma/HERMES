@@ -56,7 +56,7 @@ async function patchHtmlShells() {
     }
 
     html = html.replace(
-      '<meta name="viewport" content="width=device-width, initial-scale=1.0">',
+      /<meta\s+name=["']viewport["']\s+content=["']width=device-width,\s*initial-scale=1\.0["']\s*\/?>/i,
       '<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">',
     )
     html = html.replace('<title>Tachyon</title>', '<title>HERMES</title>')

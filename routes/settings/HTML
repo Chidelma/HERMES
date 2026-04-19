@@ -14,6 +14,6 @@
 
 <logic :if="canShowLogin()">
   <div class="login-screen">
-    <login-form_ />
+    <login-form_ @login="window._hermes?.handleLogin($event.detail)" />
   </div>
 </logic>

@@ -118,7 +118,7 @@
   <div class="email-detail-header">
     <h2 class="email-detail-subject">{email.subject}</h2>
     <div class="email-detail-meta">
-      <div class="email-detail-avatar">{window._hermes.initials(email.sender)}</div>
+      <div class="email-detail-avatar">{window._hermes?.initials(email.sender) ?? ''}</div>
       <div>
         <div class="email-detail-from">{email.sender}</div>
         <div class="email-detail-to">To: {email.recipient}</div>
@@ -135,7 +135,7 @@
       <loop :for="attachment of email.attachments">
         <button class="attachment-chip" @click="downloadAttachment(attachment)">
           <span>{attachment.filename}</span>
-          <span>{window._hermes.bytesLabel(attachment.size)}</span>
+          <span>{window._hermes?.bytesLabel(attachment.size) ?? ''}</span>
         </button>
       </loop>
     </div>
@@ -269,7 +269,6 @@
       flex-wrap: nowrap;
       justify-content: flex-start;
       padding-bottom: 0.1rem;
-      -webkit-overflow-scrolling: touch;
     }
 
     .email-action-bar::-webkit-scrollbar { display: none; }

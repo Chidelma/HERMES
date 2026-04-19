@@ -33,8 +33,9 @@
   }
 
   async function apiFetch(path, options = {}) {
+    if (!auth.token) return null
     const headers = { 'Content-Type': 'application/json', ...options.headers }
-    if (auth.token) headers['Authorization'] = `Bearer ${auth.token}`
+    headers['Authorization'] = `Bearer ${auth.token}`
     const apiUrl = isBrowser ? (window.HERMES_CONFIG?.apiUrl || '') : ''
     const res = await fetch(apiUrl + path, { ...options, headers })
     if (res.status === 401) {
@@ -124,13 +125,13 @@
   function signOut() {
     auth.clear()
     syncAuthState()
-    history.replaceState({}, '', '/')
+    location.replace('/')
   }
 
-  function handleLogin(data) {
+  function handleLogin(data, returnTo = '/inbox') {
     auth.save(data)
     syncAuthState()
-    location.replace('/inbox')
+    location.replace(returnTo)
   }
 
   if (isBrowser) {
