@@ -6,7 +6,7 @@
       "name": "hermes",
       "dependencies": {
         "@delma/fylo": "^2.2.0",
-        "@delma/tachyon": "^1.9.0",
+        "@delma/tachyon": "^1.11.0",
       },
       "devDependencies": {
         "@playwright/test": "^1.49.0",
@@ -27,7 +27,7 @@
 
     "@delma/fylo": ["@delma/fylo@2.2.0", "", { "dependencies": { "@delma/chex": "0.3.3", "@delma/ttid": "1.3.4" }, "peerDependencies": { "typescript": "^5.0.0" }, "bin": { "fylo.query": "dist/cli/index.js" } }, "sha512-+ngVLer3v4lsdQsAVYqcVtia4kFOP/nlclWrg4J8EtqHaQOIWGeDrqATzYg0sUyjEo7V8sZUQk6xHcWeVnUlgw=="],
 
-    "@delma/tachyon": ["@delma/tachyon@1.9.0", "", { "bin": { "tach.init": "bin/tach.init.js", "tach.serve": "bin/tach.serve.js", "tach.bundle": "bin/tach.bundle.js", "tach.preview": "bin/tach.preview.js" } }, "sha512-Etd1LME7vqx5jZjmwF5Bby0y1dc+rSLWRCPgcBsQYTVh5CZM/9gZnCSnclr9cC/PcW/rrvnN+mT0twFhLuIOHw=="],
+    "@delma/tachyon": ["@delma/tachyon@1.11.0", "", { "bin": { "tach.init": "bin/tach.init.js", "tach.serve": "bin/tach.serve.js", "tach.bundle": "bin/tach.bundle.js", "tach.preview": "bin/tach.preview.js" } }, "sha512-rb6ByW/WRc99u1SrGZQm0JDQrTVUhRvP1hi0/Nk7a0EDhs6ktkJhNPIllnQhjeXPQ12szZ3vJVUG4bJXRifG8w=="],
 
     "@delma/ttid": ["@delma/ttid@1.3.4", "", { "peerDependencies": { "typescript": "^5.0.0" } }, "sha512-EBwYbzU+14wJn5+Wgk5rDrUjhHhVcko3uFciE63zgtSE5LJx/pnGxmCe801VZSYqQoTsu3beRkMZBVlG6sKG4Q=="],
 
