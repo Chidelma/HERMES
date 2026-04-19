@@ -28,10 +28,6 @@
     return auth.email || ''
   }
 
-  function syncAuthState() {
-    return isAuthenticated()
-  }
-
   async function apiFetch(path, options = {}) {
     if (!auth.token) return null
     const headers = { 'Content-Type': 'application/json', ...options.headers }
@@ -40,7 +36,7 @@
     const res = await fetch(apiUrl + path, { ...options, headers })
     if (res.status === 401) {
       auth.clear()
-      syncAuthState()
+      location.replace('/')
       return null
     }
     return res
@@ -54,6 +50,9 @@
       el = document.createElement('div')
       el.id = 'hermes-toast'
       el.className = 'toast'
+      el.setAttribute('role', 'status')
+      el.setAttribute('aria-live', 'polite')
+      el.setAttribute('aria-atomic', 'true')
       document.body.appendChild(el)
     }
     el.textContent = msg
@@ -124,13 +123,15 @@
 
   function signOut() {
     auth.clear()
-    syncAuthState()
     location.replace('/')
   }
 
   function handleLogin(data, returnTo = '/inbox') {
+    if (!data?.token || !data?.email) {
+      toast('Login failed: invalid response')
+      return
+    }
     auth.save(data)
-    syncAuthState()
     location.replace(returnTo)
   }
 
@@ -154,7 +155,8 @@
     })
 
     document.addEventListener('keydown', (e) => {
-      if (e.key === 'c' && !['INPUT', 'TEXTAREA'].includes(document.activeElement?.tagName)) {
+      const el = document.activeElement
+      if (e.key === 'c' && !['INPUT', 'TEXTAREA'].includes(el?.tagName) && !el?.isContentEditable) {
         window._hermes?.compose({})
       }
     })
