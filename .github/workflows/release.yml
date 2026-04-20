@@ -190,7 +190,19 @@ jobs:
   publish:
     name: Build and push to Docker Hub
     needs: [test, e2e, blackbox-config, image-blackbox, version]
-    if: needs.version.outputs.tag_exists == 'false' && (needs.blackbox-config.outputs.enabled == 'false' || needs.image-blackbox.result == 'success')
+    if: >-
+      ${{
+        always() &&
+        needs.test.result == 'success' &&
+        needs.e2e.result == 'success' &&
+        needs.blackbox-config.result == 'success' &&
+        needs.version.result == 'success' &&
+        needs.version.outputs.tag_exists == 'false' &&
+        (
+          needs.blackbox-config.outputs.enabled == 'false' ||
+          needs.image-blackbox.result == 'success'
+        )
+      }}
     runs-on: ubuntu-latest
     timeout-minutes: 30
     environment: deploy-prod
