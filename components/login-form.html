@@ -30,7 +30,7 @@
         step = 'mfa'
       }
     } catch { error = 'Network error. Check your connection.' }
-    finally { loading = false }
+    finally { loading = false; rerender() }
   }
 
   // ── Step: mfa ───────────────────────────────────────────────────────────────
@@ -48,7 +48,7 @@
       if (!res.ok) { error = data.error || 'Invalid code.'; return }
       emit('login', data)
     } catch { error = 'Network error. Check your connection.' }
-    finally { loading = false }
+    finally { loading = false; rerender() }
   }
 
   // ── Step: phone-input ────────────────────────────────────────────────────────
@@ -67,7 +67,7 @@
       otpSessionId = data.sessionId
       step = 'phone-code'
     } catch { error = 'Network error. Check your connection.' }
-    finally { loading = false }
+    finally { loading = false; rerender() }
   }
 
   // ── Step: phone-code ─────────────────────────────────────────────────────────
@@ -92,7 +92,7 @@
         emit('login', data)
       }
     } catch { error = 'Network error. Check your connection.' }
-    finally { loading = false }
+    finally { loading = false; rerender() }
   }
 
   // ── Step: mfa-setup ──────────────────────────────────────────────────────────
@@ -111,7 +111,7 @@
       if (!res.ok) { error = data.error || 'Invalid code — make sure your device clock is correct.'; return }
       emit('login', data)
     } catch { error = 'Network error. Check your connection.' }
-    finally { loading = false }
+    finally { loading = false; rerender() }
   }
 
   function usePhoneBackup() {

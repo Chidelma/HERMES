@@ -31,6 +31,7 @@
     const res = await apiFetch(`/inbox${suffix}`)
     allEmails = res?.ok ? await res.json() : []
     loading = false
+    rerender()
   }
 
   async function updateEmail(email, patch) {
@@ -43,6 +44,7 @@
     if (!res?.ok) return email
     const updated = await res.json()
     allEmails = allEmails.map(item => item.id === updated.id ? updated : item)
+    rerender()
     return updated
   }
 

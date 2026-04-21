@@ -45,6 +45,7 @@
     }
     restoreMfaSetupState()
     loading = false
+    rerender()
   }
 
   await loadAll()
@@ -113,6 +114,7 @@
     const res = await apiFetch('/notifications/subscriptions')
     pushSubscriptions = res?.ok ? await res.json() : []
     syncNotificationState()
+    rerender()
   }
 
   async function enableNotifications() {
@@ -158,6 +160,7 @@
       notificationError = 'Unable to enable notifications on this device.'
     } finally {
       notificationLoading = false
+      rerender()
     }
   }
 
@@ -185,6 +188,7 @@
       notificationError = 'Unable to disable notifications on this device.'
     } finally {
       notificationLoading = false
+      rerender()
     }
   }
 
@@ -214,6 +218,7 @@
       const data = await res?.json()
       window._hermes?.toast(data?.error || 'Failed to add user.')
     }
+    rerender()
   }
 
   // ── Inbox rule helpers ─────────────────────────────────────────────────────
@@ -279,6 +284,7 @@
       const data = await res?.json()
       window._hermes?.toast(data?.error || 'Failed to save rule.')
     }
+    rerender()
   }
 
   async function deleteRule(id) {
@@ -290,6 +296,7 @@
       rules = rules.filter(r => r.id !== id)
       window._hermes?.toast('Rule deleted.')
     }
+    rerender()
   }
 
   async function toggleRule(id, enabled) {
@@ -301,6 +308,7 @@
     })
     const rr = await apiFetch('/rules')
     rules = rr?.ok ? await rr.json() : []
+    rerender()
   }
 
   function describeConditions(rule) {
@@ -343,6 +351,7 @@
       showAddDevice = false
       clearMfaSetupState()
     }
+    rerender()
   }
 
   async function confirmDevice() {
@@ -379,7 +388,7 @@
       deviceError = 'Network error.'
       saveMfaSetupState()
     }
-    finally { deviceLoading = false }
+    finally { deviceLoading = false; rerender() }
   }
 
   async function deleteMfaDevice(id) {
@@ -391,6 +400,7 @@
       mfaDevices = mfaDevices.filter(d => d.id !== id)
       window._hermes?.toast('Device removed.')
     }
+    rerender()
   }
 </script>
 
