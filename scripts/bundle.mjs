@@ -25,65 +25,53 @@ async function buildTailwind() {
 }
 
 /**
- * Patches dist/index.html to load /assets/config.js in the outer <head>.
- * Tachyon injects the layout HTML (which contains the <script> tag) via
- * innerHTML at runtime, but browsers don't execute scripts set via innerHTML.
- * Adding it to the static outer head ensures window.HERMES_CONFIG is set
- * before any deferred scripts (main.js, spa-renderer.js) run.
+ * Patches every prerendered HTML shell with app head metadata and config.
+ * Tachyon emits one HTML file per page route, so CDN/static deployments need
+ * the same PWA and config tags in each generated shell.
  */
-async function patchIndexHtml() {
-  const indexPath = new URL('../dist/index.html', import.meta.url).pathname
-  let html = await readFile(indexPath, 'utf8')
-  const headEnd = html.indexOf('</head>')
-  const outerHead = headEnd >= 0 ? html.slice(0, headEnd) : html
+async function patchHtmlShells() {
+  const distRoot = new URL('../dist/', import.meta.url).pathname
+  const htmlFiles = Array.from(new Bun.Glob('**/*.html').scanSync({ cwd: distRoot }))
 
-  if (!outerHead.includes('/assets/manifest.webmanifest')) {
-    const pwaHead = [
-      '    <meta name="theme-color" content="#0d0d0d">',
-      '    <meta name="color-scheme" content="dark">',
-      '    <meta name="mobile-web-app-capable" content="yes">',
-      '    <meta name="apple-mobile-web-app-capable" content="yes">',
-      '    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">',
-      '    <meta name="apple-mobile-web-app-title" content="HERMES">',
-      '    <link rel="manifest" href="/assets/manifest.webmanifest">',
-      '    <link rel="icon" href="/assets/favicon.svg" type="image/svg+xml">',
-      '    <link rel="apple-touch-icon" href="/assets/icon-192.png">',
-      '    <link rel="stylesheet" href="/assets/styles.css">',
-    ].join('\n')
-    html = html.replace('</head>', `${pwaHead}\n</head>`)
-  }
+  for (const file of htmlFiles) {
+    const htmlPath = new URL(`../dist/${file}`, import.meta.url).pathname
+    let html = await readFile(htmlPath, 'utf8')
+    const headEnd = html.indexOf('</head>')
+    const outerHead = headEnd >= 0 ? html.slice(0, headEnd) : html
 
-  html = html.replace(
-    '<meta name="viewport" content="width=device-width, initial-scale=1.0">',
-    '<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">',
-  )
-  html = html.replace('<title>Tachyon</title>', '<title>HERMES</title>')
+    if (!outerHead.includes('/assets/manifest.webmanifest')) {
+      const pwaHead = [
+        '    <meta name="theme-color" content="#0d0d0d">',
+        '    <meta name="color-scheme" content="dark">',
+        '    <meta name="mobile-web-app-capable" content="yes">',
+        '    <meta name="apple-mobile-web-app-capable" content="yes">',
+        '    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">',
+        '    <meta name="apple-mobile-web-app-title" content="HERMES">',
+        '    <link rel="manifest" href="/assets/manifest.webmanifest">',
+        '    <link rel="icon" href="/assets/favicon.svg" type="image/svg+xml">',
+        '    <link rel="apple-touch-icon" href="/assets/icon-192.png">',
+        '    <link rel="stylesheet" href="/assets/styles.css">',
+      ].join('\n')
+      html = html.replace('</head>', `${pwaHead}\n</head>`)
+    }
 
-  if (!outerHead.includes('/assets/config.js')) {
     html = html.replace(
-      '<script src="/main.js" defer></script>',
-      '<script src="/assets/config.js"></script>\n    <script src="/main.js" defer></script>',
+      /<meta\s+name=["']viewport["']\s+content=["']width=device-width,\s*initial-scale=1\.0["']\s*\/?>/i,
+      '<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">',
     )
+    html = html.replace('<title>Tachyon</title>', '<title>HERMES</title>')
+
+    if (!outerHead.includes('/assets/config.js')) {
+      html = html.replace(
+        '<script src="/main.js" defer></script>',
+        '<script src="/assets/config.js"></script>\n    <script src="/main.js" defer></script>',
+      )
+    }
+
+    await writeFile(htmlPath, html)
   }
-
-  await writeFile(indexPath, html)
 }
 
-/**
- * Appends a global window.__ty_rerender() helper to dist/spa-renderer.js.
- * Tachyon's ty_invokeEvent fires async handlers without awaiting, so async
- * state changes never trigger a re-render on their own. Components call
- * window.__ty_rerender?.() at the end of each async handler to patch the DOM.
- */
-async function patchSpaRenderer() {
-  const rendererPath = new URL('../dist/spa-renderer.js', import.meta.url).pathname
-  const code = await readFile(rendererPath, 'utf8')
-  // Only patch once — idempotent check
-  if (code.includes('__ty_rerender')) return
-  // S = patchSlot, U = patchBody, A = layoutRender, C = pageRender (minified names)
-  const patch = '\nwindow.__ty_rerender=async()=>{try{if(typeof C==="function")typeof A==="function"&&A?S(await C()):U(await C())}catch(_e){}};'
-  await writeFile(rendererPath, code + patch)
-}
 
 async function copyServiceWorker() {
   const sourcePath = new URL('../assets/sw.js', import.meta.url).pathname
@@ -118,7 +106,6 @@ if (isWatch) {
   await ensureConfigJs()
   await buildTailwind()
   await run(bin('tach.bundle'), [])
-  await patchIndexHtml()
-  await patchSpaRenderer()
+  await patchHtmlShells()
   await copyServiceWorker()
 }

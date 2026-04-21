@@ -6,11 +6,11 @@
   function canShowLogin() {
     return isBrowser && !!window._hermes && !canUseApp()
   }
-
-  if (isBrowser && canUseApp() && location.pathname === '/') {
-    location.replace('/inbox')
-  }
 </script>
+
+<logic :if="canUseApp()">
+  <compose-view_ />
+</logic>
 
 <logic :if="canShowLogin()">
   <div class="login-screen">

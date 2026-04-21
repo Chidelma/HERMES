@@ -6,14 +6,14 @@
   function canShowLogin() {
     return isBrowser && !!window._hermes && !canUseApp()
   }
-
-  if (isBrowser && canUseApp() && location.pathname === '/') {
-    location.replace('/inbox')
-  }
 </script>
+
+<logic :if="canUseApp()">
+  <email-detail_ @compose="window._hermes?.compose($event.detail)" />
+</logic>
 
 <logic :if="canShowLogin()">
   <div class="login-screen">
-    <login-form_ @login="window._hermes?.handleLogin($event.detail)" />
+    <login-form_ @login="window._hermes?.handleLogin($event.detail, location.pathname + location.search)" />
   </div>
 </logic>

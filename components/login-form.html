@@ -6,10 +6,12 @@
   let loading = false, error = ''
 
   const _api = () => window.HERMES_CONFIG?.apiUrl || ''
+  const { formValue } = await import('/assets/utils.js')
 
   // ── Step: start ─────────────────────────────────────────────────────────────
   // Ask the server whether the user has MFA devices registered.
   async function requestMfa() {
+    email = formValue('[data-login-email]', email)
     if (!email) { error = 'Email is required.'; return }
     loading = true; error = ''
     try {
@@ -28,11 +30,12 @@
         step = 'mfa'
       }
     } catch { error = 'Network error. Check your connection.' }
-    finally { loading = false; window.__ty_rerender?.() }
+    finally { loading = false; rerender() }
   }
 
   // ── Step: mfa ───────────────────────────────────────────────────────────────
   async function confirmMfa() {
+    totpCode = formValue('[data-login-totp]', totpCode)
     if (!totpCode || totpCode.length !== 6) { error = 'Enter the 6-digit code from your authenticator.'; return }
     loading = true; error = ''
     try {
@@ -43,13 +46,14 @@
       })
       const data = await res.json()
       if (!res.ok) { error = data.error || 'Invalid code.'; return }
-      window.dispatchEvent(new CustomEvent('hermes:login', { detail: data }))
+      emit('login', data)
     } catch { error = 'Network error. Check your connection.' }
-    finally { loading = false; window.__ty_rerender?.() }
+    finally { loading = false; rerender() }
   }
 
   // ── Step: phone-input ────────────────────────────────────────────────────────
   async function requestSms() {
+    phone = formValue('[data-login-phone]', phone)
     if (!phone) { error = 'Phone number is required.'; return }
     loading = true; error = ''
     try {
@@ -63,11 +67,12 @@
       otpSessionId = data.sessionId
       step = 'phone-code'
     } catch { error = 'Network error. Check your connection.' }
-    finally { loading = false; window.__ty_rerender?.() }
+    finally { loading = false; rerender() }
   }
 
   // ── Step: phone-code ─────────────────────────────────────────────────────────
   async function confirmSms() {
+    otpCode = formValue('[data-login-otp]', otpCode)
     if (!otpCode || otpCode.length !== 6) { error = 'Enter the 6-digit code from your SMS.'; return }
     loading = true; error = ''
     try {
@@ -84,14 +89,16 @@
         totpUri    = data.totpUri
         step = 'mfa-setup'
       } else {
-        window.dispatchEvent(new CustomEvent('hermes:login', { detail: data }))
+        emit('login', data)
       }
     } catch { error = 'Network error. Check your connection.' }
-    finally { loading = false; window.__ty_rerender?.() }
+    finally { loading = false; rerender() }
   }
 
   // ── Step: mfa-setup ──────────────────────────────────────────────────────────
   async function confirmSetup() {
+    deviceName = formValue('[data-login-device-name]', deviceName)
+    deviceCode = formValue('[data-login-device-code]', deviceCode)
     if (!deviceCode || deviceCode.length !== 6) { error = 'Enter the 6-digit code from your authenticator.'; return }
     loading = true; error = ''
     try {
@@ -102,9 +109,9 @@
       })
       const data = await res.json()
       if (!res.ok) { error = data.error || 'Invalid code — make sure your device clock is correct.'; return }
-      window.dispatchEvent(new CustomEvent('hermes:login', { detail: data }))
+      emit('login', data)
     } catch { error = 'Network error. Check your connection.' }
-    finally { loading = false; window.__ty_rerender?.() }
+    finally { loading = false; rerender() }
   }
 
   function usePhoneBackup() {
@@ -129,7 +136,7 @@
     <p class="login-subtitle">Enter your email to continue.</p>
     <div class="form-group">
       <label class="form-label">Email</label>
-      <input type="email" :value="email" placeholder="you@example.com" autocomplete="email" />
+      <input data-login-email type="email" :value="email" placeholder="you@example.com" autocomplete="email" />
     </div>
     <logic :if="error"><p class="login-error">{error}</p></logic>
     <button class="btn-primary" :disabled="loading" @click="requestMfa()">
@@ -143,7 +150,7 @@
     <p class="login-subtitle">Enter the 6-digit code from your authenticator app.</p>
     <div class="form-group">
       <label class="form-label">Code</label>
-      <input type="text" :value="totpCode" inputmode="numeric" maxlength="6" placeholder="000000" autocomplete="one-time-code" />
+      <input data-login-totp type="text" :value="totpCode" inputmode="numeric" maxlength="6" placeholder="000000" autocomplete="one-time-code" />
     </div>
     <logic :if="error"><p class="login-error">{error}</p></logic>
     <button class="btn-primary" :disabled="loading" @click="confirmMfa()">
@@ -161,7 +168,7 @@
     <p class="login-subtitle">Enter a phone number linked to your account to receive a code.</p>
     <div class="form-group">
       <label class="form-label">Phone</label>
-      <input type="tel" :value="phone" placeholder="+1 416 555 0100" autocomplete="tel" />
+      <input data-login-phone type="tel" :value="phone" placeholder="+1 416 555 0100" autocomplete="tel" />
     </div>
     <logic :if="error"><p class="login-error">{error}</p></logic>
     <button class="btn-primary" :disabled="loading" @click="requestSms()">
@@ -176,7 +183,7 @@
     <p class="login-subtitle">If the details match an account, a 6-digit code was sent.</p>
     <div class="form-group">
       <label class="form-label">Verification code</label>
-      <input type="text" :value="otpCode" aria-label="Verification code" inputmode="numeric" maxlength="6" placeholder="000000" autocomplete="one-time-code" />
+      <input data-login-otp type="text" :value="otpCode" aria-label="Verification code" inputmode="numeric" maxlength="6" placeholder="000000" autocomplete="one-time-code" />
     </div>
     <logic :if="error"><p class="login-error">{error}</p></logic>
     <button class="btn-primary" :disabled="loading" @click="confirmSms()">
@@ -201,12 +208,12 @@
 
     <div class="form-group">
       <label class="form-label">Device name <span style="color:var(--muted);font-weight:400;">(optional)</span></label>
-      <input type="text" :value="deviceName" aria-label="Device name" placeholder="e.g. iPhone 15" />
+      <input data-login-device-name type="text" :value="deviceName" aria-label="Device name" placeholder="e.g. iPhone 15" />
     </div>
 
     <div class="form-group">
       <label class="form-label">Confirmation code</label>
-      <input type="text" :value="deviceCode" aria-label="Confirmation code" inputmode="numeric" maxlength="6" placeholder="000000" autocomplete="one-time-code" />
+      <input data-login-device-code type="text" :value="deviceCode" aria-label="Confirmation code" inputmode="numeric" maxlength="6" placeholder="000000" autocomplete="one-time-code" />
     </div>
 
     <logic :if="error"><p class="login-error">{error}</p></logic>
@@ -215,3 +222,35 @@
     </button>
   </logic>
 </div>
+
+<style>
+  .login-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 2rem;
+    width: 100%;
+    max-width: 380px;
+  }
+
+  .login-logo {
+    font-size: 22px;
+    font-weight: 800;
+    letter-spacing: 0;
+    margin-bottom: 1.5rem;
+    color: var(--text);
+  }
+
+  .login-title {
+    font-size: 16px;
+    font-weight: 600;
+    margin: 0 0 0.35rem;
+    color: var(--text);
+  }
+
+  .login-subtitle {
+    font-size: 13px;
+    color: var(--muted);
+    margin: 0 0 1.25rem;
+  }
+</style>

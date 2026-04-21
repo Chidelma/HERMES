@@ -1,6 +1,6 @@
 {
   "name": "hermes",
-  "version": "0.3.1",
+  "version": "0.4.0",
   "private": true,
   "description": "Open-source multi-domain mail server",
   "type": "module",
@@ -21,7 +21,7 @@
   },
   "dependencies": {
     "@delma/fylo": "^2.2.0",
-    "@delma/tachyon": "^1.9.0"
+    "@delma/tachyon": "^1.11.0"
   },
   "devDependencies": {
     "@playwright/test": "^1.49.0",

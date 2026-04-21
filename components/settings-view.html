@@ -22,7 +22,7 @@
   let notificationError = ''
 
   const mfaSetupStateKey = '__hermes_mfa_setup_state'
-  const isAdmin = typeof sessionStorage !== 'undefined' && sessionStorage.getItem('hermes_role') === 'admin'
+  const isAdmin = isBrowser && sessionStorage.getItem('hermes_role') === 'admin'
 
   async function loadAll() {
     loading = true
@@ -45,12 +45,13 @@
     }
     restoreMfaSetupState()
     loading = false
+    rerender()
   }
 
   await loadAll()
 
   function saveMfaSetupState() {
-    if (typeof window === 'undefined') return
+    if (!isBrowser) return
     window[mfaSetupStateKey] = {
       showAddDevice,
       deviceProvision,
@@ -61,7 +62,7 @@
   }
 
   function restoreMfaSetupState() {
-    if (typeof window === 'undefined') return
+    if (!isBrowser) return
     const state = window[mfaSetupStateKey]
     if (!state) return
     showAddDevice = state.showAddDevice
@@ -72,7 +73,7 @@
   }
 
   function clearMfaSetupState() {
-    if (typeof window !== 'undefined') delete window[mfaSetupStateKey]
+    if (isBrowser) delete window[mfaSetupStateKey]
   }
 
   function restoreMfaSetupStateForRender() {
@@ -81,7 +82,7 @@
   }
 
   function canUseNotifications() {
-    return typeof window !== 'undefined'
+    return isBrowser
       && !window.__HERMES_DISABLE_SW
       && 'Notification' in window
       && 'serviceWorker' in navigator
@@ -107,19 +108,13 @@
     return 'Turn this on for an installed desktop or mobile app feel when mail arrives.'
   }
 
-  function urlBase64ToUint8Array(base64String) {
-    const padding = '='.repeat((4 - base64String.length % 4) % 4)
-    const base64 = (base64String + padding).replace(/-/g, '+').replace(/_/g, '/')
-    const rawData = atob(base64)
-    return Uint8Array.from([...rawData].map(char => char.charCodeAt(0)))
-  }
-
   async function refreshPushSubscriptions() {
     const apiFetch = window._hermes?.apiFetch
     if (!apiFetch) return
     const res = await apiFetch('/notifications/subscriptions')
     pushSubscriptions = res?.ok ? await res.json() : []
     syncNotificationState()
+    rerender()
   }
 
   async function enableNotifications() {
@@ -128,7 +123,6 @@
 
     if (!notificationSupported) {
       notificationError = 'This browser cannot receive Web Push notifications.'
-      window.__ty_rerender?.()
       return
     }
 
@@ -146,6 +140,7 @@
       if (!keyRes?.ok) throw new Error('Unable to load notification key')
       const { publicKey } = await keyRes.json()
 
+      const { urlBase64ToUint8Array } = await import('/assets/utils.js')
       const registration = await navigator.serviceWorker.ready
       const existing = await registration.pushManager.getSubscription()
       const subscription = existing || await registration.pushManager.subscribe({
@@ -165,7 +160,7 @@
       notificationError = 'Unable to enable notifications on this device.'
     } finally {
       notificationLoading = false
-      window.__ty_rerender?.()
+      rerender()
     }
   }
 
@@ -193,7 +188,7 @@
       notificationError = 'Unable to disable notifications on this device.'
     } finally {
       notificationLoading = false
-      window.__ty_rerender?.()
+      rerender()
     }
   }
 
@@ -223,7 +218,7 @@
       const data = await res?.json()
       window._hermes?.toast(data?.error || 'Failed to add user.')
     }
-    window.__ty_rerender?.()
+    rerender()
   }
 
   // ── Inbox rule helpers ─────────────────────────────────────────────────────
@@ -289,7 +284,7 @@
       const data = await res?.json()
       window._hermes?.toast(data?.error || 'Failed to save rule.')
     }
-    window.__ty_rerender?.()
+    rerender()
   }
 
   async function deleteRule(id) {
@@ -301,7 +296,7 @@
       rules = rules.filter(r => r.id !== id)
       window._hermes?.toast('Rule deleted.')
     }
-    window.__ty_rerender?.()
+    rerender()
   }
 
   async function toggleRule(id, enabled) {
@@ -313,7 +308,7 @@
     })
     const rr = await apiFetch('/rules')
     rules = rr?.ok ? await rr.json() : []
-    window.__ty_rerender?.()
+    rerender()
   }
 
   function describeConditions(rule) {
@@ -336,13 +331,15 @@
       showAddDevice = false; deviceProvision = null
       newDeviceName = newDeviceCode = deviceError = ''
       clearMfaSetupState()
-      window.__ty_rerender?.()
       return
     }
     showAddDevice = true
     deviceProvision = null
     saveMfaSetupState()
-    window.__ty_rerender?.()
+    // Force a mid-handler repaint so the "Generating…" spinner shows while
+    // /mfa/provision is in flight — Tachyon otherwise only repaints after the
+    // handler resolves.
+    rerender()
     const apiFetch = window._hermes?.apiFetch
     if (!apiFetch) return
     const res = await apiFetch('/mfa/provision', { method: 'POST' })
@@ -354,14 +351,13 @@
       showAddDevice = false
       clearMfaSetupState()
     }
-    window.__ty_rerender?.()
+    rerender()
   }
 
   async function confirmDevice() {
     if (!deviceProvision || !newDeviceCode || newDeviceCode.length !== 6) {
       deviceError = 'Enter the 6-digit code from your authenticator.'
       saveMfaSetupState()
-      window.__ty_rerender?.()
       return
     }
     deviceLoading = true; deviceError = ''
@@ -392,7 +388,7 @@
       deviceError = 'Network error.'
       saveMfaSetupState()
     }
-    finally { deviceLoading = false; window.__ty_rerender?.() }
+    finally { deviceLoading = false; rerender() }
   }
 
   async function deleteMfaDevice(id) {
@@ -404,7 +400,7 @@
       mfaDevices = mfaDevices.filter(d => d.id !== id)
       window._hermes?.toast('Device removed.')
     }
-    window.__ty_rerender?.()
+    rerender()
   }
 </script>
 
@@ -729,3 +725,74 @@
   </logic>
 
 </div>
+
+<style>
+  .settings-panel {
+    max-width: 700px;
+    padding: 1.5rem;
+  }
+
+  .settings-section {
+    margin-bottom: 2rem;
+  }
+
+  .settings-section-title {
+    font-size: 12px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0;
+    color: var(--muted);
+    margin-bottom: 0.75rem;
+  }
+
+  .settings-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    overflow: hidden;
+  }
+
+  .settings-row {
+    display: flex;
+    align-items: center;
+    padding: 0.75rem 1rem;
+    border-bottom: 1px solid var(--border);
+    gap: 0.75rem;
+    font-size: 13.5px;
+  }
+
+  .settings-row:last-child { border-bottom: none; }
+
+  .settings-row-label { flex: 1; }
+  .settings-row-value { color: var(--muted); }
+
+  .route-badge {
+    display: inline-block;
+    padding: 2px 7px;
+    border-radius: 4px;
+    font-size: 11px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0;
+  }
+
+  .route-badge.store { background: rgba(79,158,255,0.12); color: var(--accent); }
+  .route-badge.forward { background: rgba(76,204,110,0.12); color: var(--success); }
+  .route-badge.webhook { background: rgba(255,200,0,0.1); color: #ffc800; }
+  .route-badge.drop { background: rgba(255,94,94,0.1); color: var(--danger); }
+
+  @media (max-width: 760px) {
+    .settings-panel {
+      max-width: none;
+      padding: 1rem max(1rem, env(safe-area-inset-right)) calc(1rem + env(safe-area-inset-bottom)) max(1rem, env(safe-area-inset-left));
+    }
+
+    .settings-row {
+      min-height: 48px;
+      align-items: flex-start;
+      flex-wrap: wrap;
+    }
+
+    .settings-row-label { min-width: 12rem; }
+  }
+</style>

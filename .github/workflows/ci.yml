@@ -192,4 +192,12 @@ jobs:
           - Tag the commit as \`v$version\`
           - Publish a GitHub Release with generated notes
 
-          Make sure \`package.json\` version matches \`$version\` before merging."
+          Make sure \`package.json\` version matches \`$version\` before merging." || {
+            # If gh pr create fails, check once more — a PR may have been opened concurrently.
+            existing=$(gh pr list --head "$BRANCH" --base main --state open --json number --jq '.[0].number // empty')
+            if [ -n "$existing" ]; then
+              echo "PR #$existing already open for $BRANCH (concurrent open)"
+              exit 0
+            fi
+            exit 1
+          }
